@@ -1,0 +1,55 @@
+esphome:
+  name: hass-esp08
+  platform: ESP32
+  board: esp32dev
+
+# Enable logging
+logger:
+  baud_rate: 0
+
+switch:
+  - platform: restart
+    name: "esp08 Restart" # entity name
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+uart:
+  rx_pin: GPIO16 # RX2
+  baud_rate: 9600
+#  rx_buffer_size: 1024
+
+
+
+sensor:
+  - platform: sm300d2
+    co2:
+      name: "esp08 CO2"
+    formaldehyde:
+      name: "esp08 Formaldehyde"
+    tvoc:
+      name: "esp08 TVOC"
+    pm_2_5:
+      name: "esp08 PM2.5"
+    pm_10_0:
+      name: "esp08 PM10"
+    temperature:
+      name: "esp08 Temperature"
+    humidity:
+      name: "esp08 Humidity"
+    update_interval: 15s
+    
+  - platform: wifi_signal
+    name: "esp08 WiFi Signal"
+    update_interval: 60s
+    
+  - platform: uptime
+    name: "esp08 Uptime"
+    update_interval: 60s

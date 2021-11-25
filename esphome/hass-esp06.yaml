@@ -1,0 +1,63 @@
+esphome:
+  name: hass-esp06
+  platform: ESP32
+  board: esp32dev
+
+# Enable logging
+logger:
+  baud_rate: 0
+
+switch:
+  - platform: restart
+    name: "esp06 Restart"
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+
+i2c:
+   - id: bus_a
+     sda: 21
+     scl: 22
+     scan: true
+
+sensor:
+  - platform: ccs811
+    baseline: 0x0CC1
+    eco2:
+      name: "esp06 CO2"
+    tvoc:
+      name: "esp06 TVOC"
+    address: 0x5B
+    temperature: esp06_temperature
+    humidity: esp06_humidity
+    update_interval: 15s
+    
+  - platform: bme280
+    temperature:
+      name: "esp06 Temperature"
+      id: "esp06_temperature"
+      oversampling: 16x
+    pressure:
+      name: "esp06 Pressure"
+      id: "esp06_pressure"
+    humidity:
+      name: "esp06 Humidity"
+      id: "esp06_humidity"
+    address: 0x77
+    update_interval: 15s
+
+  - platform: wifi_signal
+    name: "esp06 WiFi Signal"
+    update_interval: 60s
+    
+  - platform: uptime
+    name: "esp06 Uptime"
+    update_interval: 60s
