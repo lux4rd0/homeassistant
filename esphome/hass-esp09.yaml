@@ -1,0 +1,33 @@
+esphome:
+  name: hass-esp09
+  platform: ESP32
+  board: esp32dev
+
+# Enable logging
+logger:
+  baud_rate: 0
+
+switch:
+  - platform: restart
+    id: esp09_restart
+    name: "esp09 Restart"
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+sensor:
+
+  - platform: wifi_signal
+    name: "esp09 WiFi Signal"
+    update_interval: 60s
+    
+  - platform: uptime
+    name: "esp09 Uptime"
+    update_interval: 60s
