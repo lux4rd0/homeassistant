@@ -47,7 +47,7 @@ font:
   - file: 'fonts/Google Sans Bold.ttf'
     id: clock_font
     size: 90
-    glyphs: [0, 1, 2, 3, 4, 5, 6, 7 , 8, 9, ':', A, M, P, ' ']
+    glyphs: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ':', A, M, P, ' ']
 
   - file: 'fonts/Google Sans Medium.ttf'
     id: temp_font
@@ -145,7 +145,6 @@ font:
       '󱃍', # mdi-battery-alert-variant-outline
       ]
 
-
 spi:
   clk_pin: GPIO13
   mosi_pin: GPIO15
@@ -165,14 +164,12 @@ display:
       int x, y, c;
       ESP_LOGI("display", "Updating..");
 
-      /* Print time in HH:MM format */
+      // Print time in HH:MM format
       it.strftime(0, -15, id(clock_font), "%I:%M %p", id(esptime).now());
 
       // it.line(259, -10, 259, 200);it.line(261, 0, 261, 200);it.line(260, 0, 260, 200);
       // it.line(0, 200, 259, 200);it.line(0, 201, 261, 201);it.line(0, 202, 260, 202);
-
-
-
+      
       // it.print(60, 0, id(font_black_gladiator), "Conditions");
       
       it.printf(0, 120, id(status_font), "esp01:");
@@ -190,15 +187,10 @@ display:
       it.printf(180, 160, id(status_font), "esp08:");
       it.printf(240, 147, id(temp_font), "%.1f° F", id(esp08_temperature).state);
       
-      // it.graph(180, 185, id(esp01_temperature_graph));
-      
-      // it.graph(180, 237, id(esp12_WiFi_Signal_graph));
-      
-      // Print time in HH:MM format
-      // it.strftime(0, 270, id(font_arth), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
-      
-      
-      /* WiFi Signal Strength */
+      it.graph(180, 185, id(esp01_temperature_graph));
+      it.graph(180, 237, id(esp12_WiFi_Signal_graph));
+
+      // WiFi Signal Strength
       if(id(esp12_WiFi_Signal).has_state()) {
         x = 398, y = 298;
         if (id(esp12_WiFi_Signal).state >= -50) {
@@ -223,11 +215,11 @@ display:
             ESP_LOGI("WiFi", "Unlikely");
         }
       }
-      
-      /* Voltage */
-       if(id(hass_esp12_battery_voltage).has_state()) {
+
+      // Voltage
+      if(id(hass_esp12_battery_voltage).has_state()) {
         x = 0, y = 260;
-        
+
         if (id(hass_esp12_battery_voltage).state >= 3.7) {
         it.print(x, y, id(battery_font), "󰁹");
         } else if (id(hass_esp12_battery_voltage).state >= 3.5) {
@@ -241,12 +233,11 @@ display:
         } else {
         it.print(x, y, id(battery_font), "󱃍");
         }
-        
+
         x = 35, y = 270;
         it.printf(x, y, id(status_font), "%.2f V", id(hass_esp12_battery_voltage).state);
         }
-      
-      
+
 graph:
   # Show bare-minimum auto-ranged graph
   - id: esp01_temperature_graph
@@ -255,12 +246,11 @@ graph:
     width: 200
     height: 100
 
-#  - id: esp12_WiFi_Signal_graph
-#    sensor: esp12_WiFi_Signal
-#    duration: 1h
-#    width: 200
-#    height: 50
-
+  - id: esp12_WiFi_Signal_graph
+    sensor: esp12_WiFi_Signal
+    duration: 1h
+    width: 200
+    height: 50
 
 sensor:
 
