@@ -6,6 +6,20 @@ esphome:
   on_boot:
       - output.turn_off: onboard_led
 
+external_components:
+  - source:
+      type: git
+      url: https://github.com/parats15/esphome.git
+      ref: waveshare-color
+    components: [ waveshare_epaper ]
+
+color:
+  - id: COLOR_RED
+    red: 100%
+    green: 0%
+    blue: 0%
+    white: 0%
+
 time:
   - platform: homeassistant
     id: esptime
@@ -46,7 +60,7 @@ font:
 
   - file: 'fonts/Google Sans Bold.ttf'
     id: clock_font
-    size: 90
+    size: 20
     glyphs: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ':', A, M, P, ' ']
 
   - file: 'fonts/Google Sans Medium.ttf'
@@ -61,7 +75,7 @@ font:
        'u', 'v', 'w', 'x', 'y', 'z','å', 'ä', 'ö', '/']
   - file: 'fonts/Google Sans Bold.ttf'
     id: status_font
-    size: 18
+    size: 12
     glyphs:
       ['&', '@', '!', ',', '.', '"', '%', '(', ')', '+', '-', '_', ':', '°', '0',
        '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
@@ -93,7 +107,7 @@ font:
     ]
   - file: 'fonts/materialdesignicons-webfont.ttf' 
     id: wifi_font
-    size: 32
+    size: 22
     glyphs: [
       # Wifi
       '󰤟', # mdi-wifi-strength-1
@@ -134,7 +148,7 @@ font:
       ]
   - file: 'fonts/materialdesignicons-webfont.ttf' 
     id: battery_font
-    size: 32
+    size: 22
     glyphs: [
       # Battery
       '󰁹', # mdi-battery
@@ -144,6 +158,52 @@ font:
       '󰁻', # mdi-battery-20
       '󱃍', # mdi-battery-alert-variant-outline
       ]
+
+  - file: 'fonts/digital-7.ttf' 
+    id: lcd_font
+    size: 32
+
+  - file: 'fonts/Montserrat-Medium.ttf' 
+    id: font_montserrat_medium
+    size: 40
+
+  - file: 'fonts/CrimsonText-Semibold.ttf' 
+    id: font_crimsonText_semibold
+    size: 40
+
+  - file: 'fonts/Oswald-Medium.ttf' 
+    id: font_oswald_medium
+    size: 40
+
+  - file: 'fonts/Kalam-Regular.ttf' 
+    id: font_kalam_regular_80
+    size: 80
+
+  - file: 'fonts/Kalam-Regular.ttf' 
+    id: font_kalam_regular_30
+    size: 30
+
+
+  - file: 'fonts/Kalam-Regular.ttf' 
+    id: font_kalam_regular_20
+    size: 20
+
+  - file: 'fonts/Quicksand-Regular.ttf' 
+    id: font_quicksand_regular_20
+    size: 20
+
+  - file: 'fonts/futura light bt.ttf' 
+    id: font_futura_light_bt_20
+    size: 20
+    
+  - file: 'fonts/Rebeqa-Thin.ttf' 
+    id: font_rebeqa_thin_30
+    size: 30
+
+  - file: 'fonts/Ignotum.ttf' 
+    id: font_ignotum_20
+    size: 20
+
 
 spi:
   clk_pin: GPIO13
@@ -165,30 +225,53 @@ display:
       ESP_LOGI("display", "Updating..");
 
       // Print time in HH:MM format
-      it.strftime(0, -15, id(clock_font), "%I:%M %p", id(esptime).now());
+      it.strftime(0, 302, id(status_font), TextAlign::BOTTOM_LEFT, "%I:%M %p", id(esptime).now());
 
-      // it.line(259, -10, 259, 200);it.line(261, 0, 261, 200);it.line(260, 0, 260, 200);
-      // it.line(0, 200, 259, 200);it.line(0, 201, 261, 201);it.line(0, 202, 260, 202);
+
+      it.print(75, 10, id(font_ignotum_20), TextAlign::CENTER, "Bedroom Dave");
+      it.print(75, 30, id(font_ignotum_20), TextAlign::CENTER, "Bathroom");
+
+      it.print(200, 10, id(font_ignotum_20), TextAlign::CENTER, "Bedroom Red");
+      it.print(200, 30, id(font_ignotum_20), TextAlign::CENTER, "Bathroom");
+
+      it.print(325, 10, id(font_ignotum_20), TextAlign::CENTER, "Hallway");
+      it.print(325, 30, id(font_ignotum_20), TextAlign::CENTER, "Bathroom");
+
+
+      it.printf(75, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(bedroom_dave_bathroom_temperature).state);
+      it.printf(200, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(bedroom_red_bathroom_temperature).state);
+      it.printf(325, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(hallway_bathroom_temperature).state);
       
-      // it.print(60, 0, id(font_black_gladiator), "Conditions");
+      it.printf(75, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(bedroom_dave_bathroom_humidity).state);
+      it.printf(200, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(bedroom_red_bathroom_humidity).state);
+      it.printf(325, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(hallway_bathroom_humidity).state);
+
+
+
+
+
+      it.print(75, 160, id(font_ignotum_20), TextAlign::CENTER, "Tyle 1st Floor");
+      it.print(75, 180, id(font_ignotum_20), TextAlign::CENTER, "Thermostat");
+
+      it.print(200, 160, id(font_ignotum_20), TextAlign::CENTER, "Tyle 2nd Floor");
+      it.print(200, 180, id(font_ignotum_20), TextAlign::CENTER, "Thermostat");
+
+      it.print(325, 170, id(font_ignotum_20), TextAlign::CENTER, "Outside");
+
+
+      it.printf(75, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(tyle_1st_floor_thermostat_temperature).state);
+      it.printf(200, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(tyle_2nd_floor_thermostat_temperature).state);
+      it.printf(325, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(outside_temperature).state);
       
-      it.printf(0, 120, id(status_font), "esp01:");
-      it.printf(60, 107, id(temp_font), "%.1f° F", id(esp01_temperature).state);
-      
-      it.printf(0, 160, id(status_font), "esp02:");
-      it.printf(60, 147, id(temp_font), "%.1f° F", id(esp02_temperature).state);
-      
-      it.printf(0, 200, id(status_font), "esp03:");
-      it.printf(60, 187, id(temp_font), "%.1f° F", id(esp03_temperature).state);
-      
-      it.printf(180, 120, id(status_font), "esp06:");
-      it.printf(240, 107, id(temp_font), "%.1f° F", id(esp06_temperature).state);
-      
-      it.printf(180, 160, id(status_font), "esp08:");
-      it.printf(240, 147, id(temp_font), "%.1f° F", id(esp08_temperature).state);
-      
-      it.graph(180, 185, id(esp01_temperature_graph));
-      it.graph(180, 237, id(esp12_WiFi_Signal_graph));
+      it.printf(75, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(tyle_1st_floor_thermostat_humidity).state);
+      it.printf(200, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(tyle_2nd_floor_thermostat_humidity).state);
+      it.printf(325, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(outside_humidity).state);
+
+
+
+
+
+
 
       // WiFi Signal Strength
       if(id(esp12_WiFi_Signal).has_state()) {
@@ -218,39 +301,39 @@ display:
 
       // Voltage
       if(id(hass_esp12_battery_voltage).has_state()) {
-        x = 0, y = 260;
+        x = 398, y = 273;
 
         if (id(hass_esp12_battery_voltage).state >= 3.7) {
-        it.print(x, y, id(battery_font), "󰁹");
+        it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁹");
         } else if (id(hass_esp12_battery_voltage).state >= 3.5) {
-        it.print(x, y, id(battery_font), "󰂁");
+        it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰂁");
         } else if (id(hass_esp12_battery_voltage).state >= 3.3) {
-        it.print(x, y, id(battery_font), "󰁿");
+        it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁿");
         } else if (id(hass_esp12_battery_voltage).state >= 3.1) {
-        it.print(x, y, id(battery_font), "󰁽");
+        it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁽");
         } else if (id(hass_esp12_battery_voltage).state >= 3.0) {
-        it.print(x, y, id(battery_font), "󰁻");
+        it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁻");
         } else {
-        it.print(x, y, id(battery_font), "󱃍");
+        it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󱃍");
         }
 
-        x = 35, y = 270;
-        it.printf(x, y, id(status_font), "%.2f V", id(hass_esp12_battery_voltage).state);
+        // x = 35, y = 280;
+        // it.printf(x, y, id(status_font), TextAlign::BOTTOM_LEFT, "%.2f V", id(hass_esp12_battery_voltage).state);
         }
 
-graph:
+#graph:
   # Show bare-minimum auto-ranged graph
-  - id: esp01_temperature_graph
-    sensor: esp01_temperature
-    duration: 24h
-    width: 200
-    height: 100
+#  - id: esp01_temperature_graph
+#    sensor: esp01_temperature
+#    duration: 24h
+#    width: 200
+#    height: 100
 
-  - id: esp12_WiFi_Signal_graph
-    sensor: esp12_WiFi_Signal
-    duration: 1h
-    width: 200
-    height: 50
+#  - id: esp12_WiFi_Signal_graph
+#    sensor: esp12_WiFi_Signal
+#    duration: 1h
+#    width: 200
+#    height: 50
 
 sensor:
 
@@ -262,31 +345,74 @@ sensor:
   - platform: uptime
     name: "esp12 Uptime"
     update_interval: 60s
+
+## Pull Home Assistant Sensor Data
+
+## Humidity
   
   - platform: homeassistant
-    entity_id: sensor.esp01_temperature
-    id: esp01_temperature
+    entity_id: sensor.bedroom_dave_bathroom_humidity
+    id: bedroom_dave_bathroom_humidity
     internal: true
     
   - platform: homeassistant
-    entity_id: sensor.esp02_temperature
-    id: esp02_temperature
+    entity_id: sensor.bedroom_red_bathroom_humidity
+    id: bedroom_red_bathroom_humidity
     internal: true
 
   - platform: homeassistant
-    entity_id: sensor.esp03_temperature
-    id: esp03_temperature
+    entity_id: sensor.hallway_bathroom_humidity
+    id: hallway_bathroom_humidity
     internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.outside_humidity
+    id: outside_humidity
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.tyle_1st_floor_thermostat_humidity
+    id: tyle_1st_floor_thermostat_humidity
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.tyle_2nd_floor_thermostat_humidity
+    id: tyle_2nd_floor_thermostat_humidity
+    internal: true
+
+
+## Temperature
   
   - platform: homeassistant
-    entity_id: sensor.esp06_temperature
-    id: esp06_temperature
+    entity_id: sensor.bedroom_dave_bathroom_temperature
+    id: bedroom_dave_bathroom_temperature
     internal: true
     
   - platform: homeassistant
-    entity_id: sensor.esp08_temperature
-    id: esp08_temperature
+    entity_id: sensor.bedroom_red_bathroom_temperature
+    id: bedroom_red_bathroom_temperature
     internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.hallway_bathroom_temperature
+    id: hallway_bathroom_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.outside_temperature
+    id: outside_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.tyle_1st_floor_thermostat_temperature
+    id: tyle_1st_floor_thermostat_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.tyle_2nd_floor_thermostat_temperature
+    id: tyle_2nd_floor_thermostat_temperature
+    internal: true
+
 
 # Documentation: https://esphome.io/components/sensor/adc.html
   - platform: adc
