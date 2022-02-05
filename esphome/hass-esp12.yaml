@@ -2,23 +2,9 @@ esphome:
   name: hass-esp12
   platform: ESP32
   board: featheresp32
-
   on_boot:
-      - output.turn_off: onboard_led
-
-external_components:
-  - source:
-      type: git
-      url: https://github.com/parats15/esphome.git
-      ref: waveshare-color
-    components: [ waveshare_epaper ]
-
-color:
-  - id: COLOR_RED
-    red: 100%
-    green: 0%
-    blue: 0%
-    white: 0%
+    then:
+      script.execute: consider_deep_sleep
 
 time:
   - platform: homeassistant
@@ -73,6 +59,7 @@ font:
        'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
        'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
        'u', 'v', 'w', 'x', 'y', 'z','å', 'ä', 'ö', '/']
+
   - file: 'fonts/Google Sans Bold.ttf'
     id: status_font
     size: 12
@@ -90,6 +77,7 @@ font:
     glyphs: [
       '󰌪', # mdi-leaf
     ]
+
   - file: 'fonts/materialdesignicons-webfont.ttf' 
     id: icon_font_new
     size: 32
@@ -105,6 +93,7 @@ font:
       "󰖛", # mdi-weather-sunset-down
       "󰖜", # mdi-weather-sunset-up
     ]
+
   - file: 'fonts/materialdesignicons-webfont.ttf' 
     id: wifi_font
     size: 22
@@ -116,6 +105,7 @@ font:
       '󰤨', # mdi-wifi-strength-4
       '󰤫', # mdi-wifi-strength-alert-outline
       ]
+
   - file: 'fonts/materialdesignicons-webfont.ttf' 
     id: weather_font
     size: 50
@@ -132,6 +122,7 @@ font:
       "󰼱", # mdi-weather-night-partly-cloudy
       "󰖕", # mdi-weather-partly-cloudy
     ]
+
   - file: 'fonts/materialdesignicons-webfont.ttf' 
     id: moon_font
     size: 50
@@ -146,6 +137,7 @@ font:
       "󰽧", # waxing_crescent
       "󰽨", # waxing_gibbous
       ]
+
   - file: 'fonts/materialdesignicons-webfont.ttf' 
     id: battery_font
     size: 22
@@ -183,7 +175,6 @@ font:
     id: font_kalam_regular_30
     size: 30
 
-
   - file: 'fonts/Kalam-Regular.ttf' 
     id: font_kalam_regular_20
     size: 20
@@ -219,8 +210,6 @@ display:
     model: 4.20in
     update_interval: 300s
     
-    
-
     pages:
       - id: page1
 
@@ -232,7 +221,6 @@ display:
             // Print time in HH:MM format
             it.strftime(0, 302, id(status_font), TextAlign::BOTTOM_LEFT, "%I:%M %p", id(esptime).now());
 
-
             it.print(75, 10, id(font_ignotum_20), TextAlign::CENTER, "Bedroom Dave");
             it.print(75, 30, id(font_ignotum_20), TextAlign::CENTER, "Bathroom");
 
@@ -242,7 +230,6 @@ display:
             it.print(325, 10, id(font_ignotum_20), TextAlign::CENTER, "Hallway");
             it.print(325, 30, id(font_ignotum_20), TextAlign::CENTER, "Bathroom");
 
-
             it.printf(75, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(bedroom_dave_bathroom_temperature).state);
             it.printf(200, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(bedroom_red_bathroom_temperature).state);
             it.printf(325, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(hallway_bathroom_temperature).state);
@@ -250,8 +237,6 @@ display:
             it.printf(75, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(bedroom_dave_bathroom_humidity).state);
             it.printf(200, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(bedroom_red_bathroom_humidity).state);
             it.printf(325, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(hallway_bathroom_humidity).state);
-
-
 
 
 
@@ -340,9 +325,37 @@ display:
             // Print time in HH:MM format
             it.strftime(0, 302, id(status_font), TextAlign::BOTTOM_LEFT, "%I:%M %p", id(esptime).now());
 
-            it.printf(200, 80, id(font_montserrat_medium), TextAlign::CENTER, "Forecast: %s", id(weatherflow_day_based_forecast).state.c_str());
+            // it.printf(200, 80, id(font_montserrat_medium), TextAlign::CENTER, "Forecast: %s", id(weatherflow_day_based_forecast).state.c_str());
+
+            // it.image(0, 0, id(rage));
 
 
+            it.print(75, 20, id(font_ignotum_20), TextAlign::CENTER, "ESP01");
+
+            it.print(200, 20, id(font_ignotum_20), TextAlign::CENTER, "EPS02");
+
+            it.print(325, 20, id(font_ignotum_20), TextAlign::CENTER, "ESP03");
+
+            it.printf(75, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp01_temperature).state);
+            it.printf(200, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp02_temperature).state);
+            it.printf(325, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp03_temperature).state);
+            
+            it.printf(75, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp01_humidity).state);
+            it.printf(200, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp02_humidity).state);
+            it.printf(325, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp03_humidity).state);
+
+
+
+            it.print(75, 170, id(font_ignotum_20), TextAlign::CENTER, "ESP06");
+
+            it.print(200, 170, id(font_ignotum_20), TextAlign::CENTER, "ESP08");
+
+
+            it.printf(75, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp06_temperature).state);
+            it.printf(200, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp08_temperature).state);
+            
+            it.printf(75, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp06_humidity).state);
+            it.printf(200, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp08_humidity).state);
 
 
 
@@ -396,7 +409,7 @@ display:
 
     
 interval:
-  - interval: 300s
+  - interval: 60s
     then:
       - display.page.show_next: esp12_epaper
       - component.update: esp12_epaper
@@ -461,6 +474,30 @@ sensor:
     id: tyle_2nd_floor_thermostat_humidity
     internal: true
 
+  - platform: homeassistant
+    entity_id: sensor.esp01_humidity
+    id: esp01_humidity
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.esp02_humidity
+    id: esp02_humidity
+    internal: true
+    
+  - platform: homeassistant
+    entity_id: sensor.esp03_humidity
+    id: esp03_humidity
+    internal: true
+    
+  - platform: homeassistant
+    entity_id: sensor.esp06_humidity
+    id: esp06_humidity
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.esp08_humidity
+    id: esp08_humidity
+    internal: true
 
 ## Temperature
   
@@ -494,6 +531,36 @@ sensor:
     id: tyle_2nd_floor_thermostat_temperature
     internal: true
 
+  - platform: homeassistant
+    entity_id: sensor.esp01_temperature
+    id: esp01_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.esp02_temperature
+    id: esp02_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.esp03_temperature
+    id: esp03_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.esp06_temperature
+    id: esp06_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.esp08_temperature
+    id: esp08_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.garage_door_tilt_temperature
+    id: garage_door_tilt_temperature
+    internal: true
+
 # Documentation: https://esphome.io/components/sensor/adc.html
   - platform: adc
 
@@ -524,6 +591,12 @@ text_sensor:
     id: weatherflow_day_based_forecast
     internal: true
 
+image:
+#0-default.png
+  - file: "images/rage-bw-inverse.bmp"
+    id: rage
+    type: GRAYSCALE
+
 output:
   - platform: gpio
     id: onboard_led
@@ -535,3 +608,36 @@ light:
   - platform: binary
     name: "Onboard LED"
     output: onboard_led
+
+##
+## Deep Sleep - Example from: https://gist.github.com/tathamoddie
+##
+
+deep_sleep:
+  id: deep_sleep_control
+  sleep_duration: 60s
+
+# Will only pick up a value if this device is configured in Home Assistant > Integrations
+# If the device isn't configured, or Home Assistant is offline, it'll default to false
+
+binary_sensor:
+  - platform: homeassistant
+    id: prevent_deep_sleep
+    name: Prevent Deep Sleep
+    entity_id: input_boolean.prevent_deep_sleep
+
+script:
+  - id: consider_deep_sleep
+    mode: queued
+    then:
+      - delay: 10s
+      - if:
+          condition:
+            binary_sensor.is_on: prevent_deep_sleep
+          then:
+            - logger.log: "Sleeping: No - per prevent_deep_sleep"
+            - deep_sleep.prevent: deep_sleep_control
+          else:
+            - logger.log: "Sleeping: Yes - per prevent_deep_sleep"
+            - deep_sleep.enter: deep_sleep_control
+      - script.execute: consider_deep_sleep
