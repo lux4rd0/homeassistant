@@ -290,25 +290,25 @@ display:
             }
 
             // Voltage
-            if(id(hass_esp12_battery_voltage).has_state()) {
+            if(id(esp12_battery_voltage).has_state()) {
               x = 398, y = 273;
 
-              if (id(hass_esp12_battery_voltage).state >= 3.7) {
+              if (id(esp12_battery_voltage).state >= 3.7) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁹");
-              } else if (id(hass_esp12_battery_voltage).state >= 3.5) {
+              } else if (id(esp12_battery_voltage).state >= 3.5) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰂁");
-              } else if (id(hass_esp12_battery_voltage).state >= 3.3) {
+              } else if (id(esp12_battery_voltage).state >= 3.3) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁿");
-              } else if (id(hass_esp12_battery_voltage).state >= 3.1) {
+              } else if (id(esp12_battery_voltage).state >= 3.1) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁽");
-              } else if (id(hass_esp12_battery_voltage).state >= 3.0) {
+              } else if (id(esp12_battery_voltage).state >= 3.0) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁻");
               } else {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󱃍");
               }
 
               // x = 35, y = 280;
-              // it.printf(x, y, id(status_font), TextAlign::BOTTOM_LEFT, "%.2f V", id(hass_esp12_battery_voltage).state);
+              // it.printf(x, y, id(status_font), TextAlign::BOTTOM_LEFT, "%.2f V", id(esp12_battery_voltage).state);
               }
 
 
@@ -386,25 +386,25 @@ display:
             }
 
             // Voltage
-            if(id(hass_esp12_battery_voltage).has_state()) {
+            if(id(esp12_battery_voltage).has_state()) {
               x = 398, y = 273;
 
-              if (id(hass_esp12_battery_voltage).state >= 3.7) {
+              if (id(esp12_battery_voltage).state >= 3.7) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁹");
-              } else if (id(hass_esp12_battery_voltage).state >= 3.5) {
+              } else if (id(esp12_battery_voltage).state >= 3.5) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰂁");
-              } else if (id(hass_esp12_battery_voltage).state >= 3.3) {
+              } else if (id(esp12_battery_voltage).state >= 3.3) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁿");
-              } else if (id(hass_esp12_battery_voltage).state >= 3.1) {
+              } else if (id(esp12_battery_voltage).state >= 3.1) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁽");
-              } else if (id(hass_esp12_battery_voltage).state >= 3.0) {
+              } else if (id(esp12_battery_voltage).state >= 3.0) {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁻");
               } else {
               it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󱃍");
               }
 
               // x = 35, y = 280;
-              // it.printf(x, y, id(status_font), TextAlign::BOTTOM_LEFT, "%.2f V", id(hass_esp12_battery_voltage).state);
+              // it.printf(x, y, id(status_font), TextAlign::BOTTOM_LEFT, "%.2f V", id(esp12_battery_voltage).state);
               }
 
     
@@ -567,8 +567,8 @@ sensor:
   # https://learn.adafruit.com/adafruit-huzzah32-esp32-feather/power-management
     pin: A13
 
-    name: "hass-esp12 Battery Voltage"
-    id: hass_esp12_battery_voltage
+    name: "esp12 Battery Voltage"
+    id: esp12_battery_voltage
 
     update_interval: 15s
 
