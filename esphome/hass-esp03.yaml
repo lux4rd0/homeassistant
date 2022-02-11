@@ -2,61 +2,62 @@ esphome:
   name: hass-esp03
   platform: ESP32
   board: esp32dev
-
-# Enable logging
 logger:
   baud_rate: 0
-
 switch:
   - platform: restart
-    name: "esp03 Restart"
-
-# Enable Home Assistant API
-api:
-
+    name: esp03 Restart
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery: true
+api: null
 ota:
   password: !secret ota_password
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-
+  ap:
+    ssid: hass-esp03
+    password: hass-esp03
+  domain: .tylephony.com
+captive_portal: null
+web_server:
+  port: 80
 i2c:
-   - id: bus_a
-     sda: 21
-     scl: 22
-     scan: true
-
+  - id: bus_a
+    sda: 21
+    scl: 22
+    scan: true
 sensor:
   - platform: ccs811
-    baseline: 0xD6C7
+    baseline: 11950
     eco2:
-      name: "esp03 CO2"
+      name: esp03 CO2
     tvoc:
-      name: "esp03 TVOC"
-    address: 0x5B
+      name: esp03 TVOC
+    address: 91
     temperature: esp03_temperature
     humidity: esp03_humidity
     update_interval: 15s
-    
   - platform: bme280
     temperature:
-      name: "esp03 Temperature"
-      id: "esp03_temperature"
+      name: esp03 Temperature
+      id: esp03_temperature
       oversampling: 16x
     pressure:
-      name: "esp03 Pressure"
-      id: "esp03_pressure"
+      name: esp03 Pressure
+      id: esp03_pressure
     humidity:
-      name: "esp03 Humidity"
-      id: "esp03_humidity"
-    address: 0x77
+      name: esp03 Humidity
+      id: esp03_humidity
+    address: 119
     update_interval: 15s
-
+    iir_filter: 16x
   - platform: wifi_signal
-    name: "esp03 WiFi Signal"
+    name: esp03 WiFi Signal
     update_interval: 60s
-    
   - platform: uptime
-    name: "esp03 Uptime"
+    name: esp03 Uptime
     update_interval: 60s

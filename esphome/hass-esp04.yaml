@@ -2,62 +2,64 @@ esphome:
   name: hass-esp04
   platform: ESP32
   board: esp32dev
-
-# Enable logging
 logger:
   baud_rate: 0
-
 switch:
   - platform: restart
     id: esp04_restart
-    name: "esp04 Restart"
-
-# Enable Home Assistant API
-api:
-
+    name: esp04 Restart
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery: true
+api: null
 ota:
   password: !secret ota_password
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-
+  ap:
+    ssid: hass-esp04
+    password: hass-esp04
+  domain: .tylephony.com
+captive_portal: null
+web_server:
+  port: 80
 light:
   - platform: neopixelbus
     type: GRB
     variant: WS2812
     pin: GPIO16
     num_leds: 19
-    name: "esp04 Light"
+    name: esp04 Light
     id: esp04_light
     restore_mode: RESTORE_DEFAULT_OFF
     effects:
-       - pulse:
-           name: "Fast Pulse"
-           transition_length: 0.5s
-           update_interval: 0.5s
-       - pulse:
-           name: "Slow Pulse"
-           # transition_length: 1s      # defaults to 1s
-           update_interval: 2s
-       - random:
-           name: Random Effect With Custom Values
-           transition_length: 5s
-           update_interval: 7s
-       - addressable_rainbow:
-       - addressable_color_wipe:
-       - addressable_scan:
-       - addressable_scan:
-           name: Scan Effect With Custom Values
-           move_interval: 50ms
-           scan_width: 2
-       - addressable_twinkle:
-       - addressable_random_twinkle:
-       - addressable_fireworks:
-       - addressable_flicker:
-       
-       - addressable_lambda:
-          name: "Wipe In"
+      - pulse:
+          name: Fast Pulse
+          transition_length: 0.5s
+          update_interval: 0.5s
+      - pulse:
+          name: Slow Pulse
+          update_interval: 2s
+      - random:
+          name: Random Effect With Custom Values
+          transition_length: 5s
+          update_interval: 7s
+      - addressable_rainbow: null
+      - addressable_color_wipe: null
+      - addressable_scan: null
+      - addressable_scan:
+          name: Scan Effect With Custom Values
+          move_interval: 50ms
+          scan_width: 2
+      - addressable_twinkle: null
+      - addressable_random_twinkle: null
+      - addressable_fireworks: null
+      - addressable_flicker: null
+      - addressable_lambda:
+          name: Wipe In
           update_interval: 12ms
           lambda: |-
             static int x = 0;
@@ -69,8 +71,8 @@ light:
               it[x] = current_color;
               x += 1;
             }
-       - addressable_lambda:
-          name: "Wipe Out"
+      - addressable_lambda:
+          name: Wipe Out
           update_interval: 12ms
           lambda: |-
             static int x = 0;
@@ -81,60 +83,31 @@ light:
               x -= 1; 
               it[x] = ESPColor::BLACK;
             }
-
-       - lambda:
-            name: Breathing Red
-            update_interval: 50ms
-            lambda: |-
-              static int step = 0;
-              const int step_limit = 80;
-              float brightness;
-        
-              auto call = id(esp04_light).turn_on();
-              call.set_rgb(1,0,0);
-      
-              brightness = (float)step / ((float)step_limit / 2.0f);
-      
-              if(brightness > 1.0f){
-              	brightness = 1.0f - (brightness - 1.0f );
-              }
-      
-              call.set_brightness(brightness);
-              call.set_white(0.0);
-              call.set_transition_length(0);
-              call.perform();
-            
-              step = ++step % step_limit; 
-
-
-
-
-       - strobe:
-           name: Strobe Effect With Custom Values
-           colors:
-             - state: true
-               brightness: 100%
-               red: 100%
-               green: 90%
-               blue: 0%
-               duration: 500ms
-             - state: false
-               duration: 250ms
-             - state: true
-               brightness: 100%
-               red: 0%
-               green: 100%
-               blue: 0%
-               duration: 500ms
-
-
-
+      - lambda:
+          name: Breathing Red
+          update_interval: 50ms
+          lambda: "static int step = 0;\nconst int step_limit = 80;\nfloat brightness;\n\nauto call = id(esp04_light).turn_on();\ncall.set_rgb(1,0,0);\n\nbrightness = (float)step / ((float)step_limit / 2.0f);\n\nif(brightness > 1.0f){\n\tbrightness = 1.0f - (brightness - 1.0f );\n}\n\ncall.set_brightness(brightness);\ncall.set_white(0.0);\ncall.set_transition_length(0);\ncall.perform();\n\nstep = ++step % step_limit; "
+      - strobe:
+          name: Strobe Effect With Custom Values
+          colors:
+            - state: true
+              brightness: 100%
+              red: 100%
+              green: 90%
+              blue: 0%
+              duration: 500ms
+            - state: false
+              duration: 250ms
+            - state: true
+              brightness: 100%
+              red: 0%
+              green: 100%
+              blue: 0%
+              duration: 500ms
 sensor:
-
   - platform: wifi_signal
-    name: "esp04 WiFi Signal"
+    name: esp04 WiFi Signal
     update_interval: 60s
-    
   - platform: uptime
-    name: "esp04 Uptime"
+    name: esp04 Uptime
     update_interval: 60s
