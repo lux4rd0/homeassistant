@@ -2,81 +2,77 @@ esphome:
   name: hass-esp14
   platform: ESP32
   board: esp32dev
-
 time:
   - platform: sntp
     id: ntp
-
-# Enable logging
 logger:
   baud_rate: 0
-#  level: VERY_VERBOSE
-
 switch:
   - platform: restart
-    name: "esp14 Restart"
-
-# Enable Home Assistant API
-api:
-
+    name: esp14 Restart
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery: true
+api: null
 ota:
   password: !secret ota_password
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-
+  ap:
+    ssid: hass-esp14
+    password: hass-esp14
+  domain: .tylephony.com
+captive_portal: null
+web_server:
+  port: 80
 font:
-  - file: 'fonts/IBMPlexMono-Bold.ttf'
+  - file: fonts/IBMPlexMono-Bold.ttf
     id: din_big
-    glyphs: "+-0123456789.:"
+    glyphs: '+-0123456789.:'
     size: 300
-  - file: 'fonts/IBMPlexMono-Bold.ttf'
+  - file: fonts/IBMPlexMono-Bold.ttf
     id: din_med
     size: 100
-
-
 external_components:
   - source:
       type: git
-      url: https://github.com/vbaksa/esphome
+      url: 'https://github.com/vbaksa/esphome'
       ref: dev
-    components: [lilygo_t5_47_display,lilygo_t5_47_battery]
+    components:
+      - lilygo_t5_47_display
+      - lilygo_t5_47_battery
     refresh: 1s
-
 display:
   - platform: lilygo_t5_47_display
     power_off_delay_enabled: true
     id: esp14_display
     update_interval: 60s
-    lambda: |-
-      it.strftime(15, 310, id(din_big), TextAlign::BASELINE_LEFT, "%H:%M", id(ntp).now());
-      it.strftime(50, 500, id(din_med), TextAlign::BASELINE_LEFT, "%Y-%m-%d %a", id(ntp).now());
-      
-      
-      
-      
-sensor:
+    lambda: >-
+      it.strftime(15, 310, id(din_big), TextAlign::BASELINE_LEFT, "%H:%M",
+      id(ntp).now());
 
+      it.strftime(50, 500, id(din_med), TextAlign::BASELINE_LEFT, "%Y-%m-%d %a",
+      id(ntp).now());
+sensor:
   - platform: wifi_signal
-    name: "esp14 WiFi Signal"
+    name: esp14 WiFi Signal
     id: esp14_WiFi_Signal
     update_interval: 60s
-    
   - platform: uptime
-    name: "esp14 Uptime"
+    name: esp14 Uptime
     update_interval: 60s
-
   - platform: lilygo_t5_47_battery
     id: esp14_battery_voltage
     voltage:
-      name: "esp14 Battery Voltage"
-    update_interval: 60s
-      
+      name: esp14 Battery Voltage
+    update_interval: 15s
   - platform: template
-    name: "Battery Percent"
+    name: Battery Percent
     id: esp14_battery_percent
-    unit_of_measurement: "%"
+    unit_of_measurement: '%'
     accuracy_decimals: 0
     device_class: battery
     lambda: |-
