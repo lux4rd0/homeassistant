@@ -1,0 +1,82 @@
+substitutions:
+  devicename: esp14
+esphome:
+  name: ${devicename}
+  platform: ESP32
+  board: esp32dev
+time:
+  - platform: sntp
+    id: ntp
+logger:
+  baud_rate: 0
+switch:
+  - platform: restart
+    name: ${devicename} Restart
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery: true
+api: null
+ota:
+  password: !secret ota_password
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: ${devicename}
+    password: !secret wifi_password
+  domain: .tylephony.com
+captive_portal: null
+web_server:
+  port: 80
+font:
+  - file: fonts/IBMPlexMono-Bold.ttf
+    id: din_big
+    glyphs: '+-0123456789.:'
+    size: 300
+  - file: fonts/IBMPlexMono-Bold.ttf
+    id: din_med
+    size: 100
+external_components:
+  - source:
+      type: git
+      url: 'https://github.com/vbaksa/esphome'
+      ref: dev
+    components:
+      - lilygo_t5_47_display
+      - lilygo_t5_47_battery
+    refresh: 1s
+display:
+  - platform: lilygo_t5_47_display
+    power_off_delay_enabled: true
+    id: ${devicename}_display
+    update_interval: 60s
+    lambda: >-
+      it.strftime(15, 310, id(din_big), TextAlign::BASELINE_LEFT, "%H:%M",
+      id(ntp).now());
+
+      it.strftime(50, 500, id(din_med), TextAlign::BASELINE_LEFT, "%Y-%m-%d %a",
+      id(ntp).now());
+sensor:
+  - platform: wifi_signal
+    name: ${devicename} WiFi Signal
+    id: ${devicename}_WiFi_Signal
+    update_interval: 60s
+  - platform: uptime
+    name: ${devicename} Uptime
+    update_interval: 60s
+  - platform: lilygo_t5_47_battery
+    id: ${devicename}_battery_voltage
+    voltage:
+      name: ${devicename} Battery Voltage
+    update_interval: 15s
+  - platform: template
+    name: ${devicename} Battery Percent
+    id: ${devicename}_battery_percent
+    unit_of_measurement: '%'
+    accuracy_decimals: 0
+    device_class: battery
+    lambda: |-
+      int y = (1-(4.1-id(${devicename}_battery_voltage).voltage->state)/(4.1-3.3))*100;
+      if (y < 100) {return y;} else {return 100;};
