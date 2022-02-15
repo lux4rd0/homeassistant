@@ -1,0 +1,1 @@
+mosquitto_sub -h hass.tylephony.com -u <user> -P <password> -F %j -t '#' | /opt/promtail/promtail --stdin --client.url http://log01.tylephony.com:3100/loki/api/v1/push --client.min-backoff=100ms --client.max-backoff=2s --client.max-retries=3 --client.min-backoff=100ms --client.max-backoff=2s --client.max-retries=3 --config.file=/opt/mqtt_promtail/config.yam
