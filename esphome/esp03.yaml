@@ -43,7 +43,7 @@ sensor:
     address: 91
     temperature: ${devicename}_temperature
     humidity: ${devicename}_humidity
-    update_interval: 15s
+    update_interval: 60s
   - platform: bme280
     temperature:
       name: ${devicename} Temperature
@@ -56,7 +56,7 @@ sensor:
       name: ${devicename} Humidity
       id: ${devicename}_humidity
     address: 119
-    update_interval: 15s
+    update_interval: 60s
     iir_filter: 16x
   - platform: wifi_signal
     name: ${devicename} WiFi Signal

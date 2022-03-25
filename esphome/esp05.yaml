@@ -1,5 +1,5 @@
 substitutions:
-  devicename: esp08
+  devicename: esp05
 esphome:
   name: ${devicename}
   platform: ESP32
@@ -28,34 +28,38 @@ wifi:
 captive_portal: null
 web_server:
   port: 80
-uart:
-  rx_pin: GPIO16
-  baud_rate: 9600
+
+font:
+  - file: "fonts/segoeui.ttf"
+    id: segoe
+    size: 64
+
+
+spi:
+  clk_pin: 13
+  mosi_pin: 14
+
+display:
+  - platform: waveshare_epaper
+    id: ${devicename}_epaper
+    cs_pin: 33
+    dc_pin: 27
+    busy_pin: 25
+    reset_pin: 26
+    model: 7.50inV2
+    update_interval: 300s
+    reset_duration: 2ms
+    lambda: |-
+      it.fill(COLOR_OFF);
+      it.print(0,0,id(segoe), "Hello, World!");
+      
+      
 sensor:
-  - platform: sm300d2
-    co2:
-      name: ${devicename} CO2
-    formaldehyde:
-      name: ${devicename} Formaldehyde
-    tvoc:
-      name: ${devicename} TVOC
-    pm_2_5:
-      name: ${devicename} PM2.5
-    pm_10_0:
-      name: ${devicename} PM10
-    temperature:
-      name: ${devicename} Temperature
-      filters:
-      - median:
-          window_size: 5
-          send_every: 4
-          send_first_at: 1
-    humidity:
-      name: ${devicename} Humidity
-    update_interval: 15s
+  
   - platform: wifi_signal
-    name: ${devicename} WiFi Signal
+    name: "${devicename} WiFi Signal"
     update_interval: 60s
+    
   - platform: uptime
-    name: ${devicename} Uptime
+    name: "${devicename} Uptime"
     update_interval: 60s
