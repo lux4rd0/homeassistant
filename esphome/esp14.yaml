@@ -2,7 +2,7 @@ substitutions:
   devicename: esp14
 
   run_time: 5min #can be as long as needed to get data 
-  sleep_time: 5min # normal sleep time
+  sleep_time: 15min # normal sleep time
   night_sleep_time: 7h # 1st sleep time after midnight
 
 
@@ -531,7 +531,8 @@ display:
 
 
 
-
+      // Draw the image my_image at position [x=0,y=0]
+      // it.image(480, 0, id(image_thunderstorm));
       
 
    
@@ -838,7 +839,7 @@ script:
               if (!time.is_valid()) { 
                 return false;
               }
-              return (time.hour < 6); 
+              return (time.hour < 7); 
           then:
             - logger.log: "It's nighttime, entering long sleep for ${night_sleep_time}"          
             - deep_sleep.enter: 
@@ -850,3 +851,6 @@ script:
                 id: deep_sleep_1 
                 sleep_duration: ${sleep_time}
 
+#image:
+#  - file: "/config/esphome/weather/SVG/256/Weather_cloud_temperature_season_forecasting_climate-05.png"
+#    id: image_thunderstorm

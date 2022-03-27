@@ -49,25 +49,34 @@ deep_sleep:
 
 
 font:
-  - file: "fonts/Google Sans Bold.ttf"
+  - file: fonts/Google Sans Bold.ttf
     id: font_name
     size: 38
-  - file: "fonts/Google Sans Medium.ttf"
+  - file: fonts/Google Sans Medium.ttf
     id: font_value
-    size: 70    
-  - file: "fonts/Google Sans Medium.ttf"
-    id: font_footer
+    size: 70
+  - file: fonts/Google Sans Medium.ttf
+    id: font_last_updated
     size: 28
-  - file: "fonts/Google Sans Medium.ttf"
+  - file: fonts/Google Sans Medium.ttf
     id: font_date
     size: 28
-  - file: "fonts/Google Sans Bold.ttf"
-    id: font_current_temp
-    size: 160
-
-
-    # https://pictogrammers.github.io/@mdi/font/5.3.45/
-  - file: 'fonts/materialdesignicons-webfont.ttf'
+  - file: fonts/Courier Prime Sans.ttf
+    id: font_hi_lo
+    size: 30
+  - file: fonts/digital-7 (mono).ttf
+    id: font_hi_lo_temperature
+    size: 90
+  - file: fonts/digital-7 (mono).ttf
+    id: font_current_temperature
+    size: 200
+  - file: fonts/Google Sans Bold.ttf
+    id: font_current_degree
+    size: 130
+  - file: fonts/Google Sans Bold.ttf
+    id: font_hi_lo_degree
+    size: 70
+  - file: fonts/materialdesignicons-webfont.ttf
     id: font_icons_large
     size: 360
     glyphs:
@@ -84,9 +93,7 @@ font:
       - "\U000F0F31" # partly-cloudy-night
       - "\U000F0F33" # possibly-rainy
       - "\U000F0F35" # sleet
-
-
-  - file: 'fonts/materialdesignicons-webfont.ttf'
+  - file: fonts/materialdesignicons-webfont.ttf
     id: font_icons_small
     size: 175
     glyphs:
@@ -103,60 +110,68 @@ font:
       - "\U000F0F31" # partly-cloudy-night
       - "\U000F0F33" # possibly-rainy
       - "\U000F0F35" # sleet
-
-
-
-
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_battery
+    size: 32
+    glyphs:
+      - "\U000F0079" # mdi-battery
+      - "\U000F0081" # mdi-battery-80
+      - "\U000F007F" # mdi-battery-60
+      - "\U000F007D" # mdi-battery-40
+      - "\U000F007B" # mdi-battery-20
+      - "\U000F10CD" # mdi-battery-alert-variant-outline
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_wifi
+    size: 32
+    glyphs:
+      - "\U000F091F" # mdi-wifi-strength-1
+      - "\U000F0922" # mdi-wifi-strength-2
+      - "\U000F0925" # mdi-wifi-strength-3
+      - "\U000F0928" # mdi-wifi-strength-4
+      - "\U000F092B" # mdi-wifi-strength-alert-outline
 
 button:
   - platform: restart
-    name: "${devicename} Restart"
-
+    name: '${devicename} Restart'
   - platform: template
-    name: "${devicename} Refresh"
-    icon: "mdi:update"
+    name: '${devicename} Refresh'
+    icon: 'mdi:update'
     on_press:
       then:
-      - component.update: ${devicename}_display
-
+        - component.update: '${devicename}_display'
 binary_sensor:
   - platform: gpio
-    pin: 
+    pin:
       number: GPIO39
       inverted: true
-    name: "${devicename} Button 1"
+    name: '${devicename} Button 1'
     on_press:
       then:
-       - component.update: ${devicename}_display
-      
+        - component.update: '${devicename}_display'
   - platform: gpio
-    pin: 
+    pin:
       number: GPIO34
       inverted: true
-    name: "${devicename} Button 2"
-
+    name: '${devicename} Button 2'
   - platform: gpio
-    pin: 
+    pin:
       number: GPIO35
       inverted: true
-    name: "${devicename} Button 3"
-
+    name: '${devicename} Button 3'
 external_components:
   - source: 'github://ashald/esphome@lilygo-t5-47'
     components:
       - lilygo_t5_47
 display:
-    platform: lilygo_t5_47
-    full_update_every: 1
-    cycles_render: 40
-    cycles_invert: 40
-    id: '${devicename}_display'
-    update_interval: never
+  platform: lilygo_t5_47
+  full_update_every: 1
+  cycles_render: 40
+  cycles_invert: 40
+  id: '${devicename}_display'
+  update_interval: never
 
 
-
-
-    lambda: |-
+  lambda: |-
       #define xres 960 
       #define yres 540
       #define x_pad 10 // border padding
@@ -172,10 +187,66 @@ display:
       #define x2i xres/2 //x position 1st column icon
       
       int y = 0;
+      int x = 0;
       
       // Date
       // it.strftime(xres/2, y+y_pad, id(font_name), TextAlign::TOP_CENTER, "%A %d/%b/%Y", id(ntp).now());
  
+      // Last Updated
+      it.strftime(5, 5, id(font_last_updated), TextAlign::TOP_LEFT, "%I:%M %p", id(ntp).now());
+      
+
+
+            // WiFi Signal Strength
+            if(id(${devicename}_WiFi_Signal).has_state()) {
+              x = 5, y = 35;
+              if (id(${devicename}_WiFi_Signal).state >= -50) {
+                        //Excellent
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤨");
+                        ESP_LOGI("WiFi", "Exellent");
+              } else if (id(${devicename}_WiFi_Signal).state  >= -60) {
+                        //Good
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤥");
+                        ESP_LOGI("WiFi", "Good");
+              } else if (id(${devicename}_WiFi_Signal).state  >= -67) {
+                        //Fair
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤢");
+                        ESP_LOGI("WiFi", "Fair");
+              } else if (id(${devicename}_WiFi_Signal).state  >= -70) {
+                        //Weak
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤟");
+                        ESP_LOGI("WiFi", "Weak");
+              } else {
+                        //Unlikely working signal
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤫");
+                        ESP_LOGI("WiFi", "Unlikely");
+              }
+            }
+
+            // Voltage
+            if(id(${devicename}_battery_voltage).has_state()) {
+              x = 35, y = 35;
+
+              if (id(${devicename}_battery_voltage).state >= 3.7) {
+              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰁹");
+              } else if (id(${devicename}_battery_voltage).state >= 3.5) {
+              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰂁");
+              } else if (id(${devicename}_battery_voltage).state >= 3.3) {
+              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰁿");
+              } else if (id(${devicename}_battery_voltage).state >= 3.1) {
+              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰁽");
+              } else if (id(${devicename}_battery_voltage).state >= 3.0) {
+              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰁻");
+              } else {
+              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󱃍");
+              }
+
+              // x = 55, y = 60;
+              // it.printf(x, y, id(status_font), TextAlign::TOP_LEFT, "%.2f V", id(${devicename}_battery_voltage).state);
+              }
+
+
+
 
       #define large_weather_icon_x 240
       #define large_weather_icon_y 175
@@ -244,17 +315,20 @@ display:
 
       // Outside Temperature
       it.print(150, 375, id(font_name), TextAlign::BASELINE_CENTER, "Currently");
-      it.printf(150, 500, id(font_current_temp), TextAlign::BASELINE_CENTER, "%.0f°", id(weatherflow_current_conditions_air_temperature).state);
-
+      it.printf(241, 528, id(font_current_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_current_conditions_air_temperature).state);
+      it.printf(241, 480, id(font_current_degree), TextAlign::BASELINE_LEFT, "°");
       
       // Today's HI LO Temperature
 
 
       it.print(385, 375, id(font_name), TextAlign::BASELINE_CENTER, "Today");
-      it.printf(300, 440, id(font_date), TextAlign::BASELINE_LEFT, "HI");
-      it.printf(450, 440, id(font_value), TextAlign::BASELINE_RIGHT, "%.0f°", id(weatherflow_daily_forecast_0_air_temp_high).state);
-      it.printf(300, 520, id(font_date), TextAlign::BASELINE_LEFT, "LO");
-      it.printf(450, 520, id(font_value),  TextAlign::BASELINE_RIGHT, "%.0f°", id(weatherflow_daily_forecast_0_air_temp_low).state);
+      it.printf(315, 432, id(font_hi_lo), TextAlign::BASELINE_LEFT, "HI");
+      it.printf(450, 450, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_0_air_temp_high).state);
+      it.printf(452, 437, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
+            
+      it.printf(315, 510, id(font_hi_lo), TextAlign::BASELINE_LEFT, "LO");
+      it.printf(450, 528, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_0_air_temp_low).state);
+      it.printf(452, 515, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
 
 
 
@@ -269,11 +343,14 @@ display:
       it.printf(575, 100, id(font_date), TextAlign::CENTER_RIGHT, "%.0f/%.0f", id(weatherflow_daily_forecast_1_month_num).state, id(weatherflow_daily_forecast_1_day_num).state);
 
 
-
-      it.printf(775, 80, id(font_date), TextAlign::BASELINE_LEFT, "HI");
-      it.printf(925, 80, id(font_value), TextAlign::BASELINE_RIGHT, "%.0f°", id(weatherflow_daily_forecast_1_air_temp_high).state);
-      it.printf(775, 150, id(font_date), TextAlign::BASELINE_LEFT, "LO");
-      it.printf(925, 150, id(font_value),  TextAlign::BASELINE_RIGHT, "%.0f°", id(weatherflow_daily_forecast_1_air_temp_low).state);
+      it.printf(775, 62, id(font_hi_lo), TextAlign::BASELINE_LEFT, "HI");
+      it.printf(910, 80, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_1_air_temp_high).state);
+      it.printf(912, 67, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
+            
+      it.printf(775, 140, id(font_hi_lo), TextAlign::BASELINE_LEFT, "LO");
+      it.printf(910, 158, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_1_air_temp_low).state);
+      it.printf(912, 143, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
+      
 
 
 
@@ -344,12 +421,16 @@ display:
 
       it.printf(575, 270, id(font_date), TextAlign:: CENTER_RIGHT, "%.0f/%.0f", id(weatherflow_daily_forecast_2_month_num).state, id(weatherflow_daily_forecast_2_day_num).state);
 
-
-
-      it.printf(775, 260, id(font_date), TextAlign::BASELINE_LEFT, "HI");
-      it.printf(925, 260, id(font_value), TextAlign::BASELINE_RIGHT, "%.0f°", id(weatherflow_daily_forecast_2_air_temp_high).state);
-      it.printf(775, 340, id(font_date), TextAlign::BASELINE_LEFT, "LO");
-      it.printf(925, 340, id(font_value), TextAlign::BASELINE_RIGHT, "%.0f°", id(weatherflow_daily_forecast_2_air_temp_low).state);
+      it.printf(775, 242, id(font_hi_lo), TextAlign::BASELINE_LEFT, "HI");
+      it.printf(910, 260, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_2_air_temp_high).state);
+      it.printf(912, 247, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
+            
+      it.printf(775, 320, id(font_hi_lo), TextAlign::BASELINE_LEFT, "LO");
+      it.printf(910, 338, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_2_air_temp_low).state);
+      it.printf(912, 323, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
+      
+      
+    
 
 
 
@@ -426,10 +507,17 @@ display:
       it.printf(575, 440, id(font_date), TextAlign::CENTER_RIGHT, "%.0f/%.0f", id(weatherflow_daily_forecast_3_month_num).state, id(weatherflow_daily_forecast_3_day_num).state);
 
 
-      it.printf(775, 440, id(font_date), TextAlign::BASELINE_LEFT, "HI");
-      it.printf(925, 440, id(font_value), TextAlign::BASELINE_RIGHT, "%.0f°", id(weatherflow_daily_forecast_3_air_temp_high).state);
-      it.printf(775, 520, id(font_date), TextAlign::BASELINE_LEFT, "LO");
-      it.printf(925, 520, id(font_value), TextAlign::BASELINE_RIGHT, "%.0f°", id(weatherflow_daily_forecast_3_air_temp_low).state);
+      it.printf(775, 432, id(font_hi_lo), TextAlign::BASELINE_LEFT, "HI");
+      it.printf(910, 450, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_3_air_temp_high).state);
+      it.printf(912, 437, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
+            
+      it.printf(775, 510, id(font_hi_lo), TextAlign::BASELINE_LEFT, "LO");
+      it.printf(910, 528, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_3_air_temp_low).state);
+      it.printf(912, 515, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
+      
+      
+      
+      
 
 
       
@@ -499,13 +587,11 @@ display:
 
 
 
-
+      // Draw the image my_image at position [x=0,y=0]
+      // it.image(480, 0, id(image_thunderstorm));
       
 
    
-
-      // Footer
-      it.strftime(x_pad, yres-y_pad/2, id(font_footer), TextAlign::BASELINE_LEFT, "Updated: %H:%M", id(ntp).now());
 
 
 
@@ -819,3 +905,6 @@ script:
                 id: deep_sleep_1 
                 sleep_duration: ${sleep_time}
 
+#image:
+#  - file: "/config/esphome/weather/SVG/256/Weather_cloud_temperature_season_forecasting_climate-05.png"
+#    id: image_thunderstorm
