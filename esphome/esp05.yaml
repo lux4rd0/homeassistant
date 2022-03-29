@@ -227,7 +227,7 @@ display:
     busy_pin: 25
     reset_pin: 26
     model: 7.50inV2
-    update_interval: 60s
+    update_interval: never
     reset_duration: 2ms
 
 
@@ -354,7 +354,7 @@ display:
             }
 
 
-            #define large_weather_icon_x 530
+            #define large_weather_icon_x 535
             #define large_weather_icon_y 105
 
 
@@ -730,8 +730,6 @@ display:
 
 
 button:
-  - platform: restart
-    name: '${devicename} Restart'
   - platform: template
     name: '${devicename} Refresh'
     icon: 'mdi:update'
@@ -1223,7 +1221,7 @@ sensor:
     id: wf_h_fc_0_local_hour_twelvehour
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_0_local_hour).state) > 13) {
+      if ((id(wf_h_fc_0_local_hour).state) >= 13) {
         return ((id(wf_h_fc_0_local_hour).state) - 12);
       } else if ((id(wf_h_fc_0_local_hour).state) < 1) {
         return 12;
@@ -1236,7 +1234,7 @@ sensor:
     id: wf_h_fc_1_local_hour_twelvehour
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_1_local_hour).state) > 13) {
+      if ((id(wf_h_fc_1_local_hour).state) >= 13) {
         return ((id(wf_h_fc_1_local_hour).state) - 12);
       } else if ((id(wf_h_fc_1_local_hour).state) < 1) {
         return 12;
@@ -1249,7 +1247,7 @@ sensor:
     id: wf_h_fc_2_local_hour_twelvehour
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_2_local_hour).state) > 13) {
+      if ((id(wf_h_fc_2_local_hour).state) >= 13) {
         return ((id(wf_h_fc_2_local_hour).state) - 12);
       } else if ((id(wf_h_fc_2_local_hour).state) < 1) {
         return 12;
@@ -1262,7 +1260,7 @@ sensor:
     id: wf_h_fc_3_local_hour_twelvehour
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_3_local_hour).state) > 13) {
+      if ((id(wf_h_fc_3_local_hour).state) >= 13) {
         return ((id(wf_h_fc_3_local_hour).state) - 12);
       } else if ((id(wf_h_fc_3_local_hour).state) < 1) {
         return 12;
@@ -1275,7 +1273,7 @@ sensor:
     id: wf_h_fc_4_local_hour_twelvehour
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_4_local_hour).state) > 13) {
+      if ((id(wf_h_fc_4_local_hour).state) >= 13) {
         return ((id(wf_h_fc_4_local_hour).state) - 12);
       } else if ((id(wf_h_fc_4_local_hour).state) < 1) {
         return 12;
@@ -1288,7 +1286,7 @@ sensor:
     id: wf_h_fc_5_local_hour_twelvehour
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_5_local_hour).state) > 13) {
+      if ((id(wf_h_fc_5_local_hour).state) >= 13) {
         return ((id(wf_h_fc_5_local_hour).state) - 12);
       } else if ((id(wf_h_fc_5_local_hour).state) < 1) {
         return 12;
@@ -1301,7 +1299,7 @@ sensor:
     id: wf_h_fc_6_local_hour_twelvehour
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_6_local_hour).state) > 13) {
+      if ((id(wf_h_fc_6_local_hour).state) >= 13) {
         return ((id(wf_h_fc_6_local_hour).state) - 12);
       } else if ((id(wf_h_fc_6_local_hour).state) < 1) {
         return 12;
@@ -1314,7 +1312,7 @@ sensor:
     id: wf_h_fc_7_local_hour_twelvehour
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_7_local_hour).state) > 13) {
+      if ((id(wf_h_fc_7_local_hour).state) >= 13) {
         return ((id(wf_h_fc_7_local_hour).state) - 12);
       } else if ((id(wf_h_fc_7_local_hour).state) < 1) {
         return 12;
@@ -1654,7 +1652,7 @@ text_sensor:
     id: wf_h_fc_0_local_hour_twelvehour_am_pm
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_0_local_hour).state) > 13) {
+      if ((id(wf_h_fc_0_local_hour).state) >= 12) {
         return {"PM"};
       } else {
         return {"AM"};
@@ -1665,7 +1663,7 @@ text_sensor:
     id: wf_h_fc_1_local_hour_twelvehour_am_pm
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_1_local_hour).state) > 13) {
+      if ((id(wf_h_fc_1_local_hour).state) >= 12) {
         return {"PM"};
       } else {
         return {"AM"};
@@ -1676,7 +1674,7 @@ text_sensor:
     id: wf_h_fc_2_local_hour_twelvehour_am_pm
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_2_local_hour).state) > 13) {
+      if ((id(wf_h_fc_2_local_hour).state) >= 12) {
         return {"PM"};
       } else {
         return {"AM"};
@@ -1687,7 +1685,7 @@ text_sensor:
     id: wf_h_fc_3_local_hour_twelvehour_am_pm
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_3_local_hour).state) > 13) {
+      if ((id(wf_h_fc_3_local_hour).state) >= 12) {
         return {"PM"};
       } else {
         return {"AM"};
@@ -1698,7 +1696,7 @@ text_sensor:
     id: wf_h_fc_4_local_hour_twelvehour_am_pm
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_4_local_hour).state) > 13) {
+      if ((id(wf_h_fc_4_local_hour).state) >= 12) {
         return {"PM"};
       } else {
         return {"AM"};
@@ -1709,7 +1707,7 @@ text_sensor:
     id: wf_h_fc_5_local_hour_twelvehour_am_pm
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_5_local_hour).state) > 13) {
+      if ((id(wf_h_fc_5_local_hour).state) >= 12) {
         return {"PM"};
       } else {
         return {"AM"};
@@ -1720,7 +1718,7 @@ text_sensor:
     id: wf_h_fc_6_local_hour_twelvehour_am_pm
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_6_local_hour).state) > 13) {
+      if ((id(wf_h_fc_6_local_hour).state) >= 12) {
         return {"PM"};
       } else {
         return {"AM"};
@@ -1731,7 +1729,7 @@ text_sensor:
     id: wf_h_fc_7_local_hour_twelvehour_am_pm
     internal: true
     lambda: |-
-      if ((id(wf_h_fc_7_local_hour).state) > 13) {
+      if ((id(wf_h_fc_7_local_hour).state) >= 12) {
         return {"PM"};
       } else {
         return {"AM"};
