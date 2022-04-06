@@ -1,9 +1,25 @@
 substitutions:
   devicename: esp13
+  run_time: 20min #can be as long as needed to get data 
+  sleep_time: 1min # normal sleep time
+  night_sleep_time: 7h # 1st sleep time after midnight
 esphome:
   name: ${devicename}
-  platform: ESP32
+  platformio_options:
+    build_flags: 
+      - -DCONFIG_ARDUINO_LOOP_STACK_SIZE=32768
+
+esp32:
   board: featheresp32
+  variant: esp32
+  framework:
+    type: arduino
+    version: 2.0.2
+    source: https://github.com/espressif/arduino-esp32.git#2.0.2
+    platform_version: https://github.com/platformio/platform-espressif32.git#feature/arduino-upstream
+
+
+
 time:
   - platform: homeassistant
     id: esptime
@@ -12,11 +28,8 @@ logger:
 switch:
   - platform: restart
     name: ${devicename} Restart
-mqtt:
-  broker: !secret mqtt_broker
-  username: !secret mqtt_username
-  password: !secret mqtt_password
-  discovery: true
+
+
 api: null
 ota:
   password: !secret ota_password
@@ -28,438 +41,704 @@ wifi:
     password: !secret wifi_password
   domain: .tylephony.com
   power_save_mode: none
-captive_portal: null
-web_server:
-  port: 80
+
+
+
+
+
+
+
 
 font:
-  - file: "fonts/Ldfcomicsans-jj7l.ttf"
-    id: font_cs
-    size: 28
-  - file: "fonts/ArialTh.ttf"
-    id: font_arth
-    size: 20
-  - file: "fonts/Black Gladiator.ttf"
-    id: font_black_gladiator
-    size: 70
-  - file: "fonts/planet benson 2.ttf"
-    id: font_planet_benson_2
-    size: 32
-  - file: "fonts/Kayak Sans Regular.ttf"
-    id: font_kayak_sans_regular
-    size: 44
-  - file: "fonts/SeasideResortNF.ttf"
-    id: font_seaside_resort
-    size: 94
-  - file: "fonts/Adarsh-Sans-Regular.ttf"
-    id: font_adarsh_sans_regular
-    size: 44
-  - file: "fonts/Adarsh-Sans-Italic.ttf"
-    id: font_adarsh_sans_italic
-    size: 44
-  - file: "fonts/inglobal.regular.ttf"
-    id: font_inglobal_regular
-    size: 44
-  - file: "fonts/inglobal.italic.ttf"
-    id: font_inglobal_italic
-    size: 44
+
+
+
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_icons_large
+    size: 230
     glyphs:
-      ['&', '@', '!', ',', '.', '"', '%', '(', ')', '+', '-', '_', ':', '°', '0',
-       '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
-       'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-       'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
-       'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-       'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö', '/', '[', ']']
-
-
-
-  - file: "fonts/Hyperjump Bold.ttf"
-    id: font_hyperjump_bold
-    size: 44
-  - file: "fonts/Hyperjump Light Oblique.ttf"
-    id: font_hyperjump_light_oblique
-    size: 44
+      - "\U000F0590" # cloudy
+      - "\U000F0591" # foggy
+      - "\U000F0594" # clear-night
+      - "\U000F0595" # partly-cloudy-day
+      - "\U000F0596" # possibly-thunderstorm
+      - "\U000F0597" # rainy
+      - "\U000F0598" # snow
+      - "\U000F0599" # clear-day
+      - "\U000F059D" # windy
+      - "\U000F067E" # thunderstorm
+      - "\U000F0F31" # partly-cloudy-night
+      - "\U000F0F33" # possibly-rainy
+      - "\U000F0F35" # sleet
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_icons_small
+    size: 130
     glyphs:
-      ['&', '@', '!', ',', '.', '"', '%', '(', ')', '+', '-', '_', ':', '°', '0',
-       '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
-       'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-       'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
-       'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-       'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö', '/', '[', ']', 'ī']
-
-
-
-
-  - file: 'fonts/Google Sans Bold.ttf'
-    id: clock_font
-    size: 20
-    glyphs: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ':', A, M, P, ' ']
-
-  - file: 'fonts/Google Sans Medium.ttf'
-    id: temp_font
-    size: 32
+      - "\U000F0590" # cloudy
+      - "\U000F0591" # foggy
+      - "\U000F0594" # clear-night
+      - "\U000F0595" # partly-cloudy-day
+      - "\U000F0596" # possibly-thunderstorm
+      - "\U000F0597" # rainy
+      - "\U000F0598" # snow
+      - "\U000F0599" # clear-day
+      - "\U000F059D" # windy
+      - "\U000F067E" # thunderstorm
+      - "\U000F0F31" # partly-cloudy-night
+      - "\U000F0F33" # possibly-rainy
+      - "\U000F0F35" # sleet
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_battery
+    size: 18
     glyphs:
-      ['&', '@', '!', ',', '.', '"', '%', '(', ')', '+', '-', '_', ':', '°', '0',
-       '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
-       'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-       'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
-       'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-       'u', 'v', 'w', 'x', 'y', 'z','å', 'ä', 'ö', '/']
-
-  - file: 'fonts/Google Sans Bold.ttf'
-    id: status_font
+      - "\U000F0079" # mdi-battery
+      - "\U000F0081" # mdi-battery-80
+      - "\U000F007F" # mdi-battery-60
+      - "\U000F007D" # mdi-battery-40
+      - "\U000F007B" # mdi-battery-20
+      - "\U000F10CD" # mdi-battery-alert-variant-outline
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_wifi
+    size: 18
+    glyphs:
+      - "\U000F091F" # mdi-wifi-strength-1
+      - "\U000F0922" # mdi-wifi-strength-2
+      - "\U000F0925" # mdi-wifi-strength-3
+      - "\U000F0928" # mdi-wifi-strength-4
+      - "\U000F092B" # mdi-wifi-strength-alert-outline
+  - file: fonts/Tall Films Expanded.ttf
+    id: font_room_name
+    size: 34
+  - file: fonts/Google Sans Medium.ttf
+    id: font_last_updated
     size: 12
+  - file: fonts/Courier Prime Sans.ttf
+    id: font_hi_lo
     glyphs:
-      ['&', '@', '!', ',', '.', '"', '%', '(', ')', '+', '-', '_', ':', '°', '0',
-       '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
-       'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-       'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
-       'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-       'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö', '/']
-
-  - file: 'fonts/materialdesignicons-webfont.ttf'
-    id: icon_font_small
-    size: 22
-    glyphs: [
-      '󰌪', # mdi-leaf
-    ]
-
-  - file: 'fonts/materialdesignicons-webfont.ttf' 
-    id: icon_font_new
-    size: 32
-    glyphs: [
-      '󰽔', # mdi-home-thermometer
-      '󰧿', # mdi-lighthouse
-      '󰟑', # home-automation
-      '󰂒',  # beach
-      '󰓣', # swim
-      "󰽕", # mdi-home-thermometer-outline
-      '󰕊', # umbrella
-      # Sun
-      "󰖛", # mdi-weather-sunset-down
-      "󰖜", # mdi-weather-sunset-up
-    ]
-
-  - file: 'fonts/materialdesignicons-webfont.ttf' 
-    id: wifi_font
-    size: 22
-    glyphs: [
-      # Wifi
-      '󰤟', # mdi-wifi-strength-1
-      '󰤢', # mdi-wifi-strength-2
-      '󰤥', # mdi-wifi-strength-3
-      '󰤨', # mdi-wifi-strength-4
-      '󰤫', # mdi-wifi-strength-alert-outline
-      ]
-
-  - file: 'fonts/materialdesignicons-webfont.ttf' 
-    id: weather_font
-    size: 50
-    glyphs: [
-      # Weather
-      "󰖙", # mdi-weather-sunny
-      "󰖔", # mdi-weather-night
-      "󰖐", # mdi-weather-cloudy
-      "󰖖", # mdi-weather-pouring
-      "󰼵", # mdi-weather-snowy-rainy
-      "󰼴", # mdi-weather-snowy-heavy
-      "󰖞", # mdi-weather-windy-variant
-      "󰖑", # mdi-weather-fog
-      "󰼱", # mdi-weather-night-partly-cloudy
-      "󰖕", # mdi-weather-partly-cloudy
-    ]
-
-  - file: 'fonts/materialdesignicons-webfont.ttf' 
-    id: moon_font
-    size: 50
-    glyphs: [
-      # Moon
-      "󰽡", # first_quarter
-      "󰽢", # full_moon
-      "󰽣", # last_quarter
-      "󰽤", # new_moon
-      "󰽥", # waning_crescent
-      "󰽦", # waning_gibbous
-      "󰽧", # waxing_crescent
-      "󰽨", # waxing_gibbous
-      ]
-
-  - file: 'fonts/materialdesignicons-webfont.ttf' 
-    id: battery_font
-    size: 22
-    glyphs: [
-      # Battery
-      '󰁹', # mdi-battery
-      '󰂁', # mdi-battery-80
-      '󰁿', # mdi-battery-60
-      '󰁽', # mdi-battery-40
-      '󰁻', # mdi-battery-20
-      '󱃍', # mdi-battery-alert-variant-outline
-      ]
-
-  - file: 'fonts/digital-7.ttf' 
-    id: lcd_font
-    size: 32
-
-  - file: 'fonts/Montserrat-Medium.ttf' 
-    id: font_montserrat_medium
-    size: 40
-
-  - file: 'fonts/CrimsonText-Semibold.ttf' 
-    id: font_crimsonText_semibold
-    size: 40
-
-  - file: 'fonts/Oswald-Medium.ttf' 
-    id: font_oswald_medium
-    size: 40
-
-  - file: 'fonts/Kalam-Regular.ttf' 
-    id: font_kalam_regular_80
-    size: 80
-
-  - file: 'fonts/Kalam-Regular.ttf' 
-    id: font_kalam_regular_30
+      - h
+      - i
+      - l
+      - o
     size: 30
-
-  - file: 'fonts/Kalam-Regular.ttf' 
-    id: font_kalam_regular_20
-    size: 20
-
-  - file: 'fonts/Quicksand-Regular.ttf' 
-    id: font_quicksand_regular_20
-    size: 20
-
-  - file: 'fonts/futura light bt.ttf' 
-    id: font_futura_light_bt_20
-    size: 20
-    
-  - file: 'fonts/Rebeqa-Thin.ttf' 
-    id: font_rebeqa_thin_30
-    size: 30
-
-  - file: 'fonts/Ignotum.ttf' 
-    id: font_ignotum_20
-    size: 20
-
-  - file: 'fonts/Tall Films Expanded.ttf' 
-    id: font_tall_films_expanded_24
+  - file: fonts/digital-7 (mono).ttf
+    id: font_humidity
+    glyphs:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - '%'
+    size: 47
+  - file: fonts/digital-7 (mono).ttf
+    id: font_current
+    glyphs:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - '%'
+    size: 70
+  - file: fonts/Open 24 Display St.ttf
+    id: font_humidity_percent
+    glyphs:
+      - '%'
     size: 24
+  - file: fonts/Open 24 Display St.ttf
+    id: font_current_humidity_percent
+    glyphs:
+      - '%'
+    size: 30
+  - file: fonts/digital-7 (mono).ttf
+    id: font_temperature
+    glyphs:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+    size: 120
+  - file: fonts/Open 24 Display St.ttf
+    id: font_temperature_degree
+    size: 100
+    glyphs:
+      - °
+  - file: fonts/digital-7 (mono).ttf
+    id: font_hi_temperature
+    size: 30
+    glyphs:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+  - file: fonts/digital-7 (mono).ttf
+    id: font_lo_temperature
+    size: 24
+    glyphs:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+
+
+  - file: fonts/digital-7 (mono).ttf
+    id: font_current_temperature
+    size: 200
+    glyphs:
+      - °
+  - file: fonts/Open 24 Display St.ttf
+    id: font_hourly_degree
+    size: 50
+    glyphs:
+      - °
+  - file: fonts/Open 24 Display St.ttf
+    id: font_current_degree
+    size: 70
+    glyphs:
+      - °
+
+  - file: fonts/Open 24 Display St.ttf
+    id: font_hourly_percent
+    size: 20
+    glyphs:
+      - '%'
+  - file: fonts/Open 24 Display St.ttf
+    id: font_hi_lo_degree
+    size: 70
+  - file: fonts/digital-7 (mono).ttf
+    id: font_hourly
+    size: 44
+  - file: fonts/Tall Films Expanded.ttf
+    id: font_am_pm
+    size: 20
+
 
 spi:
   clk_pin: GPIO13
   mosi_pin: GPIO15
 display:
   - platform: waveshare_epaper
-    id: ${devicename}_epaper
+    id: '${devicename}_display'
     cs_pin: GPIO12
     busy_pin: GPIO33
     reset_pin: GPIO21
     dc_pin: GPIO27
     model: 7.50inV2
-    update_interval: 300s
+    update_interval: 60s
     reset_duration: 2ms
-    pages:
-      - id: page1
 
-        lambda: |-
+
+    lambda: |-
 
             int x, y, c;
             ESP_LOGI("display", "Updating..");
 
             // Print time in HH:MM format
-            it.strftime(0, 482, id(status_font), TextAlign::BOTTOM_LEFT, "%I:%M %p", id(esptime).now());
-
-            // previous font - font_ignotum_20
-
-            it.print(66, 10, id(font_tall_films_expanded_24), TextAlign::CENTER, "Bedroom Dave");
-            it.print(66, 30, id(font_tall_films_expanded_24), TextAlign::CENTER, "Bathroom");
-
-            it.print(200, 10, id(font_tall_films_expanded_24), TextAlign::CENTER, "Bedroom Red");
-            it.print(200, 30, id(font_tall_films_expanded_24), TextAlign::CENTER, "Bathroom");
-
-            it.print(333, 10, id(font_tall_films_expanded_24), TextAlign::CENTER, "Hallway");
-            it.print(333, 30, id(font_tall_films_expanded_24), TextAlign::CENTER, "Bathroom");
-
-            it.print(466, 10, id(font_tall_films_expanded_24), TextAlign::CENTER, "Tyle 1st Floor");
-            it.print(466, 30, id(font_tall_films_expanded_24), TextAlign::CENTER, "Thermostat");
-
-            it.print(600, 10, id(font_tall_films_expanded_24), TextAlign::CENTER, "Tyle 2nd Floor");
-            it.print(600, 30, id(font_tall_films_expanded_24), TextAlign::CENTER, "Thermostat");
-
-            it.print(734, 20, id(font_tall_films_expanded_24), TextAlign::CENTER, "Outside");
-
-
-
-            it.printf(66, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(bedroom_dave_bathroom_humidity_temperature).state);
-            it.printf(200, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(bedroom_red_bathroom_humidity_temperature).state);
-            it.printf(333, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(hallway_bathroom_motion_temperature).state);
-            
-            it.printf(66, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(bedroom_dave_bathroom_humidity_humidity).state);
-            it.printf(200, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(bedroom_red_bathroom_humidity_humidity).state);
-            it.printf(333, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(hallway_bathroom_humidity_humidity).state);
-
-
-            it.printf(466, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(tyle_1st_floor_thermostat_temperature).state);
-            it.printf(600, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(tyle_2nd_floor_thermostat_temperature).state);
-            it.printf(734, 80, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(outside_humidity_temperature).state);
-            
-            it.printf(466, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(tyle_1st_floor_thermostat_humidity).state);
-            it.printf(600, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(tyle_2nd_floor_thermostat_humidity).state);
-            it.printf(734, 120, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(outside_humidity_humidity).state);
-
-
-
-            it.print(66, 170, id(font_tall_films_expanded_24), TextAlign::CENTER, "ESP01");
-            it.print(200, 170, id(font_tall_films_expanded_24), TextAlign::CENTER, "ESP02");
-            it.print(333, 170, id(font_tall_films_expanded_24), TextAlign::CENTER, "ESP03");
-            it.print(466, 170, id(font_tall_films_expanded_24), TextAlign::CENTER, "ESP06");
-            it.print(600, 170, id(font_tall_films_expanded_24), TextAlign::CENTER, "ESP08");
-
-
-
-            it.printf(66, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp01_temperature).state);
-            it.printf(200, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp02_temperature).state);
-            it.printf(333, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp03_temperature).state);
-            
-            it.printf(66, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp01_humidity).state);
-            it.printf(200, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp02_humidity).state);
-            it.printf(333, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp03_humidity).state);
-
-
-            it.printf(466, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp06_temperature).state);
-            it.printf(600, 230, id(font_kalam_regular_80), TextAlign::CENTER, "%.0f°", id(esp08_temperature).state);
-            
-            it.printf(466, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp06_humidity).state);
-            it.printf(600, 270, id(font_kalam_regular_30), TextAlign::CENTER, "%.0f%%", id(esp08_humidity).state);
+            it.strftime(800, 0, id(font_am_pm), TextAlign::TOP_RIGHT, "%I:%M %p", id(esptime).now());
 
 
             // WiFi Signal Strength
             if(id(${devicename}_WiFi_Signal).has_state()) {
-              x = 798, y = 478;
+              x = 780, y = 20;
               if (id(${devicename}_WiFi_Signal).state >= -50) {
                         //Excellent
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤨");
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_RIGHT, "󰤨");
                         ESP_LOGI("WiFi", "Exellent");
               } else if (id(${devicename}_WiFi_Signal).state  >= -60) {
                         //Good
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤥");
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_RIGHT, "󰤥");
                         ESP_LOGI("WiFi", "Good");
               } else if (id(${devicename}_WiFi_Signal).state  >= -67) {
                         //Fair
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤢");
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_RIGHT, "󰤢");
                         ESP_LOGI("WiFi", "Fair");
               } else if (id(${devicename}_WiFi_Signal).state  >= -70) {
                         //Weak
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤟");
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_RIGHT, "󰤟");
                         ESP_LOGI("WiFi", "Weak");
               } else {
                         //Unlikely working signal
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤫");
+                        it.print(x, y, id(font_wifi), TextAlign::TOP_RIGHT, "󰤫");
                         ESP_LOGI("WiFi", "Unlikely");
               }
             }
 
             // Voltage
             if(id(${devicename}_battery_voltage).has_state()) {
-              x = 798, y = 453;
+              x = 800, y = 20;
 
               if (id(${devicename}_battery_voltage).state >= 3.7) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁹");
+              it.print(x, y, id(font_battery), TextAlign::TOP_RIGHT, "󰁹");
               } else if (id(${devicename}_battery_voltage).state >= 3.5) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰂁");
+              it.print(x, y, id(font_battery), TextAlign::TOP_RIGHT, "󰂁");
               } else if (id(${devicename}_battery_voltage).state >= 3.3) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁿");
+              it.print(x, y, id(font_battery), TextAlign::TOP_RIGHT, "󰁿");
               } else if (id(${devicename}_battery_voltage).state >= 3.1) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁽");
+              it.print(x, y, id(font_battery), TextAlign::TOP_RIGHT, "󰁽");
               } else if (id(${devicename}_battery_voltage).state >= 3.0) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁻");
+              it.print(x, y, id(font_battery), TextAlign::TOP_RIGHT, "󰁻");
               } else {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󱃍");
+              it.print(x, y, id(font_battery), TextAlign::TOP_RIGHT, "󱃍");
               }
 
-              // x = 35, y = 280;
-              // it.printf(x, y, id(status_font), TextAlign::BOTTOM_LEFT, "%.2f V", id(${devicename}_battery_voltage).state);
+              // x = 55, y = 60;
+              // it.printf(x, y, id(status_font), TextAlign::TOP_RIGHT, "%.2f V", id(${devicename}_battery_voltage).state);
               }
 
-      - id: page2
-
-        lambda: |-
-
-            int x, y, c;
-            ESP_LOGI("display", "Updating..");
-
-            // Print time in HH:MM format
-            it.strftime(0, 482, id(status_font), TextAlign::BOTTOM_LEFT, "%I:%M %p", id(esptime).now());
-
-            // it.printf(200, 80, id(font_montserrat_medium), TextAlign::CENTER, "Forecast: %s", id(weatherflow_day_based_forecast).state.c_str());
-
-            it.printf(400, 44, id(font_seaside_resort), TextAlign::CENTER, "Now Playing");
-
-            it.printf(140, 150, id(font_hyperjump_bold), TextAlign::BOTTOM_RIGHT, "Artist:");
-            it.printf(140, 200, id(font_hyperjump_bold), TextAlign::BOTTOM_RIGHT, "Title:");
-            it.printf(140, 250, id(font_hyperjump_bold), TextAlign::BOTTOM_RIGHT, "Album:");
-            it.printf(140, 300, id(font_hyperjump_bold), TextAlign::BOTTOM_RIGHT, "Playlist:");
 
 
-            it.printf(145, 150, id(font_hyperjump_light_oblique), TextAlign::BOTTOM_LEFT, "%s", id(sonos_office_media_artist).state.c_str());
-            it.printf(145, 200, id(font_hyperjump_light_oblique), TextAlign::BOTTOM_LEFT, "%s", id(sonos_office_media_title).state.c_str());
-            it.printf(145, 250, id(font_hyperjump_light_oblique), TextAlign::BOTTOM_LEFT, "%s", id(sonos_office_media_album_name).state.c_str());
-            it.printf(145, 300, id(font_hyperjump_light_oblique), TextAlign::BOTTOM_LEFT, "%s", id(sonos_office_media_playlist).state.c_str());
+            #define room_y_pad 163
+
+            #define room_name_x_center 205
+            #define room_name_x_pad 140
+            #define room_name_y -2
+
+            #define room_temp_x_center 205
+            #define room_temp_x_pad 140         
+            #define room_temp_y 25
+            #define room_temp_y_pad 60
+
+            #define room_temp_degree_x_center 268
+            #define room_temp_degree_x_pad 140        
+            #define room_temp_degree_y 1
+            #define room_temp_degree_y_pad 60
+
+            #define room_humidity_x_center 205
+            #define room_humidity_x_pad 140         
+            #define room_humidity_y 118
+            #define room_humidity_y_pad 60
+
+            #define room_humidity_percent_x_center 234
+            #define room_humidity_percent_x_pad 140         
+            #define room_humidity_percent_y 113
+            #define room_humidity_percent_y_pad 60
 
 
-            // WiFi Signal Strength
-            if(id(${devicename}_WiFi_Signal).has_state()) {
-              x = 798, y = 478;
-              if (id(${devicename}_WiFi_Signal).state >= -50) {
-                        //Excellent
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤨");
-                        ESP_LOGI("WiFi", "Exellent");
-              } else if (id(${devicename}_WiFi_Signal).state  >= -60) {
-                        //Good
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤥");
-                        ESP_LOGI("WiFi", "Good");
-              } else if (id(${devicename}_WiFi_Signal).state  >= -67) {
-                        //Fair
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤢");
-                        ESP_LOGI("WiFi", "Fair");
-              } else if (id(${devicename}_WiFi_Signal).state  >= -70) {
-                        //Weak
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤟");
-                        ESP_LOGI("WiFi", "Weak");
-              } else {
-                        //Unlikely working signal
-                        it.print(x, y, id(wifi_font), TextAlign::BOTTOM_RIGHT, "󰤫");
-                        ESP_LOGI("WiFi", "Unlikely");
-              }
+
+            it.print(room_name_x_center - room_name_x_pad, room_name_y, id(font_room_name), TextAlign::TOP_CENTER, "Main Bedroom");
+            it.print(room_name_x_center, room_name_y, id(font_room_name), TextAlign::TOP_CENTER, "Bedroom 1");
+            it.print(room_name_x_center + room_name_x_pad, room_name_y, id(font_room_name), TextAlign::TOP_CENTER, "Bedroom 2");
+
+            it.printf(room_temp_x_center - room_temp_x_pad, room_temp_y, id(font_temperature), TextAlign::TOP_CENTER, "%.0f", id(bedroom_dave_bathroom_humidity_temperature).state);
+            it.printf(room_temp_x_center, room_temp_y, id(font_temperature), TextAlign::TOP_CENTER, "%.0f", id(bedroom_red_bathroom_humidity_temperature).state);
+            it.printf(room_temp_x_center + room_temp_x_pad, room_temp_y, id(font_temperature), TextAlign::TOP_CENTER, "%.0f", id(hallway_bathroom_motion_temperature).state);
+
+            it.printf(room_temp_degree_x_center - room_temp_degree_x_pad, room_temp_degree_y, id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
+            it.printf(room_temp_degree_x_center, room_temp_degree_y, id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
+            it.printf(room_temp_degree_x_center + room_temp_degree_x_pad, room_temp_degree_y, id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
+            
+            it.printf(room_humidity_x_center - room_humidity_x_pad, room_humidity_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(bedroom_dave_bathroom_humidity_humidity).state);
+            it.printf(room_humidity_x_center, room_humidity_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(bedroom_red_bathroom_humidity_humidity).state);
+            it.printf(room_humidity_x_center + room_humidity_x_pad, room_humidity_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(hallway_bathroom_humidity_humidity).state);
+
+            it.printf(room_humidity_percent_x_center - room_humidity_percent_x_pad, room_humidity_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+            it.printf(room_humidity_percent_x_center, room_humidity_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+            it.printf(room_humidity_percent_x_center + room_humidity_percent_x_pad, room_humidity_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+
+
+            it.line(0, 159, 425, 159);
+
+
+            it.print(room_name_x_center - room_name_x_pad, room_name_y + (room_y_pad * 1), id(font_room_name), TextAlign::TOP_CENTER, "Family Room");
+            it.print(room_name_x_center, room_name_y + (room_y_pad * 1), id(font_room_name), TextAlign::TOP_CENTER, "Sunroom");
+            it.print(room_name_x_center + room_name_x_pad, room_name_y + (room_y_pad * 1), id(font_room_name), TextAlign::TOP_CENTER, "Loft");
+
+            it.printf(room_temp_x_center - room_temp_x_pad, room_temp_y + (room_y_pad * 1), id(font_temperature), TextAlign::TOP_CENTER, "%.0f", id(esp01_temperature).state);
+            it.printf(room_temp_x_center, room_temp_y + (room_y_pad * 1), id(font_temperature), TextAlign::TOP_CENTER, "%.0f", id(esp08_temperature).state);
+            it.printf(room_temp_x_center + room_temp_x_pad, room_temp_y + (room_y_pad * 1), id(font_temperature), TextAlign::TOP_CENTER, "%.0f", id(esp03_temperature).state);
+
+            it.printf(room_temp_degree_x_center - room_temp_degree_x_pad, room_temp_degree_y + (room_y_pad * 1), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
+            it.printf(room_temp_degree_x_center, room_temp_degree_y + (room_y_pad * 1), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
+            it.printf(room_temp_degree_x_center + room_temp_degree_x_pad, room_temp_degree_y + (room_y_pad * 1), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
+            
+            it.printf(room_humidity_x_center - room_humidity_x_pad, room_humidity_y + (room_y_pad * 1), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(esp01_humidity).state);
+            it.printf(room_humidity_x_center, room_humidity_y + (room_y_pad * 1), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(esp08_humidity).state);
+            it.printf(room_humidity_x_center + room_humidity_x_pad, room_humidity_y + (room_y_pad * 1), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(esp03_humidity).state);
+
+            it.printf(room_humidity_percent_x_center - room_humidity_percent_x_pad, room_humidity_percent_y + (room_y_pad * 1), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+            it.printf(room_humidity_percent_x_center, room_humidity_percent_y + (room_y_pad * 1), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+            it.printf(room_humidity_percent_x_center + room_humidity_percent_x_pad, room_humidity_percent_y + (room_y_pad * 1), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            it.line(0, 323, 425, 323);
+
+
+            it.print(room_name_x_center - room_name_x_pad, room_name_y + (room_y_pad * 2), id(font_room_name), TextAlign::TOP_CENTER, "Kitchen");
+            it.print(room_name_x_center, room_name_y + (room_y_pad * 2), id(font_room_name), TextAlign::TOP_CENTER, "Barn");
+            it.print(room_name_x_center + room_name_x_pad, room_name_y + (room_y_pad * 2), id(font_room_name), TextAlign::TOP_CENTER, "She Shed");
+
+            it.printf(room_temp_x_center - room_temp_x_pad, room_temp_y + (room_y_pad * 2), id(font_temperature), TextAlign::TOP_CENTER, "%.0f", id(tyle_1st_floor_thermostat_temperature).state);
+            it.printf(room_temp_x_center, room_temp_y + (room_y_pad * 2), id(font_temperature), TextAlign::TOP_CENTER, "%.0f", id(tyle_2nd_floor_thermostat_temperature).state);
+            it.printf(room_temp_x_center + room_temp_x_pad, room_temp_y + (room_y_pad * 2), id(font_temperature), TextAlign::TOP_CENTER, "%.0f", id(esp06_temperature).state);
+
+            it.printf(room_temp_degree_x_center - room_temp_degree_x_pad, room_temp_degree_y + (room_y_pad * 2), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
+            it.printf(room_temp_degree_x_center, room_temp_degree_y + (room_y_pad * 2), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
+            it.printf(room_temp_degree_x_center + room_temp_degree_x_pad, room_temp_degree_y + (room_y_pad * 2), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
+            
+            it.printf(room_humidity_x_center - room_humidity_x_pad, room_humidity_y + (room_y_pad * 2), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(tyle_1st_floor_thermostat_humidity).state);
+            it.printf(room_humidity_x_center, room_humidity_y + (room_y_pad * 2), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(tyle_2nd_floor_thermostat_humidity).state);
+            it.printf(room_humidity_x_center + room_humidity_x_pad, room_humidity_y + (room_y_pad * 2), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(esp06_humidity).state);
+
+            it.printf(room_humidity_percent_x_center - room_humidity_percent_x_pad, room_humidity_percent_y + (room_y_pad * 2), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+            it.printf(room_humidity_percent_x_center, room_humidity_percent_y + (room_y_pad * 2), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+            it.printf(room_humidity_percent_x_center + room_humidity_percent_x_pad, room_humidity_percent_y + (room_y_pad * 2), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+
+
+
+
+
+
+            it.line(425, 0, 425, 480);
+
+
+
+
+
+
+
+
+
+
+
+
+              
+              
+              
+
+
+
+
+            #define large_weather_icon_x 612
+            #define large_weather_icon_y 110
+            
+            // Weather Forecast Icon
+            
+            if (id(wf_current_conditions_icon).state == "clear-day") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0599");}
+            if (id(wf_current_conditions_icon).state == "clear-night") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0594");}
+            if (id(wf_current_conditions_icon).state == "cloudy") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0590");}
+            if (id(wf_current_conditions_icon).state == "foggy") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0591");}
+            if (id(wf_current_conditions_icon).state == "partly-cloudy-day") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0595");}
+            if (id(wf_current_conditions_icon).state == "partly-cloudy-night") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F31");}
+            if (id(wf_current_conditions_icon).state == "possibly-rainy-day") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F33");}
+            if (id(wf_current_conditions_icon).state == "possibly-rainy-night") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F33");}
+            if (id(wf_current_conditions_icon).state == "possibly-sleet-day") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F35");}
+            if (id(wf_current_conditions_icon).state == "possibly-sleet-night") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F35");}
+            if (id(wf_current_conditions_icon).state == "possibly-snow-day") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0598");}
+            if (id(wf_current_conditions_icon).state == "possibly-snow-night") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0598");}
+            if (id(wf_current_conditions_icon).state == "possibly-thunderstorm-day") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0596");}
+            if (id(wf_current_conditions_icon).state == "possibly-thunderstorm-night") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0596");}
+            if (id(wf_current_conditions_icon).state == "rainy") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0597");}
+            if (id(wf_current_conditions_icon).state == "sleet") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F35");}
+            if (id(wf_current_conditions_icon).state == "snow") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0598");}
+            if (id(wf_current_conditions_icon).state == "thunderstorm") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F067E");}
+            if (id(wf_current_conditions_icon).state == "windy") {
+            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F059D");}
+
+
+
+            
+         
+            #define forecast_x_0 475
+            #define forecast_degree_x_0 513
+            #define forecast_percent_x_0 517
+            #define forecast_tab_x_0 93
+
+            #define forecast_degree_y_0 220
+            #define forecast_header_y_0 220
+            #define forecast_percent_y_0 233
+            #define forecast_state_y_0 238
+
+
+            it.printf(forecast_x_0, forecast_header_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "CURRENTLY");
+            it.printf(forecast_x_0, forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
+            it.printf(forecast_degree_x_0, forecast_degree_y_0, id(font_current_degree), TextAlign::TOP_CENTER, "°");
+
+            
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 1), forecast_header_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "HIGH");
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 1), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_air_temp_high).state);
+            it.printf(forecast_degree_x_0 + (forecast_tab_x_0 * 1), forecast_degree_y_0, id(font_current_degree), TextAlign::TOP_CENTER, "°");
+                        
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 2), forecast_header_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "LOW");
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 2), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_air_temp_low).state);
+            it.printf(forecast_degree_x_0 + (forecast_tab_x_0 * 2), forecast_degree_y_0, id(font_current_degree), TextAlign::TOP_CENTER, "°");
+            
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_header_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "CHANCE");
+            
+            
+            
+            if (id(wf_d_fc_0_precip_probability).state == 100) {
+                        
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "00");
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3) - 48, forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "1");  
+            }
+ 
+            else if (id(wf_d_fc_0_precip_probability).state == 0) {
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, " 0");
+            }
+ 
+            
+            else {
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_precip_probability).state);
+            }            
+            
+            it.printf(forecast_percent_x_0 + (forecast_tab_x_0 * 3), forecast_percent_y_0, id(font_current_humidity_percent), TextAlign::TOP_CENTER, "%%");
+            
+
+
+
+
+
+
+
+            
+            // Weather Forecast Day +1
+            
+            // Forecast
+            
+            it.printf(430, 342, id(font_am_pm), TextAlign::CENTER_LEFT, "%.0f/%.0f", id(wf_d_fc_1_month_num).state, id(wf_d_fc_1_day_num).state);
+            
+            #define forecast_center_x_1 522
+            #define forecast_center_degree_x_1 547
+            #define forecast_center_percent_x_1 551
+
+            #define forecast_tab_x_1 61
+            
+            #define forecast_degree_y 432
+            #define forecast_header_y 426
+            #define forecast_percent_y 440
+            #define forecast_state_y 445
+
+            
+            it.printf(forecast_center_x_1 - forecast_tab_x_1, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "HIGH");
+            it.printf(forecast_center_x_1 - forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_1_air_temp_high).state);
+            it.printf(forecast_center_degree_x_1 - forecast_tab_x_1, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
+                        
+            it.printf(forecast_center_x_1, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "LOW");
+            it.printf(forecast_center_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_1_air_temp_low).state);
+            it.printf(forecast_center_degree_x_1, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
+            
+
+
+            it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "CHANCE");
+
+            if (id(wf_d_fc_1_precip_probability).state == 100) {
+                        
+            it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "00");
+            it.printf(forecast_center_x_1 + forecast_tab_x_1 - 32, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "1");
             }
 
-            // Voltage
-            if(id(${devicename}_battery_voltage).has_state()) {
-              x = 798, y = 453;
+            else if (id(wf_d_fc_1_precip_probability).state == 0) {
+            it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, " 0");
+            }
 
-              if (id(${devicename}_battery_voltage).state >= 3.7) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁹");
-              } else if (id(${devicename}_battery_voltage).state >= 3.5) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰂁");
-              } else if (id(${devicename}_battery_voltage).state >= 3.3) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁿");
-              } else if (id(${devicename}_battery_voltage).state >= 3.1) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁽");
-              } else if (id(${devicename}_battery_voltage).state >= 3.0) {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󰁻");
-              } else {
-              it.print(x, y, id(battery_font), TextAlign::BOTTOM_RIGHT, "󱃍");
-              }
+            else {
+            it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_1_precip_probability).state);
+            }
 
-              // x = 35, y = 280;
-              // it.printf(x, y, id(status_font), TextAlign::BOTTOM_LEFT, "%.2f V", id(${devicename}_battery_voltage).state);
-              }
 
-interval:
-  - interval: 30s
-    then:
-      - display.page.show_next: '${devicename}_epaper'
-      - component.update: '${devicename}_epaper'
+            it.printf(forecast_center_percent_x_1 + forecast_tab_x_1, forecast_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+            
+            #define small_weather_icon_x_1 522
+            #define small_weather_icon_y_1 360
+            
+            if (id(wf_d_fc_1_icon).state == "clear-day") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0599");}
+            if (id(wf_d_fc_1_icon).state == "clear-night") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0594");}
+            if (id(wf_d_fc_1_icon).state == "cloudy") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0590");}
+            if (id(wf_d_fc_1_icon).state == "foggy") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0591");}
+            if (id(wf_d_fc_1_icon).state == "partly-cloudy-day") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0595");}
+            if (id(wf_d_fc_1_icon).state == "partly-cloudy-night") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F31");}
+            if (id(wf_d_fc_1_icon).state == "possibly-rainy-day") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F33");}
+            if (id(wf_d_fc_1_icon).state == "possibly-rainy-night") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F33");}
+            if (id(wf_d_fc_1_icon).state == "possibly-sleet-day") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            if (id(wf_d_fc_1_icon).state == "possibly-sleet-night") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            if (id(wf_d_fc_1_icon).state == "possibly-snow-day") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            if (id(wf_d_fc_1_icon).state == "possibly-snow-night") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            if (id(wf_d_fc_1_icon).state == "possibly-thunderstorm-day") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0596");}
+            if (id(wf_d_fc_1_icon).state == "possibly-thunderstorm-night") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0596");}
+            if (id(wf_d_fc_1_icon).state == "rainy") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0597");}
+            if (id(wf_d_fc_1_icon).state == "sleet") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            if (id(wf_d_fc_1_icon).state == "snow") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            if (id(wf_d_fc_1_icon).state == "thunderstorm") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F067E");}
+            if (id(wf_d_fc_1_icon).state == "windy") {
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F059D");}
+            
+
+
+
+
+            // Weather Forecast Day +2
+            it.printf(620, 342, id(font_am_pm), TextAlign::CENTER_LEFT, "%.0f/%.0f", id(wf_d_fc_2_month_num).state, id(wf_d_fc_2_day_num).state);
+ 
+
+ 
+ 
+            #define forecast_center_x_2 706          
+            #define forecast_center_degree_x_2 731
+            #define forecast_center_percent_x_2 735
+
+            #define forecast_tab_x_2 61
+            
+            it.printf(forecast_center_x_2 - forecast_tab_x_2, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "HIGH");
+            it.printf(forecast_center_x_2 - forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_2_air_temp_high).state);
+            it.printf(forecast_center_degree_x_2 - forecast_tab_x_2, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
+                        
+            it.printf(forecast_center_x_2, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "LOW");
+            it.printf(forecast_center_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_2_air_temp_low).state);
+            it.printf(forecast_center_degree_x_2, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
+            
+            it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "CHANCE");
+
+            if (id(wf_d_fc_2_precip_probability).state == 100) {
+            it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "00");
+            it.printf(forecast_center_x_2 + forecast_tab_x_2 - 32, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "1");
+            }
+
+            else if (id(wf_d_fc_2_precip_probability).state == 0) {
+            it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, " 0");
+            }
+
+            else {
+            it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_2_precip_probability).state);
+            }
+
+            it.printf(forecast_center_percent_x_2 + forecast_tab_x_2, forecast_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+            
+            #define small_weather_icon_x_2 706
+            #define small_weather_icon_y_2 360
+            
+            if (id(wf_d_fc_2_icon).state == "clear-day") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0599");}
+            if (id(wf_d_fc_2_icon).state == "clear-night") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0594");}
+            if (id(wf_d_fc_2_icon).state == "cloudy") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0590");}
+            if (id(wf_d_fc_2_icon).state == "foggy") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0591");}
+            if (id(wf_d_fc_2_icon).state == "partly-cloudy-day") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0595");}
+            if (id(wf_d_fc_2_icon).state == "partly-cloudy-night") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F31");}
+            if (id(wf_d_fc_2_icon).state == "possibly-rainy-day") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F33");}
+            if (id(wf_d_fc_2_icon).state == "possibly-rainy-night") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F33");}
+            if (id(wf_d_fc_2_icon).state == "possibly-sleet-day") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            if (id(wf_d_fc_2_icon).state == "possibly-sleet-night") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            if (id(wf_d_fc_2_icon).state == "possibly-snow-day") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            if (id(wf_d_fc_2_icon).state == "possibly-snow-night") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            if (id(wf_d_fc_2_icon).state == "possibly-thunderstorm-day") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0596");}
+            if (id(wf_d_fc_2_icon).state == "possibly-thunderstorm-night") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0596");}
+            if (id(wf_d_fc_2_icon).state == "rainy") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0597");}
+            if (id(wf_d_fc_2_icon).state == "sleet") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            if (id(wf_d_fc_2_icon).state == "snow") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            if (id(wf_d_fc_2_icon).state == "thunderstorm") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F067E");}
+            if (id(wf_d_fc_2_icon).state == "windy") {
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F059D");}
+    
+
+
+
+              
+
+
+
+
+
+
+button:
+  - platform: template
+    name: '${devicename} Refresh'
+    icon: 'mdi:update'
+    on_press:
+      then:
+        - component.update: '${devicename}_display'
+
 sensor:
   - platform: wifi_signal
     name: ${devicename} WiFi Signal
@@ -468,6 +747,31 @@ sensor:
   - platform: uptime
     name: ${devicename} Uptime
     update_interval: 60s
+
+# Documentation: https://esphome.io/components/sensor/adc.html
+  - platform: adc
+
+  # https://learn.adafruit.com/adafruit-huzzah32-esp32-feather/power-management
+    pin: A13
+
+    name: "${devicename} Battery Voltage"
+    id: ${devicename}_battery_voltage
+
+    update_interval: 15s
+
+  # See https://murt.is/articles/2021-02/huzzah32-battery-monitoring-esphome.md
+    attenuation: 11db
+
+  # Calculation based on https://cuddletech.com/?p=1030, modified to account for
+  # ESPHome's internal math
+  # (https://github.com/esphome/esphome/blob/410fad3b41640b76c7f902fb4656d0b1c2598681/esphome/components/adc/adc_sensor.cpp#L59).
+  # (x / 3.9) should be the adc measurement converted to Volts.
+    filters:
+      - lambda: return (x / 3.9) * 2 * 3.3 * 1.1;
+
+
+
+
   - platform: homeassistant
     entity_id: sensor.bedroom_dave_bathroom_humidity_humidity
     id: bedroom_dave_bathroom_humidity_humidity
@@ -495,10 +799,6 @@ sensor:
   - platform: homeassistant
     entity_id: sensor.esp01_humidity
     id: esp01_humidity
-    internal: true
-  - platform: homeassistant
-    entity_id: sensor.esp02_humidity
-    id: esp02_humidity
     internal: true
   - platform: homeassistant
     entity_id: sensor.esp03_humidity
@@ -541,10 +841,6 @@ sensor:
     id: esp01_temperature
     internal: true
   - platform: homeassistant
-    entity_id: sensor.esp02_temperature
-    id: esp02_temperature
-    internal: true
-  - platform: homeassistant
     entity_id: sensor.esp03_temperature
     id: esp03_temperature
     internal: true
@@ -560,36 +856,788 @@ sensor:
     entity_id: sensor.garage_door_tilt_temperature
     id: garage_door_tilt_temperature
     internal: true
-  - platform: adc
-    pin: A13
-    name: ${devicename} Battery Voltage
-    id: ${devicename}_battery_voltage
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_day_num
+    attribute: day_num
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_month_num
+    attribute: month_num
+    internal: true
+    
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_air_temp_high
+    attribute: air_temp_high
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_air_temp_low
+    attribute: air_temp_low
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_precip_probability
+    attribute: precip_probability
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_day_num
+    attribute: day_num
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_month_num
+    attribute: month_num
+    internal: true
+    
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_air_temp_high
+    attribute: air_temp_high
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_air_temp_low
+    attribute: air_temp_low
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_day_num
+    attribute: day_num
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_month_num
+    attribute: month_num
+    internal: true
+    
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_air_temp_high
+    attribute: air_temp_high
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_air_temp_low
+    attribute: air_temp_low
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_precip_probability
+    attribute: precip_probability
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_3
+    id: wf_d_fc_3_day_num
+    attribute: day_num
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_3
+    id: wf_d_fc_3_month_num
+    attribute: month_num
+    internal: true
+    
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_3
+    id: wf_d_fc_3_air_temp_high
+    attribute: air_temp_high
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_3
+    id: wf_d_fc_3_air_temp_low
+    attribute: air_temp_low
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_3
+    id: wf_d_fc_3_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_relative_humidity
+    attribute: relative_humidity
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_0
+    id: wf_h_fc_0_local_hour
+    attribute: local_hour
+    internal: true
+    
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_0
+    id: wf_h_fc_0_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_0
+    id: wf_h_fc_0_precip_probability
+    attribute: precip_probability
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_1
+    id: wf_h_fc_1_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_1
+    id: wf_h_fc_1_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_1
+    id: wf_h_fc_1_precip_probability
+    attribute: precip_probability
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_2
+    id: wf_h_fc_2_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_2
+    id: wf_h_fc_2_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_2
+    id: wf_h_fc_2_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_3
+    id: wf_h_fc_3_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_3
+    id: wf_h_fc_3_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_3
+    id: wf_h_fc_3_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_4
+    id: wf_h_fc_4_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_4
+    id: wf_h_fc_4_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_4
+    id: wf_h_fc_4_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_5
+    id: wf_h_fc_5_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_5
+    id: wf_h_fc_5_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_5
+    id: wf_h_fc_5_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_6
+    id: wf_h_fc_6_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_6
+    id: wf_h_fc_6_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_6
+    id: wf_h_fc_6_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_7
+    id: wf_h_fc_7_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_7
+    id: wf_h_fc_7_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_7
+    id: wf_h_fc_7_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_8
+    id: wf_h_fc_8_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_8
+    id: wf_h_fc_8_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_8
+    id: wf_h_fc_8_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_9
+    id: wf_h_fc_9_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_9
+    id: wf_h_fc_9_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_9
+    id: wf_h_fc_9_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_10
+    id: wf_h_fc_10_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_10
+    id: wf_h_fc_10_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_10
+    id: wf_h_fc_10_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_11
+    id: wf_h_fc_11_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_11
+    id: wf_h_fc_11_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_11
+    id: wf_h_fc_11_precip_probability
+    attribute: precip_probability
+    internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_12
+    id: wf_h_fc_12_local_hour
+    attribute: local_hour
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_12
+    id: wf_h_fc_12_air_temperature
+    attribute: air_temperature
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_hourly_forecast_12
+    id: wf_h_fc_12_precip_probability
+    attribute: precip_probability
+    internal: true
+
+  - platform: template
+    id: wf_h_fc_0_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_0_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_0_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_0_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_0_local_hour).state);
+      }
     update_interval: 15s
-    attenuation: 11db
-    filters:
-      - lambda: return (x / 3.9) * 2 * 3.3 * 1.1;
+
+  - platform: template
+    id: wf_h_fc_1_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_1_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_1_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_1_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_1_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_2_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_2_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_2_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_2_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_2_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_3_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_3_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_3_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_3_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_3_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_4_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_4_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_4_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_4_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_4_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_5_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_5_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_5_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_5_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_5_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_6_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_6_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_6_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_6_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_6_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_7_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_7_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_7_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_7_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_7_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_8_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_8_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_8_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_8_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_8_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_9_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_9_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_9_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_9_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_9_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_10_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_10_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_10_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_10_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_10_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_11_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_11_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_11_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_11_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_11_local_hour).state);
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_12_local_hour_twelvehour
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_12_local_hour).state) >= 13) {
+        return ((id(wf_h_fc_12_local_hour).state) - 12);
+      } else if ((id(wf_h_fc_12_local_hour).state) < 1) {
+        return 12;
+      } else {
+        return (id(wf_h_fc_12_local_hour).state);
+      }
+    update_interval: 15s
 text_sensor:
+
   - platform: homeassistant
-    entity_id: weather.weatherflow_day_based_forecast
-    id: weatherflow_day_based_forecast
+    entity_id: sensor.weatherflow_precipitation_intensity
+    id: wf_precipitation_intensity
     internal: true
+
   - platform: homeassistant
-    id: sonos_office_media_artist
-    entity_id: media_player.sonos_office
-    attribute: media_artist
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_conditions
+    attribute: conditions
     internal: true
+
   - platform: homeassistant
-    id: sonos_office_media_title
-    entity_id: media_player.sonos_office
-    attribute: media_title
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_icon
+    attribute: icon
     internal: true
+
   - platform: homeassistant
-    id: sonos_office_media_album_name
-    entity_id: media_player.sonos_office
-    attribute: media_album_name
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_precip_icon
+    attribute: precip_icon
     internal: true
+
   - platform: homeassistant
-    id: sonos_office_media_playlist
-    entity_id: media_player.sonos_office
-    attribute: media_playlist
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_precip_type
+    attribute: precip_type
     internal: true
+
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_conditions
+    attribute: conditions
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_icon
+    attribute: icon
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_precip_icon
+    attribute: precip_icon
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_precip_type
+    attribute: precip_type
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_conditions
+    attribute: conditions
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_icon
+    attribute: icon
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_precip_icon
+    attribute: precip_icon
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_precip_type
+    attribute: precip_type
+    internal: true
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_conditions
+    attribute: conditions
+    internal: true
+
+  - platform: template
+    id: wf_h_fc_0_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_0_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_1_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_1_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_2_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_2_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_3_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_3_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_4_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_4_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_5_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_5_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_6_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_6_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_7_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_7_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_8_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_8_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_9_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_9_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+    
+  - platform: template
+    id: wf_h_fc_10_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_10_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s  
+
+  - platform: template
+    id: wf_h_fc_11_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_11_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: template
+    id: wf_h_fc_12_local_hour_twelvehour_am_pm
+    internal: true
+    lambda: |-
+      if ((id(wf_h_fc_12_local_hour).state) >= 12) {
+        return {"PM"};
+      } else {
+        return {"AM"};
+      }
+    update_interval: 15s
+
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_icon
+    attribute: icon
+    internal: true
+
+
+

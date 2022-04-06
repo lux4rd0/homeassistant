@@ -1,8 +1,8 @@
 substitutions:
   devicename: esp15
 
-  run_time: 5min #can be as long as needed to get data 
-  sleep_time: 5min # normal sleep time
+  run_time: 2min #can be as long as needed to get data 
+  sleep_time: 15min # normal sleep time
   night_sleep_time: 7h # 1st sleep time after midnight
 
 
@@ -882,7 +882,7 @@ script:
   - id: all_data_received
     then:
       - component.update: ${devicename}_display
-#      - script.execute: enter_sleep     
+      - script.execute: enter_sleep     
 
   - id: enter_sleep
     then:

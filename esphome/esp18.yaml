@@ -1,5 +1,5 @@
 substitutions:
-  devicename: esp14
+  devicename: esp18
 
   run_time: 2min #can be as long as needed to get data 
   sleep_time: 15min # normal sleep time
@@ -893,7 +893,7 @@ script:
               if (!time.is_valid()) { 
                 return false;
               }
-              return (time.hour < 7); 
+              return (time.hour < 6); 
           then:
             - logger.log: "It's nighttime, entering long sleep for ${night_sleep_time}"          
             - deep_sleep.enter: 
