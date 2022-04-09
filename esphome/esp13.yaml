@@ -53,40 +53,12 @@ font:
 
 
 
-  - file: fonts/materialdesignicons-webfont.ttf
+  - file: fonts/dripicons-weather.ttf
     id: font_icons_large
-    size: 230
-    glyphs:
-      - "\U000F0590" # cloudy
-      - "\U000F0591" # foggy
-      - "\U000F0594" # clear-night
-      - "\U000F0595" # partly-cloudy-day
-      - "\U000F0596" # possibly-thunderstorm
-      - "\U000F0597" # rainy
-      - "\U000F0598" # snow
-      - "\U000F0599" # clear-day
-      - "\U000F059D" # windy
-      - "\U000F067E" # thunderstorm
-      - "\U000F0F31" # partly-cloudy-night
-      - "\U000F0F33" # possibly-rainy
-      - "\U000F0F35" # sleet
-  - file: fonts/materialdesignicons-webfont.ttf
+    size: 210
+  - file: fonts/dripicons-weather.ttf
     id: font_icons_small
-    size: 130
-    glyphs:
-      - "\U000F0590" # cloudy
-      - "\U000F0591" # foggy
-      - "\U000F0594" # clear-night
-      - "\U000F0595" # partly-cloudy-day
-      - "\U000F0596" # possibly-thunderstorm
-      - "\U000F0597" # rainy
-      - "\U000F0598" # snow
-      - "\U000F0599" # clear-day
-      - "\U000F059D" # windy
-      - "\U000F067E" # thunderstorm
-      - "\U000F0F31" # partly-cloudy-night
-      - "\U000F0F33" # possibly-rainy
-      - "\U000F0F35" # sleet
+    size: 120
   - file: fonts/materialdesignicons-webfont.ttf
     id: font_battery
     size: 18
@@ -134,6 +106,7 @@ font:
       - 8
       - 9
       - '%'
+      - ' '
     size: 47
   - file: fonts/digital-7 (mono).ttf
     id: font_current
@@ -149,6 +122,7 @@ font:
       - 8
       - 9
       - '%'
+      - ' '
     size: 70
   - file: fonts/Open 24 Display St.ttf
     id: font_humidity_percent
@@ -429,6 +403,8 @@ display:
 
 
             it.line(425, 0, 425, 480);
+            
+            
 
 
 
@@ -436,61 +412,81 @@ display:
 
 
 
+            #define large_weather_icon_x_0 613
+            #define large_weather_icon_y_0 0
 
 
 
-
-
-              
-              
-              
-
-
-
-
-            #define large_weather_icon_x 612
-            #define large_weather_icon_y 110
             
             // Weather Forecast Icon
             
             if (id(wf_current_conditions_icon).state == "clear-day") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0599");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "/");}
+            
             if (id(wf_current_conditions_icon).state == "clear-night") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0594");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "\'");}
+            
             if (id(wf_current_conditions_icon).state == "cloudy") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0590");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "a");}
+            
             if (id(wf_current_conditions_icon).state == "foggy") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0591");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "k");}
+            
             if (id(wf_current_conditions_icon).state == "partly-cloudy-day") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0595");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "R");}
+            
             if (id(wf_current_conditions_icon).state == "partly-cloudy-night") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F31");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "A");}
+            
             if (id(wf_current_conditions_icon).state == "possibly-rainy-day") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F33");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "E");}
+            
             if (id(wf_current_conditions_icon).state == "possibly-rainy-night") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F33");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "D");}
+            
             if (id(wf_current_conditions_icon).state == "possibly-sleet-day") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F35");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "\"");}
+            
             if (id(wf_current_conditions_icon).state == "possibly-sleet-night") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F35");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "t");}
+            
             if (id(wf_current_conditions_icon).state == "possibly-snow-day") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0598");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "P");}
+            
             if (id(wf_current_conditions_icon).state == "possibly-snow-night") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0598");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "O");}
+            
             if (id(wf_current_conditions_icon).state == "possibly-thunderstorm-day") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0596");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "y");}
+            
             if (id(wf_current_conditions_icon).state == "possibly-thunderstorm-night") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0596");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "x");}
+            
             if (id(wf_current_conditions_icon).state == "rainy") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0597");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "b");}
+            
             if (id(wf_current_conditions_icon).state == "sleet") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0F35");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "%%");}
+            
             if (id(wf_current_conditions_icon).state == "snow") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F0598");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, ".");}
+            
             if (id(wf_current_conditions_icon).state == "thunderstorm") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F067E");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "w");}
+            
             if (id(wf_current_conditions_icon).state == "windy") {
-            it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "\U000F059D");}
+            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "j");}
+            
+
+
+
+
+
+              
+              
+              
+
+
 
 
 
@@ -595,48 +591,70 @@ display:
 
 
             it.printf(forecast_center_percent_x_1 + forecast_tab_x_1, forecast_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
+
+
             
             #define small_weather_icon_x_1 522
             #define small_weather_icon_y_1 360
+
+            // Weather Forecast Icon
             
             if (id(wf_d_fc_1_icon).state == "clear-day") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0599");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "/");}
+            
             if (id(wf_d_fc_1_icon).state == "clear-night") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0594");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\'");}
+            
             if (id(wf_d_fc_1_icon).state == "cloudy") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0590");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "a");}
+            
             if (id(wf_d_fc_1_icon).state == "foggy") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0591");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "k");}
+            
             if (id(wf_d_fc_1_icon).state == "partly-cloudy-day") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0595");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "R");}
+            
             if (id(wf_d_fc_1_icon).state == "partly-cloudy-night") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F31");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "A");}
+            
             if (id(wf_d_fc_1_icon).state == "possibly-rainy-day") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F33");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "E");}
+            
             if (id(wf_d_fc_1_icon).state == "possibly-rainy-night") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F33");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "D");}
+            
             if (id(wf_d_fc_1_icon).state == "possibly-sleet-day") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "");}
+            
             if (id(wf_d_fc_1_icon).state == "possibly-sleet-night") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "t");}
+            
             if (id(wf_d_fc_1_icon).state == "possibly-snow-day") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "P");}
+            
             if (id(wf_d_fc_1_icon).state == "possibly-snow-night") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "O");}
+            
             if (id(wf_d_fc_1_icon).state == "possibly-thunderstorm-day") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0596");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "y");}
+            
             if (id(wf_d_fc_1_icon).state == "possibly-thunderstorm-night") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0596");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "x");}
+            
             if (id(wf_d_fc_1_icon).state == "rainy") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0597");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "b");}
+            
             if (id(wf_d_fc_1_icon).state == "sleet") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\%");}
+            
             if (id(wf_d_fc_1_icon).state == "snow") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, ".");}
+            
             if (id(wf_d_fc_1_icon).state == "thunderstorm") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F067E");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "w");}
+            
             if (id(wf_d_fc_1_icon).state == "windy") {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "\U000F059D");}
+            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "j");}
             
 
 
@@ -679,47 +697,73 @@ display:
 
             it.printf(forecast_center_percent_x_2 + forecast_tab_x_2, forecast_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
             
+
+            
             #define small_weather_icon_x_2 706
             #define small_weather_icon_y_2 360
+
+
+
+            // Weather Forecast Icon
+
+            // Weather Forecast Icon
             
             if (id(wf_d_fc_2_icon).state == "clear-day") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0599");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "/");}
+            
             if (id(wf_d_fc_2_icon).state == "clear-night") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0594");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\'");}
+            
             if (id(wf_d_fc_2_icon).state == "cloudy") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0590");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "a");}
+            
             if (id(wf_d_fc_2_icon).state == "foggy") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0591");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "k");}
+            
             if (id(wf_d_fc_2_icon).state == "partly-cloudy-day") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0595");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "R");}
+            
             if (id(wf_d_fc_2_icon).state == "partly-cloudy-night") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F31");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "A");}
+            
             if (id(wf_d_fc_2_icon).state == "possibly-rainy-day") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F33");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "E");}
+            
             if (id(wf_d_fc_2_icon).state == "possibly-rainy-night") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F33");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "D");}
+            
             if (id(wf_d_fc_2_icon).state == "possibly-sleet-day") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "");}
+            
             if (id(wf_d_fc_2_icon).state == "possibly-sleet-night") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "t");}
+            
             if (id(wf_d_fc_2_icon).state == "possibly-snow-day") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "P");}
+            
             if (id(wf_d_fc_2_icon).state == "possibly-snow-night") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "O");}
+            
             if (id(wf_d_fc_2_icon).state == "possibly-thunderstorm-day") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0596");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "y");}
+            
             if (id(wf_d_fc_2_icon).state == "possibly-thunderstorm-night") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0596");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "x");}
+            
             if (id(wf_d_fc_2_icon).state == "rainy") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0597");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "b");}
+            
             if (id(wf_d_fc_2_icon).state == "sleet") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0F35");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\%");}
+            
             if (id(wf_d_fc_2_icon).state == "snow") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F0598");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, ".");}
+            
             if (id(wf_d_fc_2_icon).state == "thunderstorm") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F067E");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "w");}
+            
             if (id(wf_d_fc_2_icon).state == "windy") {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "\U000F059D");}
+            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, "j");}
     
 
 
@@ -1638,6 +1682,5 @@ text_sensor:
     id: wf_current_conditions_icon
     attribute: icon
     internal: true
-
 
 
