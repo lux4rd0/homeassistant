@@ -1,11 +1,8 @@
 substitutions:
   devicename: esp15
-
-  run_time: 2min #can be as long as needed to get data 
-  sleep_time: 15min # normal sleep time
-  night_sleep_time: 7h # 1st sleep time after midnight
-
-
+  run_time: 2min
+  sleep_time: 15min
+  night_sleep_time: 6h
 esphome:
   name: '${devicename}'
   platform: ESP32
@@ -37,24 +34,17 @@ wifi:
 captive_portal: null
 web_server:
   port: 80
-
-
 deep_sleep:
-  run_duration: ${run_time} 
-  sleep_duration: ${sleep_time}
+  run_duration: '${run_time}'
+  sleep_duration: '${sleep_time}'
   id: deep_sleep_control
   esp32_ext1_wakeup:
     pins: GPIO39
     mode: ALL_LOW
-
-
 font:
   - file: fonts/Google Sans Bold.ttf
     id: font_name
     size: 38
-  - file: fonts/Google Sans Medium.ttf
-    id: font_value
-    size: 70
   - file: fonts/Google Sans Medium.ttf
     id: font_last_updated
     size: 28
@@ -126,22 +116,21 @@ font:
     id: font_battery
     size: 32
     glyphs:
-      - "\U000F0079" # mdi-battery
-      - "\U000F0081" # mdi-battery-80
-      - "\U000F007F" # mdi-battery-60
-      - "\U000F007D" # mdi-battery-40
-      - "\U000F007B" # mdi-battery-20
-      - "\U000F10CD" # mdi-battery-alert-variant-outline
+      - "\U000F0079"
+      - "\U000F0081"
+      - "\U000F007F"
+      - "\U000F007D"
+      - "\U000F007B"
+      - "\U000F10CD"
   - file: fonts/materialdesignicons-webfont.ttf
     id: font_wifi
     size: 32
     glyphs:
-      - "\U000F091F" # mdi-wifi-strength-1
-      - "\U000F0922" # mdi-wifi-strength-2
-      - "\U000F0925" # mdi-wifi-strength-3
-      - "\U000F0928" # mdi-wifi-strength-4
-      - "\U000F092B" # mdi-wifi-strength-alert-outline
-
+      - "\U000F091F"
+      - "\U000F0922"
+      - "\U000F0925"
+      - "\U000F0928"
+      - "\U000F092B"
 button:
   - platform: restart
     name: '${devicename} Restart'
@@ -186,106 +175,83 @@ display:
   id: '${devicename}_display'
   update_interval: never
 
-
   lambda: |-
-      #define xres 960 
-      #define yres 540
-      #define x_pad 10 // border padding
-      #define y_pad 10 // border padding      
-      #define cat_pad 110 // padding before category
-      #define val_pad 70 // padding before value
-      #define icon_pad 35 //padding after icons      
-      #define x1n 20 //x position 1st column name
-      #define x1v 25 //x position 1st column value
-      #define x1i 50 //x position 1st column icon
-      #define x2n xres/2 //x position 2nd column name
-      #define x2v xres/2 //x position 2nd column value
-      #define x2i xres/2 //x position 1st column icon
-      
-      int y = 0;
-      int x = 0;
-      
-      // Date
-      // it.strftime(xres/2, y+y_pad, id(font_name), TextAlign::TOP_CENTER, "%A %d/%b/%Y", id(ntp).now());
- 
+
       // Last Updated
       it.strftime(5, 5, id(font_last_updated), TextAlign::TOP_LEFT, "%I:%M %p", id(ntp).now());
       
+      #define wifi_x 240
+      #define wifi_y 175
+      
+      // WiFi Signal Strength
+      
+      if (id(${devicename}_WiFi_Signal).has_state()) {
+        if (id(${devicename}_WiFi_Signal).state >= -50) {
+          //Excellent
+          it.print(wifi_x, wifi_y, id(font_wifi), TextAlign::TOP_LEFT, "󰤨");
+          ESP_LOGI("WiFi", "Exellent");
+        } else if (id(${devicename}_WiFi_Signal).state >= -60) {
+          //Good
+          it.print(wifi_x, wifi_y, id(font_wifi), TextAlign::TOP_LEFT, "󰤥");
+          ESP_LOGI("WiFi", "Good");
+        } else if (id(${devicename}_WiFi_Signal).state >= -67) {
+          //Fair
+          it.print(wifi_x, wifi_y, id(font_wifi), TextAlign::TOP_LEFT, "󰤢");
+          ESP_LOGI("WiFi", "Fair");
+        } else if (id(${devicename}_WiFi_Signal).state >= -70) {
+          //Weak
+          it.print(wifi_x, wifi_y, id(font_wifi), TextAlign::TOP_LEFT, "󰤟");
+          ESP_LOGI("WiFi", "Weak");
+        } else {
+          //Unlikely working signal
+          it.print(wifi_x, wifi_y, id(font_wifi), TextAlign::TOP_LEFT, "󰤫");
+          ESP_LOGI("WiFi", "Unlikely");
+        }
+      }
 
+      #define battery_voltage_x 240
+      #define battery_voltage_y 175
 
-            // WiFi Signal Strength
-            if(id(${devicename}_WiFi_Signal).has_state()) {
-              x = 5, y = 35;
-              if (id(${devicename}_WiFi_Signal).state >= -50) {
-                        //Excellent
-                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤨");
-                        ESP_LOGI("WiFi", "Exellent");
-              } else if (id(${devicename}_WiFi_Signal).state  >= -60) {
-                        //Good
-                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤥");
-                        ESP_LOGI("WiFi", "Good");
-              } else if (id(${devicename}_WiFi_Signal).state  >= -67) {
-                        //Fair
-                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤢");
-                        ESP_LOGI("WiFi", "Fair");
-              } else if (id(${devicename}_WiFi_Signal).state  >= -70) {
-                        //Weak
-                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤟");
-                        ESP_LOGI("WiFi", "Weak");
-              } else {
-                        //Unlikely working signal
-                        it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤫");
-                        ESP_LOGI("WiFi", "Unlikely");
-              }
-            }
+      // Battery Voltage
+      
+      if (id(${devicename}_battery_voltage).has_state()) {
+        if (id(${devicename}_battery_voltage).state >= 3.7) {
+          it.print(battery_voltage_x, battery_voltage_y, id(font_battery), TextAlign::TOP_LEFT, "󰁹");
+        } else if (id(${devicename}_battery_voltage).state >= 3.5) {
+          it.print(battery_voltage_x, battery_voltage_y, id(font_battery), TextAlign::TOP_LEFT, "󰂁");
+        } else if (id(${devicename}_battery_voltage).state >= 3.3) {
+          it.print(battery_voltage_x, battery_voltage_y, id(font_battery), TextAlign::TOP_LEFT, "󰁿");
+        } else if (id(${devicename}_battery_voltage).state >= 3.1) {
+          it.print(battery_voltage_x, battery_voltage_y, id(font_battery), TextAlign::TOP_LEFT, "󰁽");
+        } else if (id(${devicename}_battery_voltage).state >= 3.0) {
+          it.print(battery_voltage_x, battery_voltage_y, id(font_battery), TextAlign::TOP_LEFT, "󰁻");
+        } else {
+          it.print(battery_voltage_x, battery_voltage_y, id(font_battery), TextAlign::TOP_LEFT, "󱃍");
+        }
 
-            // Voltage
-            if(id(${devicename}_battery_voltage).has_state()) {
-              x = 35, y = 35;
-
-              if (id(${devicename}_battery_voltage).state >= 3.7) {
-              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰁹");
-              } else if (id(${devicename}_battery_voltage).state >= 3.5) {
-              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰂁");
-              } else if (id(${devicename}_battery_voltage).state >= 3.3) {
-              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰁿");
-              } else if (id(${devicename}_battery_voltage).state >= 3.1) {
-              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰁽");
-              } else if (id(${devicename}_battery_voltage).state >= 3.0) {
-              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰁻");
-              } else {
-              it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󱃍");
-              }
-
-              // x = 55, y = 60;
-              // it.printf(x, y, id(status_font), TextAlign::TOP_LEFT, "%.2f V", id(${devicename}_battery_voltage).state);
-              }
-
-
-
+      }
 
       #define large_weather_icon_x 240
       #define large_weather_icon_y 175
 
-
       // Weather Forecast Icon
-            
+
       if (id(weatherflow_current_conditions_icon).has_state()) {
-      it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER,"%s", id(weatherflow_current_conditions_icon).state.c_str());
+        it.printf(large_weather_icon_x, large_weather_icon_y, id(font_icons_large), TextAlign::CENTER, "%s", id(weatherflow_current_conditions_icon).state.c_str());
       }
 
       // Outside Temperature
       it.print(150, 375, id(font_name), TextAlign::BASELINE_CENTER, "Currently");
       it.printf(241, 528, id(font_current_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_current_conditions_air_temperature).state);
       it.printf(241, 480, id(font_current_degree), TextAlign::BASELINE_LEFT, "°");
-      
+
       // Today's HI LO Temperature
 
       it.print(385, 375, id(font_name), TextAlign::BASELINE_CENTER, "Today");
       it.printf(315, 432, id(font_hi_lo), TextAlign::BASELINE_LEFT, "HI");
       it.printf(450, 450, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_0_air_temp_high).state);
       it.printf(452, 437, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
-            
+
       it.printf(315, 510, id(font_hi_lo), TextAlign::BASELINE_LEFT, "LO");
       it.printf(450, 528, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_0_air_temp_low).state);
       it.printf(452, 515, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
@@ -294,73 +260,60 @@ display:
 
       it.printf(575, 100, id(font_date), TextAlign::CENTER_RIGHT, "%.0f/%.0f", id(weatherflow_daily_forecast_1_month_num).state, id(weatherflow_daily_forecast_1_day_num).state);
 
-
       it.printf(775, 62, id(font_hi_lo), TextAlign::BASELINE_LEFT, "HI");
       it.printf(910, 80, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_1_air_temp_high).state);
       it.printf(912, 67, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
-            
+
       it.printf(775, 140, id(font_hi_lo), TextAlign::BASELINE_LEFT, "LO");
       it.printf(910, 158, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_1_air_temp_low).state);
       it.printf(912, 143, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
-      
-      
+
       #define small_weather_icon_x_1 675
       #define small_weather_icon_y_1 100
 
       // Weather Forecast Icon
 
-      if(id(weatherflow_daily_forecast_1_icon).has_state()) {
-      it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "%s", id(weatherflow_daily_forecast_1_icon).state.c_str());
+      if (id(weatherflow_daily_forecast_1_icon).has_state()) {
+        it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, "%s", id(weatherflow_daily_forecast_1_icon).state.c_str());
       }
 
-
-      it.printf(575, 270, id(font_date), TextAlign:: CENTER_RIGHT, "%.0f/%.0f", id(weatherflow_daily_forecast_2_month_num).state, id(weatherflow_daily_forecast_2_day_num).state);
+      it.printf(575, 270, id(font_date), TextAlign::CENTER_RIGHT, "%.0f/%.0f", id(weatherflow_daily_forecast_2_month_num).state, id(weatherflow_daily_forecast_2_day_num).state);
 
       it.printf(775, 242, id(font_hi_lo), TextAlign::BASELINE_LEFT, "HI");
       it.printf(910, 260, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_2_air_temp_high).state);
       it.printf(912, 247, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
-            
+
       it.printf(775, 320, id(font_hi_lo), TextAlign::BASELINE_LEFT, "LO");
       it.printf(910, 338, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_2_air_temp_low).state);
       it.printf(912, 323, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
-      
 
       #define small_weather_icon_x_2 675
       #define small_weather_icon_y_2 270
 
       // Weather Forecast Icon
 
-
-      if(id(weatherflow_daily_forecast_2_icon).has_state()) {
-      it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, id(weatherflow_daily_forecast_2_icon).state.c_str());
+      if (id(weatherflow_daily_forecast_2_icon).has_state()) {
+        it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, id(weatherflow_daily_forecast_2_icon).state.c_str());
       }
-
-
 
       it.printf(575, 440, id(font_date), TextAlign::CENTER_RIGHT, "%.0f/%.0f", id(weatherflow_daily_forecast_3_month_num).state, id(weatherflow_daily_forecast_3_day_num).state);
 
       it.printf(775, 432, id(font_hi_lo), TextAlign::BASELINE_LEFT, "HI");
       it.printf(910, 450, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_3_air_temp_high).state);
       it.printf(912, 437, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
-            
+
       it.printf(775, 510, id(font_hi_lo), TextAlign::BASELINE_LEFT, "LO");
       it.printf(910, 528, id(font_hi_lo_temperature), TextAlign::BASELINE_RIGHT, "%.0f", id(weatherflow_daily_forecast_3_air_temp_low).state);
       it.printf(912, 515, id(font_hi_lo_degree), TextAlign::BASELINE_LEFT, "°");
-      
-      
+
       #define small_weather_icon_x_3 675
       #define small_weather_icon_y_3 440
 
       // Weather Forecast Icon
 
-      if(id(weatherflow_daily_forecast_3_icon).has_state()) {
-      it.printf(small_weather_icon_x_3, small_weather_icon_y_3, id(font_icons_small), TextAlign::CENTER,"%s", id(weatherflow_daily_forecast_3_icon).state.c_str());
+      if (id(weatherflow_daily_forecast_3_icon).has_state()) {
+        it.printf(small_weather_icon_x_3, small_weather_icon_y_3, id(font_icons_small), TextAlign::CENTER, "%s", id(weatherflow_daily_forecast_3_icon).state.c_str());
       }
-
-
-
-
-
 
 sensor:
   - platform: wifi_signal
@@ -377,264 +330,214 @@ sensor:
     state_class: measurement
     device_class: voltage
     update_interval: 60s
-
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_0
     id: weatherflow_daily_forecast_0_day_num
     attribute: day_num
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_0
     id: weatherflow_daily_forecast_0_month_num
     attribute: month_num
     internal: true
-    
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_0
     id: weatherflow_daily_forecast_0_air_temp_high
     attribute: air_temp_high
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_0
     id: weatherflow_daily_forecast_0_air_temp_low
     attribute: air_temp_low
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_0
     id: weatherflow_daily_forecast_0_precip_probability
     attribute: precip_probability
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: weatherflow_daily_forecast_1_day_num
     attribute: day_num
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: weatherflow_daily_forecast_1_month_num
     attribute: month_num
     internal: true
-    
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: weatherflow_daily_forecast_1_air_temp_high
     attribute: air_temp_high
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: weatherflow_daily_forecast_1_air_temp_low
     attribute: air_temp_low
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: weatherflow_daily_forecast_1_precip_probability
     attribute: precip_probability
     internal: true
-
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_2
     id: weatherflow_daily_forecast_2_day_num
     attribute: day_num
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_2
     id: weatherflow_daily_forecast_2_month_num
     attribute: month_num
     internal: true
-    
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_2
     id: weatherflow_daily_forecast_2_air_temp_high
     attribute: air_temp_high
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_2
     id: weatherflow_daily_forecast_2_air_temp_low
     attribute: air_temp_low
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_2
     id: weatherflow_daily_forecast_2_precip_probability
     attribute: precip_probability
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_3
     id: weatherflow_daily_forecast_3_day_num
     attribute: day_num
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_3
     id: weatherflow_daily_forecast_3_month_num
     attribute: month_num
     internal: true
-    
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_3
     id: weatherflow_daily_forecast_3_air_temp_high
     attribute: air_temp_high
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_3
     id: weatherflow_daily_forecast_3_air_temp_low
     attribute: air_temp_low
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_3
     id: weatherflow_daily_forecast_3_precip_probability
     attribute: precip_probability
     internal: true
-
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_current_conditions
     id: weatherflow_current_conditions_air_temperature
     attribute: air_temperature
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_current_conditions
     id: weatherflow_current_conditions_relative_humidity
     attribute: relative_humidity
     internal: true
-
-
 text_sensor:
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_precipitation_intensity
     id: weatherflow_precipitation_intensity
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_0
     id: weatherflow_daily_forecast_0_conditions
     attribute: conditions
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_0
     id: weatherflow_daily_forecast_0_icon
     attribute: icon
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_0
     id: weatherflow_daily_forecast_0_precip_icon
     attribute: precip_icon
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_0
     id: weatherflow_daily_forecast_0_precip_type
     attribute: precip_type
     internal: true
-
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: weatherflow_daily_forecast_1_conditions
     attribute: conditions
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: weatherflow_daily_forecast_1_icon
     attribute: icon
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: weatherflow_daily_forecast_1_precip_icon
     attribute: precip_icon
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: weatherflow_daily_forecast_1_precip_type
     attribute: precip_type
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_2
     id: weatherflow_daily_forecast_2_conditions
     attribute: conditions
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_2
     id: weatherflow_daily_forecast_2_icon
     attribute: icon
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_2
     id: weatherflow_daily_forecast_2_precip_icon
     attribute: precip_icon
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_2
     id: weatherflow_daily_forecast_2_precip_type
     attribute: precip_type
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_3
     id: weatherflow_daily_forecast_3_conditions
     attribute: conditions
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_3
     id: weatherflow_daily_forecast_3_icon
     attribute: icon
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_3
     id: weatherflow_daily_forecast_3_precip_icon
     attribute: precip_icon
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_3
     id: weatherflow_daily_forecast_3_precip_type
     attribute: precip_type
     internal: true
-
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_current_conditions
     id: weatherflow_current_conditions_conditions
     attribute: conditions
     internal: true
-
   - platform: homeassistant
     entity_id: sensor.weatherflow_current_conditions
     id: weatherflow_current_conditions_icon
     attribute: icon
     internal: true
-    on_value: # Actions to perform once data for the last sensor has been received
+    on_value:
       then:
         - script.execute: all_data_received
-
-
 script:
   - id: all_data_received
     then:
@@ -667,4 +570,3 @@ script:
             - deep_sleep.enter:
                 id: deep_sleep_control
                 sleep_duration: '${sleep_time}'
-
