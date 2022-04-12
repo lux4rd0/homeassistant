@@ -1,5 +1,5 @@
 substitutions:
-  devicename: esp14
+  devicename: esp18
 
   run_time: 2min #can be as long as needed to get data 
   sleep_time: 15min # normal sleep time
