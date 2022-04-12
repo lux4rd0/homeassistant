@@ -273,6 +273,8 @@ display:
 
     lambda: |-
 
+            // Start
+
             int x, y, c;
             ESP_LOGI("display", "Updating..");
 
@@ -328,35 +330,33 @@ display:
               // it.printf(x, y, id(status_font), TextAlign::TOP_RIGHT, "%.2f V", id(${devicename}_battery_voltage).state);
               }
 
-
+            // Rooms
 
             #define room_y_pad 163
 
             #define room_name_x_center 205
             #define room_name_x_pad 140
-            #define room_name_y -2
+            #define room_name_y - 2
 
             #define room_temp_x_center 205
-            #define room_temp_x_pad 140         
+            #define room_temp_x_pad 140
             #define room_temp_y 25
             #define room_temp_y_pad 60
 
             #define room_temp_degree_x_center 268
-            #define room_temp_degree_x_pad 140        
+            #define room_temp_degree_x_pad 140
             #define room_temp_degree_y 1
             #define room_temp_degree_y_pad 60
 
             #define room_humidity_x_center 205
-            #define room_humidity_x_pad 140         
+            #define room_humidity_x_pad 140
             #define room_humidity_y 118
             #define room_humidity_y_pad 60
 
             #define room_humidity_percent_x_center 234
-            #define room_humidity_percent_x_pad 140         
+            #define room_humidity_percent_x_pad 140
             #define room_humidity_percent_y 113
             #define room_humidity_percent_y_pad 60
-
-
 
             it.print(room_name_x_center - room_name_x_pad, room_name_y, id(font_room_name), TextAlign::TOP_CENTER, "Main Bedroom");
             it.print(room_name_x_center, room_name_y, id(font_room_name), TextAlign::TOP_CENTER, "Bedroom 1");
@@ -369,7 +369,7 @@ display:
             it.printf(room_temp_degree_x_center - room_temp_degree_x_pad, room_temp_degree_y, id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
             it.printf(room_temp_degree_x_center, room_temp_degree_y, id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
             it.printf(room_temp_degree_x_center + room_temp_degree_x_pad, room_temp_degree_y, id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
-            
+
             it.printf(room_humidity_x_center - room_humidity_x_pad, room_humidity_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(bedroom_dave_bathroom_humidity_humidity).state);
             it.printf(room_humidity_x_center, room_humidity_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(bedroom_red_bathroom_humidity_humidity).state);
             it.printf(room_humidity_x_center + room_humidity_x_pad, room_humidity_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(hallway_bathroom_humidity_humidity).state);
@@ -378,9 +378,7 @@ display:
             it.printf(room_humidity_percent_x_center, room_humidity_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
             it.printf(room_humidity_percent_x_center + room_humidity_percent_x_pad, room_humidity_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
 
-
             it.line(0, 159, 425, 159);
-
 
             it.print(room_name_x_center - room_name_x_pad, room_name_y + (room_y_pad * 1), id(font_room_name), TextAlign::TOP_CENTER, "Family Room");
             it.print(room_name_x_center, room_name_y + (room_y_pad * 1), id(font_room_name), TextAlign::TOP_CENTER, "Sunroom");
@@ -393,7 +391,7 @@ display:
             it.printf(room_temp_degree_x_center - room_temp_degree_x_pad, room_temp_degree_y + (room_y_pad * 1), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
             it.printf(room_temp_degree_x_center, room_temp_degree_y + (room_y_pad * 1), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
             it.printf(room_temp_degree_x_center + room_temp_degree_x_pad, room_temp_degree_y + (room_y_pad * 1), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
-            
+
             it.printf(room_humidity_x_center - room_humidity_x_pad, room_humidity_y + (room_y_pad * 1), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(esp01_humidity).state);
             it.printf(room_humidity_x_center, room_humidity_y + (room_y_pad * 1), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(esp08_humidity).state);
             it.printf(room_humidity_x_center + room_humidity_x_pad, room_humidity_y + (room_y_pad * 1), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(esp03_humidity).state);
@@ -402,21 +400,7 @@ display:
             it.printf(room_humidity_percent_x_center, room_humidity_percent_y + (room_y_pad * 1), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
             it.printf(room_humidity_percent_x_center + room_humidity_percent_x_pad, room_humidity_percent_y + (room_y_pad * 1), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
             it.line(0, 323, 425, 323);
-
 
             it.print(room_name_x_center - room_name_x_pad, room_name_y + (room_y_pad * 2), id(font_room_name), TextAlign::TOP_CENTER, "Kitchen");
             it.print(room_name_x_center, room_name_y + (room_y_pad * 2), id(font_room_name), TextAlign::TOP_CENTER, "Barn");
@@ -429,7 +413,7 @@ display:
             it.printf(room_temp_degree_x_center - room_temp_degree_x_pad, room_temp_degree_y + (room_y_pad * 2), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
             it.printf(room_temp_degree_x_center, room_temp_degree_y + (room_y_pad * 2), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
             it.printf(room_temp_degree_x_center + room_temp_degree_x_pad, room_temp_degree_y + (room_y_pad * 2), id(font_temperature_degree), TextAlign::TOP_CENTER, "°");
-            
+
             it.printf(room_humidity_x_center - room_humidity_x_pad, room_humidity_y + (room_y_pad * 2), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(tyle_1st_floor_thermostat_humidity).state);
             it.printf(room_humidity_x_center, room_humidity_y + (room_y_pad * 2), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(tyle_2nd_floor_thermostat_humidity).state);
             it.printf(room_humidity_x_center + room_humidity_x_pad, room_humidity_y + (room_y_pad * 2), id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(esp06_humidity).state);
@@ -438,22 +422,11 @@ display:
             it.printf(room_humidity_percent_x_center, room_humidity_percent_y + (room_y_pad * 2), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
             it.printf(room_humidity_percent_x_center + room_humidity_percent_x_pad, room_humidity_percent_y + (room_y_pad * 2), id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
 
-
             it.line(425, 0, 425, 480);
-            
 
 
-            #define large_weather_icon_x_0 613
-            #define large_weather_icon_y_0 0
+            // Current Weather
 
-            // Weather Forecast Icon
-
-            if(id(wf_current_conditions_icon).has_state()) {
-            it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, id(wf_current_conditions_icon).state.c_str());
-            }
-
-
-         
             #define forecast_x_0 475
             #define forecast_degree_x_0 513
             #define forecast_percent_x_0 517
@@ -464,142 +437,120 @@ display:
             #define forecast_percent_y_0 233
             #define forecast_state_y_0 238
 
+            #define large_weather_icon_x_0 613
+            #define large_weather_icon_y_0 0
+
+            if (id(wf_current_conditions_icon).has_state()) {
+              it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, id(wf_current_conditions_icon).state.c_str());
+            }
 
             it.printf(forecast_x_0, forecast_header_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "CURRENTLY");
             it.printf(forecast_x_0, forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
             it.printf(forecast_degree_x_0, forecast_degree_y_0, id(font_current_degree), TextAlign::TOP_CENTER, "°");
 
-            
             it.printf(forecast_x_0 + (forecast_tab_x_0 * 1), forecast_header_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "HIGH");
             it.printf(forecast_x_0 + (forecast_tab_x_0 * 1), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_air_temp_high).state);
             it.printf(forecast_degree_x_0 + (forecast_tab_x_0 * 1), forecast_degree_y_0, id(font_current_degree), TextAlign::TOP_CENTER, "°");
-                        
+
             it.printf(forecast_x_0 + (forecast_tab_x_0 * 2), forecast_header_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "LOW");
             it.printf(forecast_x_0 + (forecast_tab_x_0 * 2), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_air_temp_low).state);
             it.printf(forecast_degree_x_0 + (forecast_tab_x_0 * 2), forecast_degree_y_0, id(font_current_degree), TextAlign::TOP_CENTER, "°");
-            
-            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_header_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "CHANCE");
-            
-            if (id(wf_d_fc_0_precip_probability).state == 100) {
-                        
-            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "00");
-            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3) - 48, forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "1");  
-            }
- 
-            else if (id(wf_d_fc_0_precip_probability).state == 0) {
-            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, " 0");
-            }
- 
-            
-            else {
-            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_precip_probability).state);
-            }            
-            
-            it.printf(forecast_percent_x_0 + (forecast_tab_x_0 * 3), forecast_percent_y_0, id(font_current_humidity_percent), TextAlign::TOP_CENTER, "%%");
-            
 
-            
+            it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_header_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "CHANCE");
+
+            if (id(wf_d_fc_0_precip_probability).state == 100) {
+
+              it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "00");
+              it.printf(forecast_x_0 + (forecast_tab_x_0 * 3) - 48, forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "1");
+            } else if (id(wf_d_fc_0_precip_probability).state == 0) {
+              it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, " 0");
+            } else {
+              it.printf(forecast_x_0 + (forecast_tab_x_0 * 3), forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_precip_probability).state);
+            }
+
+            it.printf(forecast_percent_x_0 + (forecast_tab_x_0 * 3), forecast_percent_y_0, id(font_current_humidity_percent), TextAlign::TOP_CENTER, "%%");
+
             // Weather Forecast Day +1
-            
-            // Forecast
-            
+
             it.printf(430, 342, id(font_am_pm), TextAlign::CENTER_LEFT, "%.0f/%.0f", id(wf_d_fc_1_month_num).state, id(wf_d_fc_1_day_num).state);
-            
+
             #define forecast_center_x_1 522
             #define forecast_center_degree_x_1 547
             #define forecast_center_percent_x_1 551
 
             #define forecast_tab_x_1 61
-            
+
             #define forecast_degree_y 432
             #define forecast_header_y 426
             #define forecast_percent_y 440
             #define forecast_state_y 445
 
-            
+            #define small_weather_icon_x_1 522
+            #define small_weather_icon_y_1 360
+
+            if (id(wf_d_fc_1_icon).has_state()) {
+              it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, id(wf_d_fc_1_icon).state.c_str());
+            }
+
             it.printf(forecast_center_x_1 - forecast_tab_x_1, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "HIGH");
             it.printf(forecast_center_x_1 - forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_1_air_temp_high).state);
             it.printf(forecast_center_degree_x_1 - forecast_tab_x_1, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
-                        
+
             it.printf(forecast_center_x_1, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "LOW");
             it.printf(forecast_center_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_1_air_temp_low).state);
             it.printf(forecast_center_degree_x_1, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
-            
-
 
             it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "CHANCE");
 
             if (id(wf_d_fc_1_precip_probability).state == 100) {
-                        
-            it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "00");
-            it.printf(forecast_center_x_1 + forecast_tab_x_1 - 32, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "1");
-            }
 
-            else if (id(wf_d_fc_1_precip_probability).state == 0) {
-            it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, " 0");
+              it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "00");
+              it.printf(forecast_center_x_1 + forecast_tab_x_1 - 32, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "1");
+            } else if (id(wf_d_fc_1_precip_probability).state == 0) {
+              it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, " 0");
+            } else {
+              it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_1_precip_probability).state);
             }
-
-            else {
-            it.printf(forecast_center_x_1 + forecast_tab_x_1, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_1_precip_probability).state);
-            }
-
 
             it.printf(forecast_center_percent_x_1 + forecast_tab_x_1, forecast_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
 
-
-            
-            #define small_weather_icon_x_1 522
-            #define small_weather_icon_y_1 360
-
-            // Weather Forecast Icon
-
-            if(id(wf_d_fc_1_icon).has_state()) {
-            it.printf(small_weather_icon_x_1, small_weather_icon_y_1, id(font_icons_small), TextAlign::CENTER, id(wf_d_fc_1_icon).state.c_str());
-            }
-
             // Weather Forecast Day +2
+
             it.printf(620, 342, id(font_am_pm), TextAlign::CENTER_LEFT, "%.0f/%.0f", id(wf_d_fc_2_month_num).state, id(wf_d_fc_2_day_num).state);
- 
-            #define forecast_center_x_2 706          
+
+            #define forecast_center_x_2 706
             #define forecast_center_degree_x_2 731
             #define forecast_center_percent_x_2 735
 
             #define forecast_tab_x_2 61
-            
-            it.printf(forecast_center_x_2 - forecast_tab_x_2, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "HIGH");
-            it.printf(forecast_center_x_2 - forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_2_air_temp_high).state);
-            it.printf(forecast_center_degree_x_2 - forecast_tab_x_2, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
-                        
-            it.printf(forecast_center_x_2, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "LOW");
-            it.printf(forecast_center_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_2_air_temp_low).state);
-            it.printf(forecast_center_degree_x_2, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
-            
-            it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "CHANCE");
 
-            if (id(wf_d_fc_2_precip_probability).state == 100) {
-            it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "00");
-            it.printf(forecast_center_x_2 + forecast_tab_x_2 - 32, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "1");
-            }
-
-            else if (id(wf_d_fc_2_precip_probability).state == 0) {
-            it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, " 0");
-            }
-
-            else {
-            it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_2_precip_probability).state);
-            }
-
-            it.printf(forecast_center_percent_x_2 + forecast_tab_x_2, forecast_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
-            
             #define small_weather_icon_x_2 706
             #define small_weather_icon_y_2 360
 
-            // Weather Forecast Icon
-
-            if(id(wf_d_fc_2_icon).has_state()) {
-            it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, id(wf_d_fc_2_icon).state.c_str());
+            if (id(wf_d_fc_2_icon).has_state()) {
+              it.printf(small_weather_icon_x_2, small_weather_icon_y_2, id(font_icons_small), TextAlign::CENTER, id(wf_d_fc_2_icon).state.c_str());
             }
 
+            it.printf(forecast_center_x_2 - forecast_tab_x_2, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "HIGH");
+            it.printf(forecast_center_x_2 - forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_2_air_temp_high).state);
+            it.printf(forecast_center_degree_x_2 - forecast_tab_x_2, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
+
+            it.printf(forecast_center_x_2, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "LOW");
+            it.printf(forecast_center_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_2_air_temp_low).state);
+            it.printf(forecast_center_degree_x_2, forecast_degree_y, id(font_hourly_degree), TextAlign::TOP_CENTER, "°");
+
+            it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_header_y, id(font_am_pm), TextAlign::TOP_CENTER, "CHANCE");
+
+            if (id(wf_d_fc_2_precip_probability).state == 100) {
+              it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "00");
+              it.printf(forecast_center_x_2 + forecast_tab_x_2 - 32, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "1");
+            } else if (id(wf_d_fc_2_precip_probability).state == 0) {
+              it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, " 0");
+            } else {
+              it.printf(forecast_center_x_2 + forecast_tab_x_2, forecast_state_y, id(font_humidity), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_2_precip_probability).state);
+            }
+
+            it.printf(forecast_center_percent_x_2 + forecast_tab_x_2, forecast_percent_y, id(font_humidity_percent), TextAlign::TOP_CENTER, "%%");
 
 
 
