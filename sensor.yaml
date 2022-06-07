@@ -1,17 +1,3 @@
-- platform: template
-  sensors:
-    ping_internet_time_avg:
-      friendly_name: Ping - Internet - Time Average
-      unit_of_measurement: ms
-      value_template: '{{ state_attr(''binary_sensor.ping_internet'', ''round_trip_time_avg'') }}'
-    ping_internet_time_max:
-      friendly_name: Ping - Internet - Time Maximum
-      unit_of_measurement: ms
-      value_template: '{{ state_attr(''binary_sensor.ping_internet'', ''round_trip_time_max'') }}'
-    ping_internet_time_min:
-      friendly_name: Ping - Internet - Time Minimum
-      unit_of_measurement: ms
-      value_template: '{{ state_attr(''binary_sensor.ping_internet'', ''round_trip_time_min'') }}'
 - platform: command_line
   name: weatherflow_fetch_forecast
   command: bash /config/scripts/weatherflow/weatherflow_fetch_forecast.sh
