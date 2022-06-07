@@ -1,56 +1,58 @@
 substitutions:
-  devicename: esp18
-  run_time: 2min
-  sleep_time: 15min
-  night_sleep_time: 6h
+  devicename: esp19
+  run_time: 5min #can be as long as needed to get data 
+  sleep_time: 15min # normal sleep time
+  night_sleep_time: 6h # 1st sleep time after midnight
 esphome:
-  name: '${devicename}'
+  name: ${devicename}
   platformio_options:
-    build_flags:
-      - '-DCONFIG_ARDUINO_LOOP_STACK_SIZE=32768'
+    build_flags: 
+      - -DCONFIG_ARDUINO_LOOP_STACK_SIZE=32768
 esp32:
-  board: m5stack-core2
+  board: featheresp32
   variant: esp32
   framework:
     type: arduino
     version: 2.0.2
-    source: 'https://github.com/espressif/arduino-esp32.git#2.0.2'
-    platform_version: >-
-      https://github.com/platformio/platform-espressif32.git#feature/arduino-upstream
+    source: https://github.com/espressif/arduino-esp32.git#2.0.2
+    platform_version: https://github.com/platformio/platform-espressif32.git#feature/arduino-upstream
 debug:
   update_interval: 60s
 time:
   - platform: homeassistant
     id: ntp
 logger:
-  baud_rate: 115200
+  baud_rate: 0
   level: DEBUG
 switch:
   - platform: restart
-    name: '${devicename} Restart'
+    name: ${devicename} Restart
+  - platform: gpio
+    pin:
+      number: 21
+      inverted: yes
+    id: ${devicename}_reset_switch
+    internal: true
+    name: "${devicename} Display Reset Pin"
+
+
 api:
-  reboot_timeout: 2min
+  reboot_timeout: 1min
 ota:
   password: !secret ota_password
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   ap:
-    ssid: '${devicename}'
+    ssid: ${devicename}
     password: !secret wifi_password
   domain: .tylephony.com
   power_save_mode: none
-deep_sleep:
-  run_duration: '${run_time}'
-  sleep_duration: '${sleep_time}'
-  id: deep_sleep_control
-  esp32_ext1_wakeup:
-    pins: GPIO39
-    mode: ALL_LOW
+
 font:
   - file: fonts/materialdesignicons-webfont.ttf
     id: font_battery
-    size: 20
+    size: 18
     glyphs:
       - "\U000F0079"
       - "\U000F0081"
@@ -60,7 +62,7 @@ font:
       - "\U000F10CD"
   - file: fonts/materialdesignicons-webfont.ttf
     id: font_wifi
-    size: 20
+    size: 18
     glyphs:
       - "\U000F091F"
       - "\U000F0922"
@@ -81,26 +83,26 @@ font:
       - 8
       - 9
       - '%'
-    size: 50
-  - file: 'gfonts://Alef'
+    size: 45
+  - file: fonts/Open 24 Display St.ttf
     id: font_humidity_percent
     glyphs:
       - '%'
-    size: 36
-  - file: 'gfonts://Alef'
+    size: 24
+  - file: fonts/Open 24 Display St.ttf
     id: font_hourly_degree
+    size: 50
     glyphs:
       - °
-    size: 40
   - file: fonts/digital-7 (mono).ttf
     id: font_hourly
-    size: 50
-  - file: fonts/Calama.ttf
+    size: 44
+  - file: fonts/Tall Films Expanded.ttf
     id: font_am_pm
-    size: 32
+    size: 20
   - file: fonts/dripicons-weather.ttf
     id: font_icons_small
-    size: 70
+    size: 50
     glyphs:
       - /
       - ''''
@@ -123,7 +125,7 @@ font:
       - j
   - file: fonts/dripicons-weather.ttf
     id: font_icons_large
-    size: 160
+    size: 138
     glyphs:
       - /
       - ''''
@@ -159,64 +161,41 @@ font:
       - 9
       - '%'
       - ' '
-    size: 100
-  - file: 'gfonts://Alef'
+    size: 90
+  - file: fonts/Open 24 Display St.ttf
+    id: font_current_degree
+    size: 90
+    glyphs:
+      - °
+  - file: fonts/Open 24 Display St.ttf
     id: font_current_humidity_percent
     glyphs:
       - '%'
-    size: 66
-  - file: 'gfonts://Alef'
-    id: font_current_degree
-    size: 80
-    glyphs:
-      - °
-button:
-  - platform: restart
-    name: '${devicename} Restart'
-    internal: false
-  - platform: template
-    name: '${devicename} Refresh'
-    icon: 'mdi:update'
-    on_press:
-      then:
-        - component.update: '${devicename}_display'
-    internal: false
+    size: 40
 binary_sensor:
-  - platform: gpio
-    pin:
-      number: GPIO39
-      inverted: true
-    name: '${devicename} Button 1'
-    on_press:
-      then:
-        - component.update: '${devicename}_display'
-  - platform: gpio
-    pin:
-      number: GPIO34
-      inverted: true
-    name: '${devicename} Button 2'
-  - platform: gpio
-    pin:
-      number: GPIO35
-      inverted: true
-    name: '${devicename} Button 3'
   - platform: homeassistant
     id: '${devicename}_prevent_deep_sleep'
     name: '${devicename} Prevent Deep Sleep'
     entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
-external_components:
-  - source: 'github://ashald/esphome@lilygo-t5-47'
-    components:
-      - lilygo_t5_47
+deep_sleep:
+  run_duration: '${run_time}'
+  sleep_duration: '${sleep_time}'
+  id: deep_sleep_control
+spi:
+  clk_pin: GPIO13
+  mosi_pin: GPIO15
 display:
-  platform: lilygo_t5_47
-  full_update_every: 1
-  cycles_render: 40
-  cycles_invert: 40
-  id: '${devicename}_display'
-  update_interval: never
+  - platform: waveshare_epaper
+    id: '${devicename}_display'
+    cs_pin: GPIO12
+    busy_pin: GPIO33
+    reset_pin: GPIO21
+    dc_pin: GPIO27
+    model: 7.50inV2
+    update_interval: never
+    reset_duration: 2ms
 
-  lambda: |-
+    lambda: |-
     
             // tab
             int x, y, c;
@@ -225,11 +204,11 @@ display:
             if (id(wf_h_fc_0_pixel_height).state < 70 && id(wf_h_fc_2_pixel_height).state < 70) {
 
               // Print time in HH:MM format
-              it.strftime(0, 210, id(font_am_pm), TextAlign::TOP_LEFT, "%I:%M %p", id(ntp).now());
+              it.strftime(0, 179, id(font_am_pm), TextAlign::TOP_LEFT, "%I:%M %p", id(ntp).now());
 
               // WiFi Signal Strength
               if (id(${devicename}_WiFi_Signal).has_state()) {
-                x = 70, y = 210;
+                x = 50, y = 179;
                 if (id(${devicename}_WiFi_Signal).state >= -50) {
                   //Excellent
                   it.print(x, y, id(font_wifi), TextAlign::TOP_LEFT, "󰤨");
@@ -255,7 +234,7 @@ display:
 
               // Voltage
               if (id(${devicename}_battery_voltage).has_state()) {
-                x = 90, y = 210;
+                x = 70, y = 179;
 
                 if (id(${devicename}_battery_voltage).state >= 3.7) {
                   it.print(x, y, id(font_battery), TextAlign::TOP_LEFT, "󰁹");
@@ -276,11 +255,11 @@ display:
             else if (id(wf_h_fc_22_pixel_height).state < 70 && id(wf_h_fc_23_pixel_height).state < 70) {
 
               // Print time in HH:MM format
-              it.strftime(960, 210, id(font_am_pm), TextAlign::TOP_RIGHT, "%I:%M %p", id(ntp).now());
+              it.strftime(800, 179, id(font_am_pm), TextAlign::TOP_RIGHT, "%I:%M %p", id(ntp).now());
 
               // WiFi Signal Strength
               if (id(${devicename}_WiFi_Signal).has_state()) {
-                x = 870, y = 210;
+                x = 750, y = 179;
                 if (id(${devicename}_WiFi_Signal).state >= -50) {
                   //Excellent
                   it.print(x, y, id(font_wifi), TextAlign::TOP_RIGHT, "󰤨");
@@ -306,7 +285,7 @@ display:
 
               // Voltage
               if (id(${devicename}_battery_voltage).has_state()) {
-                x = 890, y = 210;
+                x = 730, y = 179;
 
                 if (id(${devicename}_battery_voltage).state >= 3.7) {
                   it.print(x, y, id(font_battery), TextAlign::TOP_RIGHT, "󰁹");
@@ -328,35 +307,35 @@ display:
  
              // Current Forecast
 
-             #define large_weather_icon_x_0 90
+             #define large_weather_icon_x_0 70
              #define large_weather_icon_y_0 0
 
-             #define forecast_conditions_y_0 200
-
-             it.printf(0, 0, id(font_am_pm), TextAlign::TOP_LEFT, "%s", id(wf_d_fc_0_day_name).state.c_str());
-             it.printf(large_weather_icon_x_0, forecast_conditions_y_0, id(font_am_pm), TextAlign::BOTTOM_CENTER, "%s", id(wf_current_conditions_conditions).state.c_str());
+             it.printf(0, -3, id(font_am_pm), TextAlign::TOP_LEFT, "%s", id(wf_d_fc_0_day_name).state.c_str());
+             //it.printf(0, 13, id(font_am_pm), TextAlign::TOP_LEFT, "%.0f/%.0f", id(wf_d_fc_0_month_num).state, id(wf_d_fc_0_day_num).state);
+             it.printf(70, 174, id(font_am_pm), TextAlign::BOTTOM_CENTER, "%s", id(wf_current_conditions_conditions).state.c_str());
 
              if (id(wf_current_conditions_icon).has_state()) {
                it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, "%s", id(wf_current_conditions_icon).state.c_str());
+               //it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER,"%s", " "); 
              }
 
-             #define forecast_x_0 235
-             #define forecast_y_0 0
+             #define forecast_x_0 202
+             #define forecast_y_0 - 3
 
-             #define forecast_tab_x_0 150
+             #define forecast_tab_x_0 121
 
-             #define forecast_degree_x_0 294
-             #define forecast_degree_y_0 4
+             #define forecast_degree_x_0 252
+             #define forecast_degree_y_0 - 8
 
-             #define forecast_percent_x_0 299
-             #define forecast_percent_y_0 2
+             #define forecast_percent_x_0 254
+             #define forecast_percent_y_0 10
 
-             #define forecast_state_y_0 20
-             #define forecast_state_pad_y_0 102
+             #define forecast_state_y_0 15
+             #define forecast_state_pad_y_0 89
 
              it.printf(forecast_x_0, forecast_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "CURRENTLY");
              if (id(wf_current_conditions_air_temperature).state >= 100) {
-               it.printf(forecast_x_0 - 23, forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
+               it.printf(forecast_x_0 - 21, forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
              } else if (id(wf_current_conditions_air_temperature).state == 0) {
                it.printf(forecast_x_0, forecast_state_y_0, id(font_current), TextAlign::TOP_CENTER, " 0");
              } else {
@@ -367,7 +346,7 @@ display:
              it.printf(forecast_x_0, forecast_y_0 + forecast_state_pad_y_0, id(font_am_pm), TextAlign::TOP_CENTER, "CHANCE");
              if (id(wf_d_fc_0_precip_probability).state == 100) {
                it.printf(forecast_x_0, forecast_state_y_0 + forecast_state_pad_y_0, id(font_current), TextAlign::TOP_CENTER, "00");
-               it.printf(forecast_x_0 - 67, forecast_state_y_0 + forecast_state_pad_y_0, id(font_current), TextAlign::TOP_CENTER, "1");
+               it.printf(forecast_x_0 - 62, forecast_state_y_0 + forecast_state_pad_y_0, id(font_current), TextAlign::TOP_CENTER, "1");
              } else if (id(wf_d_fc_0_precip_probability).state == 0) {
                it.printf(forecast_x_0, forecast_state_y_0 + forecast_state_pad_y_0, id(font_current), TextAlign::TOP_CENTER, " 0");
              } else {
@@ -397,29 +376,30 @@ display:
 
              // Weather Forecast Day +1
 
-             #define large_weather_icon_x_1 795 - 250
+             #define large_weather_icon_x_1 455
              #define large_weather_icon_y_1 0
 
-             #define forecast_conditions_y_1 200
+             //it.printf(455, 174, id(font_am_pm), TextAlign::BOTTOM_LEFT, "%.0f/%.0f - %s - %s", id(wf_d_fc_1_month_num).state, id(wf_d_fc_1_day_num).state, id(wf_d_fc_1_day_name).state.c_str(), id(wf_d_fc_1_conditions).state.c_str());
+             it.printf(455, 174, id(font_am_pm), TextAlign::BOTTOM_CENTER, "%s", id(wf_d_fc_1_conditions).state.c_str());
+
+             it.printf(388, -3, id(font_am_pm), TextAlign::TOP_LEFT, "%s", id(wf_d_fc_1_day_name).state.c_str());
+             //it.printf(388, 13, id(font_am_pm), TextAlign::TOP_LEFT, "%.0f/%.0f", id(wf_d_fc_1_month_num).state, id(wf_d_fc_1_day_num).state);
 
              if (id(wf_d_fc_1_icon).has_state()) {
                it.printf(large_weather_icon_x_1, large_weather_icon_y_1, id(font_icons_large), TextAlign::TOP_CENTER, "%s", id(wf_d_fc_1_icon).state.c_str());
+               //it.printf(large_weather_icon_x_1, large_weather_icon_y_1, id(font_icons_large), TextAlign::TOP_CENTER,"%s", " ");          
              }
 
-             it.printf(large_weather_icon_x_1, forecast_conditions_y_1, id(font_am_pm), TextAlign::BOTTOM_CENTER, "%s", id(wf_d_fc_1_conditions).state.c_str());
+             #define forecast_x_1 556
+             #define forecast_degree_x_1 583
+             #define forecast_percent_x_1 586
 
-             it.printf(710 - 250, 0, id(font_am_pm), TextAlign::TOP_LEFT, "%s", id(wf_d_fc_1_day_name).state.c_str());
+             #define forecast_row_y_1 61
 
-             #define forecast_x_1 912 - 250
-             #define forecast_degree_x_1 941 - 250
-             #define forecast_percent_x_1 945 - 250
-
-             #define forecast_row_y_1 67
-
-             #define forecast_header_y_1 0
-             #define forecast_state_y_1 23
-             #define forecast_degree_y_1 14
-             #define forecast_percent_y_1 17
+             #define forecast_header_y_1 - 3
+             #define forecast_state_y_1 17
+             #define forecast_degree_y_1 4
+             #define forecast_percent_y_1 12
 
              it.printf(forecast_x_1, forecast_header_y_1, id(font_am_pm), TextAlign::TOP_CENTER, "HIGH");
 
@@ -451,7 +431,7 @@ display:
 
              if (id(wf_d_fc_1_precip_probability).state == 100) {
                it.printf(forecast_x_1, forecast_state_y_1 + (forecast_row_y_1 * 2), id(font_humidity), TextAlign::TOP_CENTER, "00");
-               it.printf(forecast_x_1 - 35, forecast_state_y_1 + (forecast_row_y_1 * 2), id(font_humidity), TextAlign::TOP_CENTER, "1");
+               it.printf(forecast_x_1 - 32, forecast_state_y_1 + (forecast_row_y_1 * 2), id(font_humidity), TextAlign::TOP_CENTER, "1");
              } else if (id(wf_d_fc_1_precip_probability).state == 0) {
                it.printf(forecast_x_1, forecast_state_y_1 + (forecast_row_y_1 * 2), id(font_humidity), TextAlign::TOP_CENTER, " 0");
              } else {
@@ -462,29 +442,30 @@ display:
 
              // Weather Forecast Day +2
 
-             #define large_weather_icon_x_2 795
+             #define large_weather_icon_x_2 665
              #define large_weather_icon_y_2 0
-
-             #define forecast_conditions_y_2 200
 
              if (id(wf_d_fc_2_icon).has_state()) {
                it.printf(large_weather_icon_x_2, large_weather_icon_y_2, id(font_icons_large), TextAlign::TOP_CENTER, "%s", id(wf_d_fc_2_icon).state.c_str());
+               //it.printf(large_weather_icon_x_2, large_weather_icon_y_2, id(font_icons_large), TextAlign::TOP_CENTER,"%s", " ");          
              }
 
-             it.printf(large_weather_icon_x_2, forecast_conditions_y_2, id(font_am_pm), TextAlign::BOTTOM_CENTER, "%s", id(wf_d_fc_2_conditions).state.c_str());
+             //it.printf(597, 174, id(font_am_pm), TextAlign::BOTTOM_LEFT, "%.0f/%.0f - %s - %s", id(wf_d_fc_2_month_num).state, id(wf_d_fc_2_day_num).state, id(wf_d_fc_2_day_name).state.c_str(), id(wf_d_fc_2_conditions).state.c_str());
+             it.printf(665, 174, id(font_am_pm), TextAlign::BOTTOM_CENTER, "%s", id(wf_d_fc_2_conditions).state.c_str());
 
-             it.printf(710, 0, id(font_am_pm), TextAlign::TOP_LEFT, "%s", id(wf_d_fc_2_day_name).state.c_str());
+             it.printf(597, -3, id(font_am_pm), TextAlign::TOP_LEFT, "%s", id(wf_d_fc_2_day_name).state.c_str());
+             //it.printf(597, 13, id(font_am_pm), TextAlign::TOP_LEFT, "%.0f/%.0f", id(wf_d_fc_2_month_num).state, id(wf_d_fc_2_day_num).state);
 
-             #define forecast_x_2 912
-             #define forecast_degree_x_2 941
-             #define forecast_percent_x_2 945
+             #define forecast_x_2 767
+             #define forecast_degree_x_2 793
+             #define forecast_percent_x_2 795
 
-             #define forecast_row_y_2 67
+             #define forecast_row_y_2 61
 
-             #define forecast_header_y_2 0
-             #define forecast_state_y_2 23
-             #define forecast_degree_y_2 14
-             #define forecast_percent_y_2 17
+             #define forecast_header_y_2 - 3
+             #define forecast_state_y_2 17
+             #define forecast_degree_y_2 4
+             #define forecast_percent_y_2 12
 
              it.printf(forecast_x_2, forecast_header_y_2, id(font_am_pm), TextAlign::TOP_CENTER, "HIGH");
 
@@ -516,7 +497,7 @@ display:
 
              if (id(wf_d_fc_2_precip_probability).state == 100) {
                it.printf(forecast_x_2, forecast_state_y_2 + (forecast_row_y_2 * 2), id(font_humidity), TextAlign::TOP_CENTER, "00");
-               it.printf(forecast_x_2 - 35, forecast_state_y_2 + (forecast_row_y_2 * 2), id(font_humidity), TextAlign::TOP_CENTER, "1");
+               it.printf(forecast_x_2 - 32, forecast_state_y_2 + (forecast_row_y_2 * 2), id(font_humidity), TextAlign::TOP_CENTER, "1");
              } else if (id(wf_d_fc_2_precip_probability).state == 0) {
                it.printf(forecast_x_2, forecast_state_y_2 + (forecast_row_y_2 * 2), id(font_humidity), TextAlign::TOP_CENTER, " 0");
              } else {
@@ -527,65 +508,64 @@ display:
 
              // Lines
 
-             it.line(458, 0, 458, 200);
-             it.line(706, 0, 706, 200);
-             it.line(0, 200, 960, 200);
+             it.line(383, 0, 383, 177);
+             it.line(592, 0, 592, 177);
+             it.line(0, 177, 800, 177);
 
              // Highlight Weekend
 
-             if (id(wf_d_fc_0_day_name).state == "SATURDAY" || id(wf_d_fc_0_day_name).state == "SUNDAY") {
-               it.line(0, 198, 458, 198);
-               it.line(0, 199, 458, 199);
-               it.line(0, 201, 458, 201);
+             if (id(wf_d_fc_0_day_name).state == "SAT" || id(wf_d_fc_0_day_name).state == "SUN") {
+               it.line(0, 175, 383, 175);
+               it.line(0, 176, 383, 176);
+               it.line(0, 178, 383, 178);
              }
 
-             if (id(wf_d_fc_1_day_name).state == "SATURDAY" || id(wf_d_fc_1_day_name).state == "SUNDAY") {
-               it.line(458, 198, 706, 198);
-               it.line(458, 199, 706, 199);
-               it.line(458, 201, 706, 201);
+             if (id(wf_d_fc_1_day_name).state == "SAT" || id(wf_d_fc_1_day_name).state == "SUN") {
+               it.line(383, 175, 592, 175);
+               it.line(383, 176, 592, 176);
+               it.line(383, 178, 592, 178);
              }
 
-             if (id(wf_d_fc_2_day_name).state == "SATURDAY" || id(wf_d_fc_2_day_name).state == "SUNDAY") {
-               it.line(706, 198, 960, 198);
-               it.line(706, 199, 960, 199);
-               it.line(706, 201, 960, 201);
+             if (id(wf_d_fc_2_day_name).state == "SAT" || id(wf_d_fc_2_day_name).state == "SUN") {
+               it.line(592, 175, 800, 175);
+               it.line(592, 176, 800, 176);
+               it.line(592, 178, 800, 178);
              }
 
              // Hourly Details
 
-             #define hourly_column 39
+             #define hourly_column 33
 
-             #define hourly_hour_x 66
-             #define hourly_hour_y 411
+             #define hourly_hour_x 50
+             #define hourly_hour_y 371
 
-             #define hourly_am_pm_x 88
-             #define hourly_am_pm_y 417
-             #define hourly_am_pm_pad_y 10
+             #define hourly_am_pm_x 65
+             #define hourly_am_pm_y 368
 
-             #define hourly_temperature_y 347
-             #define hourly_degree_x 80
-             #define hourly_degree_y 367
+             #define hourly_temperature_y 307
+             #define hourly_degree_x 64
+             #define hourly_degree_y 327
 
-             #define small_weather_icon_x 56
-             #define small_weather_icon_y 423
+             #define hourly_precip_prob_x 50
+             #define hourly_precip_prob_y 471
+             #define hourly_precip_percentage_x 63
+             #define hourly_precip_percentage_y 470
 
-             #define hourly_precip_prob_x 66
-             #define hourly_precip_prob_y 523
-             #define hourly_precip_percentage_x 88
-             #define hourly_precip_percentage_y 537
-
-             #define hourly_line_x 48
-             #define hourly_line_y 380
+             #define hourly_line_x 32
+             #define hourly_line_y 340
              #define hourly_line_pad_y 18
-             #define hourly_line_top_wide_x 22
-             #define hourly_line_top_narrow_x 8
+             #define hourly_line_top_wide_x 20
+             #define hourly_line_top_narrow_x 4
+
+             #define small_weather_icon_x 40
+             #define small_weather_icon_y 386
 
              it.printf(hourly_hour_x, hourly_hour_y, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_0_local_hour).state);
 
              if (id(wf_h_fc_0_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x, hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x, hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x, hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x, hourly_temperature_y - id(wf_h_fc_0_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_0_air_temperature).state);
@@ -604,6 +584,11 @@ display:
              it.printf(hourly_precip_prob_x, hourly_precip_prob_y, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_0_precip_probability).state);
              it.printf(hourly_precip_percentage_x, hourly_precip_percentage_y, id(font_humidity_percent), TextAlign::BOTTOM_RIGHT, "%%");
 
+             //it.printf(hourly_hour_x + (hourly_column * 1), hourly_hour_y, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_1_local_hour).state);
+             //it.printf(hourly_am_pm_x + (hourly_column * 1), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "%s", id(wf_h_fc_1_am_pm).state.c_str());
+             //it.printf(hourly_hour_x + (hourly_column * 1), hourly_temperature_y - id(wf_h_fc_1_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_1_air_temperature).state);
+             //it.printf(hourly_degree_x + (hourly_column * 1), hourly_degree_y - id(wf_h_fc_1_pixel_height).state, id(font_hourly_degree), TextAlign::BOTTOM_RIGHT, "°");
+
              if (id(wf_h_fc_1_pixel_height).has_state()) {
                it.line(hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - id(wf_h_fc_1_pixel_height).state, hourly_line_x + (hourly_column * 1), hourly_line_y);
                it.line(hourly_line_x + (hourly_column * 1) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - id(wf_h_fc_1_pixel_height).state, hourly_line_x + (hourly_column * 1) + hourly_line_top_narrow_x,
@@ -615,7 +600,7 @@ display:
              if (id(wf_h_fc_2_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 2), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 2), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 2), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 2), hourly_temperature_y - id(wf_h_fc_2_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_2_air_temperature).state);
@@ -631,7 +616,8 @@ display:
                  hourly_line_y - hourly_line_pad_y - id(wf_h_fc_2_pixel_height).state);
              }
 
-             it.printf(hourly_precip_prob_x + (hourly_column * 2), hourly_precip_prob_y, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_2_precip_probability).state);
+
+             it.printf(hourly_precip_prob_x + (hourly_column * 2), hourly_precip_prob_y, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_2_precip_probability).state); 
              it.printf(hourly_precip_percentage_x + (hourly_column * 2), hourly_precip_percentage_y, id(font_humidity_percent), TextAlign::BOTTOM_RIGHT, "%%");
 
              if (id(wf_h_fc_3_pixel_height).has_state()) {
@@ -645,7 +631,7 @@ display:
              if (id(wf_h_fc_4_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 4), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 4), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 4), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 4), hourly_temperature_y - id(wf_h_fc_4_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_4_air_temperature).state);
@@ -675,7 +661,7 @@ display:
              if (id(wf_h_fc_6_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 6), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 6), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 6), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 6), hourly_temperature_y - id(wf_h_fc_6_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_6_air_temperature).state);
@@ -705,7 +691,7 @@ display:
              if (id(wf_h_fc_8_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 8), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 8), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 8), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 8), hourly_temperature_y - id(wf_h_fc_8_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_8_air_temperature).state);
@@ -735,7 +721,7 @@ display:
              if (id(wf_h_fc_10_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 10), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 10), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 10), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 10), hourly_temperature_y - id(wf_h_fc_10_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_10_air_temperature).state);
@@ -765,7 +751,7 @@ display:
              if (id(wf_h_fc_12_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 12), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 12), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 12), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 12), hourly_temperature_y - id(wf_h_fc_12_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_12_air_temperature).state);
@@ -795,7 +781,7 @@ display:
              if (id(wf_h_fc_14_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 14), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 14), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 14), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 14), hourly_temperature_y - id(wf_h_fc_14_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_14_air_temperature).state);
@@ -825,7 +811,7 @@ display:
              if (id(wf_h_fc_16_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 16), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 16), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 16), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 16), hourly_temperature_y - id(wf_h_fc_16_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_16_air_temperature).state);
@@ -855,7 +841,7 @@ display:
              if (id(wf_h_fc_18_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 18), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 18), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 18), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 18), hourly_temperature_y - id(wf_h_fc_18_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_18_air_temperature).state);
@@ -872,7 +858,6 @@ display:
              }
 
              it.printf(hourly_precip_prob_x + (hourly_column * 18), hourly_precip_prob_y, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_18_precip_probability).state);
-
              it.printf(hourly_precip_percentage_x + (hourly_column * 18), hourly_precip_percentage_y, id(font_humidity_percent), TextAlign::BOTTOM_RIGHT, "%%");
 
              if (id(wf_h_fc_19_pixel_height).has_state()) {
@@ -886,7 +871,7 @@ display:
              if (id(wf_h_fc_20_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 20), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 20), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 20), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 20), hourly_temperature_y - id(wf_h_fc_20_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_20_air_temperature).state);
@@ -916,7 +901,7 @@ display:
              if (id(wf_h_fc_22_am_pm).state == "AM") {
                it.printf(hourly_am_pm_x + (hourly_column * 22), hourly_am_pm_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "AM");
              } else {
-               it.printf(hourly_am_pm_x + (hourly_column * 22), hourly_am_pm_y + hourly_am_pm_pad_y, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
+               it.printf(hourly_am_pm_x + (hourly_column * 22), hourly_am_pm_y + 15, id(font_am_pm), TextAlign::BOTTOM_RIGHT, "PM");
              }
 
              it.printf(hourly_hour_x + (hourly_column * 22), hourly_temperature_y - id(wf_h_fc_22_pixel_height).state, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_22_air_temperature).state);
@@ -935,6 +920,13 @@ display:
              it.printf(hourly_precip_prob_x + (hourly_column * 22), hourly_precip_prob_y, id(font_hourly), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_22_precip_probability).state);
              it.printf(hourly_precip_percentage_x + (hourly_column * 22), hourly_precip_percentage_y, id(font_humidity_percent), TextAlign::BOTTOM_RIGHT, "%%");
 
+button:
+  - platform: template
+    name: '${devicename} Refresh'
+    icon: 'mdi:update'
+    on_press:
+      then:
+        - component.update: '${devicename}_display'
 sensor:
   - platform: wifi_signal
     name: '${devicename} WiFi Signal'
@@ -950,13 +942,14 @@ sensor:
       name: '${devicename} Heap Max Block'
     loop_time:
       name: '${devicename} Loop Time'
-  - id: '${devicename}_battery_voltage'
+  - platform: adc
+    pin: A13
     name: '${devicename} Battery Voltage'
-    platform: lilygo_t5_47
-    unit_of_measurement: V
-    state_class: measurement
-    device_class: voltage
+    id: '${devicename}_battery_voltage'
     update_interval: 60s
+    attenuation: 11db
+    filters:
+      - lambda: return (x / 3.9) * 2 * 3.3 * 1.1;
   - platform: homeassistant
     entity_id: sensor.weatherflow_current_conditions
     id: wf_current_conditions_air_temperature
@@ -2006,4 +1999,3 @@ script:
             - deep_sleep.enter:
                 id: deep_sleep_control
                 sleep_duration: '${sleep_time}'
-

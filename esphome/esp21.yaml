@@ -1,5 +1,5 @@
 substitutions:
-  devicename: esp17
+  devicename: esp21
   run_time: 2min
   sleep_time: 15min
   night_sleep_time: 6h
@@ -273,17 +273,6 @@ external_components:
   - source: 'github://ashald/esphome@lilygo-t5-47'
     components:
       - lilygo_t5_47
-    refresh: 0s
-#  - source: 'github://pr#3255'
-#    components:
-#      - display
-#      - online_image
-#    refresh: 0s
-#  - source: 'github://ashald/esphome@lilygo-t5-47/pr#1'
-#    components:
-#      - display
-#    refresh: 0s
-
 display:
   platform: lilygo_t5_47
   full_update_every: 1
@@ -297,6 +286,8 @@ display:
 
 
       if (id(${devicename}_page).state == "A") {
+
+
 
       //it.printf(960, 80, id(font_last_updated), TextAlign::TOP_RIGHT, "Page: %s", id(${devicename}_page).state.c_str());
 
@@ -453,12 +444,14 @@ display:
 
         #define forecast_x_0 520
         #define forecast_state_y_0 243
-
+        
         #define forecast_degree_x_0 567
         #define forecast_degree_y_0 226
-
+        
         #define forecast_percent_x_0 566
         #define forecast_percent_y_0 236
+        
+
 
         if (id(wf_current_conditions_icon).has_state()) {
           it.printf(large_weather_icon_x_0, large_weather_icon_y_0, id(font_icons_large), TextAlign::TOP_CENTER, id(wf_current_conditions_icon).state.c_str());
@@ -500,6 +493,10 @@ display:
 
         it.printf(forecast_percent_x_0 + (forecast_tab_x_0 * 3), forecast_percent_y_0, id(font_current_humidity_percent), TextAlign::TOP_CENTER, "%%");
 
+
+
+
+
         // Weather Forecast Day +1
 
         #define small_weather_icon_x_1 587
@@ -517,7 +514,15 @@ display:
         #define forecast_degree_y 479
         #define forecast_percent_y 482
 
+ 
+
         it.line(465, 309, 960, 309);
+
+
+
+
+
+
 
         // Hourly Details
 
@@ -525,6 +530,8 @@ display:
 
         #define hourly_hour_x 492
         #define hourly_hour_y 465
+
+
 
         #define hourly_temperature_y 399
         #define hourly_degree_x 510
@@ -536,11 +543,15 @@ display:
         #define hourly_precip_prob_x 492
         #define hourly_precip_prob_y 534
 
+
         #define hourly_line_x 492
         #define hourly_line_y 441
         #define hourly_line_pad_y 18
         #define hourly_line_top_wide_x 6
         #define hourly_line_top_narrow_x 6
+        
+
+
 
         //it.printf(hourly_hour_x, hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "󱑖󱑋󱑌󱑍󱑎󱑏󱑐󱑑󱑒󱑓󱑔󱑕󱑊󱐿󱑀󱑁󱑂󱑃󱑄󱑅󱑆󱑇󱑈󱑉");
         //it.printf(hourly_hour_x, hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "󱑖󱑋󱑌󱑍󱑎󱑏󱑐󱑑󱑒󱑓󱑔󱑕");
@@ -557,16 +568,24 @@ display:
         if (id(wf_h_fc_0_pixel_height).has_state()) {
           //it.line(hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65), hourly_line_x, hourly_line_y);
           //it.line(hourly_line_x - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65), hourly_line_x + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x, hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_0_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_1_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65), hourly_line_x + (hourly_column * 1), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 1) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65), hourly_line_x + (hourly_column * 1) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65));
         }
+
+
+
+
+
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 2), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_2_local_hour_icon).state.c_str());
 
@@ -580,16 +599,19 @@ display:
         if (id(wf_h_fc_2_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65), hourly_line_x + (hourly_column * 2), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 2) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65), hourly_line_x + (hourly_column * 2) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 2), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_2_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_3_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65), hourly_line_x + (hourly_column * 3), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 3) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65), hourly_line_x + (hourly_column * 3) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65));
         }
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 4), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_4_local_hour_icon).state.c_str());
 
@@ -603,16 +625,19 @@ display:
         if (id(wf_h_fc_4_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65), hourly_line_x + (hourly_column * 4), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 4) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65), hourly_line_x + (hourly_column * 4) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 4), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_4_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_5_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65), hourly_line_x + (hourly_column * 5), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 5) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65), hourly_line_x + (hourly_column * 5) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65));
         }
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 6), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_6_local_hour_icon).state.c_str());
 
@@ -626,16 +651,18 @@ display:
         if (id(wf_h_fc_6_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65), hourly_line_x + (hourly_column * 6), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 6) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65), hourly_line_x + (hourly_column * 6) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 6), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_6_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_7_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65), hourly_line_x + (hourly_column * 7), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 7) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65), hourly_line_x + (hourly_column * 7) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65));
         }
+
 
         it.printf(hourly_hour_x + (hourly_column * 8), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_8_local_hour_icon).state.c_str());
 
@@ -649,16 +676,19 @@ display:
         if (id(wf_h_fc_8_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65), hourly_line_x + (hourly_column * 8), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 8) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65), hourly_line_x + (hourly_column * 8) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 8), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_8_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_9_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65), hourly_line_x + (hourly_column * 9), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 9) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65), hourly_line_x + (hourly_column * 9) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65));
         }
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 10), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_10_local_hour_icon).state.c_str());
 
@@ -672,16 +702,19 @@ display:
         if (id(wf_h_fc_10_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65), hourly_line_x + (hourly_column * 10), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 10) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65), hourly_line_x + (hourly_column * 10) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 10), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_10_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_11_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65), hourly_line_x + (hourly_column * 11), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 11) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65), hourly_line_x + (hourly_column * 11) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65));
         }
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 12), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_12_local_hour_icon).state.c_str());
 
@@ -695,16 +728,19 @@ display:
         if (id(wf_h_fc_12_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65), hourly_line_x + (hourly_column * 12), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 12) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65), hourly_line_x + (hourly_column * 12) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 12), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_12_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_13_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65), hourly_line_x + (hourly_column * 13), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 13) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65), hourly_line_x + (hourly_column * 13) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65));
         }
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 14), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_14_local_hour_icon).state.c_str());
 
@@ -718,16 +754,19 @@ display:
         if (id(wf_h_fc_14_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65), hourly_line_x + (hourly_column * 14), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 14) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65), hourly_line_x + (hourly_column * 14) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 14), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_14_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_15_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65), hourly_line_x + (hourly_column * 15), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 15) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65), hourly_line_x + (hourly_column * 15) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65));
         }
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 16), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_16_local_hour_icon).state.c_str());
 
@@ -741,16 +780,19 @@ display:
         if (id(wf_h_fc_16_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65), hourly_line_x + (hourly_column * 16), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 16) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65), hourly_line_x + (hourly_column * 16) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 16), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_16_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_17_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65), hourly_line_x + (hourly_column * 17), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 17) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65), hourly_line_x + (hourly_column * 17) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65));
         }
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 18), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_18_local_hour_icon).state.c_str());
 
@@ -764,16 +806,20 @@ display:
         if (id(wf_h_fc_18_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65), hourly_line_x + (hourly_column * 18), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 18) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65), hourly_line_x + (hourly_column * 18) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 18), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_18_precip_probability_icon).state.c_str());
 
+
+
         if (id(wf_h_fc_19_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65), hourly_line_x + (hourly_column * 19), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 19) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65), hourly_line_x + (hourly_column * 19) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65));
         }
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 20), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_20_local_hour_icon).state.c_str());
 
@@ -787,16 +833,19 @@ display:
         if (id(wf_h_fc_20_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65), hourly_line_x + (hourly_column * 20), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 20) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65), hourly_line_x + (hourly_column * 20) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 20), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_20_precip_probability_icon).state.c_str());
 
+
         if (id(wf_h_fc_21_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65), hourly_line_x + (hourly_column * 21), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 21) - hourly_line_top_narrow_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65), hourly_line_x + (hourly_column * 21) + hourly_line_top_narrow_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65));
         }
+
+
 
         it.printf(hourly_hour_x + (hourly_column * 22), hourly_hour_y, id(font_clock), TextAlign::BOTTOM_CENTER, "%s", id(wf_h_fc_22_local_hour_icon).state.c_str());
 
@@ -810,174 +859,180 @@ display:
         if (id(wf_h_fc_22_pixel_height).has_state()) {
           //it.line(hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65), hourly_line_x + (hourly_column * 22), hourly_line_y);
           //it.line(hourly_line_x + (hourly_column * 22) - hourly_line_top_wide_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65), hourly_line_x + (hourly_column * 22) + hourly_line_top_wide_x,
-          //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65));
+            //hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65));
         }
 
         it.printf(hourly_precip_prob_x + (hourly_column * 22), hourly_precip_prob_y, id(font_pie), TextAlign::BOTTOM_CENTER, id(wf_h_fc_22_precip_probability_icon).state.c_str());
 
+
         it.line(465, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65), hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65));
 
-        it.line(hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65), hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65));
+          it.line(hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65), hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65));
+          
+          it.line(hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65), hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65), hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65), hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65), hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65), hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65), hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65), hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65), hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65), hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65), hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65), hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65));  
+          
+          it.line(hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65), hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65), hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65), hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65), hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65), hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65), hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65), hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65), hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65), hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65), hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65), hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65), hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65), hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65), hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65), hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65), hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65), hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65), hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65), hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65), hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65), hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65), hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65), hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65), hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65), hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65), hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65), hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65), hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65), hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65));
 
-        it.line(hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65), hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65));
-
-        it.line(hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65), hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65));
-
-        it.line(hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65), hourly_line_x + (hourly_column * 23), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65));
+          it.line(hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65), hourly_line_x + (hourly_column * 23), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65));
 
         it.line(hourly_line_x + (hourly_column * 23), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65), 960, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65));
 
+
+
         it.line(465, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65) + 1, hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65) + 1);
+          
+          it.line(hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65) + 1);  
+          
+          it.line(hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65) + 1);
 
-        it.line(hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65) + 1);
-
-        it.line(hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65) + 1);
-
-        it.line(hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 23), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65) + 1);
+          it.line(hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65) + 1, hourly_line_x + (hourly_column * 23), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65) + 1);
 
         it.line(hourly_line_x + (hourly_column * 23), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65) + 1, 960, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65) + 1);
 
+
         it.line(465, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65) + 2, hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_0_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65) + 2);
+          
+          it.line(hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 1), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_1_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 2), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_2_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 3), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_3_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 4), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_4_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 5), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_5_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65) + 2);  
+          
+          it.line(hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 6), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_6_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 7), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_7_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 8), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_8_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 9), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_9_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 10), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_10_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 11), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_11_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 12), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_12_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 13), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_13_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 14), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_14_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 15), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_15_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 16), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_16_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 17), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_17_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 18), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_18_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 19), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_19_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65) + 2);
 
-        it.line(hourly_line_x + (hourly_column * 20), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_20_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65) + 2);
-
-        it.line(hourly_line_x + (hourly_column * 21), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_21_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65) + 2);
-
-        it.line(hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 23), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65) + 2);
+          it.line(hourly_line_x + (hourly_column * 22), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_22_pixel_height).state * .65) + 2, hourly_line_x + (hourly_column * 23), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65) + 2);
 
         it.line(hourly_line_x + (hourly_column * 23), hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65) + 2, 960, hourly_line_y - hourly_line_pad_y - (id(wf_h_fc_23_pixel_height).state * .65) + 2);
 
-        //it.image(0, 0, id(example_image_1));
+
+
+        } else if (id(${devicename}_page).state == "B") {
+
+      //it.printf(960, 80, id(font_last_updated), TextAlign::TOP_RIGHT, "Page: %s", id(${devicename}_page).state.c_str());
+
+
+
+
+        } else  {
+
+      //it.printf(960, 80, id(font_last_updated), TextAlign::TOP_RIGHT, "Page: %s", id(${devicename}_page).state.c_str());
 
         }
-        
-        else if (id(${devicename}_page).state == "B") {
 
-          //it.printf(960, 80, id(font_last_updated), TextAlign::TOP_RIGHT, "Page: %s", id(${devicename}_page).state.c_str());
-
-        } else {
-
-          //it.printf(960, 80, id(font_last_updated), TextAlign::TOP_RIGHT, "Page: %s", id(${devicename}_page).state.c_str());
-
-        }
 
 sensor:
   - platform: wifi_signal
@@ -2002,8 +2057,3 @@ script:
             - deep_sleep.enter:
                 id: deep_sleep_control
                 sleep_duration: '${sleep_time}'
-
-#online_image:
-#  - url: 'http://attic.tylephony.com/forecast.png'
-#    id: example_image_1
-#    format: PNG
