@@ -13,22 +13,6 @@
   value_template: '{{ value_json.conditions }}'
   scan_interval: 300
 - platform: command_line
-  name: weatherflow_daily_forecast
-  json_attributes:
-    - day_num
-    - month_num
-    - conditions
-    - icon
-    - air_temp_high
-    - air_temp_low
-    - precip_probability
-    - sunrise
-    - sunset
-    - day_name
-  command: bash /config/scripts/weatherflow_daily_forecast_test.sh
-  value_template: '{{ value_json.day_num }}'
-  scan_interval: 300
-- platform: command_line
   name: weatherflow_daily_forecast_0
   json_attributes:
     - day_num
@@ -91,21 +75,6 @@
     - day_name
   command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 3
   value_template: '{{ value_json.day_num }}'
-  scan_interval: 300
-- platform: command_line
-  name: weatherflow_hourly_forecast
-  json_attributes:
-    - air_temperature
-    - am_pm
-    - conditions
-    - icon
-    - local_hour
-    - local_hour_icon
-    - pixel_height
-    - precip_probability
-    - precip_probability_icon
-  command: bash /config/scripts/weatherflow_hourly_forecast_test.sh
-  value_template: '{{ value_json.local_hour }}'
   scan_interval: 300
 - platform: command_line
   name: weatherflow_hourly_forecast_0
