@@ -1,0 +1,14 @@
+services:
+  mqtt_logger:
+    container_name: mqtt_logger
+    environment:
+      MQTT_LOGGER_HOST_HOSTNAME: build01.tylephony.com
+      MQTT_LOGGER_LOKI_CLIENT_URL: http://log01.tylephony.com:3100/loki/api/v1/push
+      MQTT_LOGGER_MQTT_HOSTNAME: hass.tylephony.com
+      MQTT_LOGGER_MQTT_PASSWORD: mqttpassword
+      MQTT_LOGGER_MQTT_PORT: 1883
+      MQTT_LOGGER_MQTT_USERNAME: mqtt
+      TZ: America/Chicago
+    image: docker01.tylephony.com:5000/lux4rd0/mqtt_logger:latest
+    restart: always
+version: '3.3'
