@@ -4,8 +4,11 @@ esphome:
   name: ${devicename}
   platform: ESP32
   board: esp32dev
+debug:
+  update_interval: 60s
 logger:
   baud_rate: 0
+  level: DEBUG
 switch:
   - platform: restart
     name: ${devicename} Restart
@@ -59,8 +62,21 @@ sensor:
     update_interval: 60s
     iir_filter: 16x
   - platform: wifi_signal
-    name: ${devicename} WiFi Signal
+    name: '${devicename} WiFi Signal'
+    id: '${devicename}_WiFi_Signal'
     update_interval: 60s
   - platform: uptime
-    name: ${devicename} Uptime
+    name: '${devicename} Uptime'
     update_interval: 60s
+  - platform: debug
+    free:
+      name: '${devicename} Heap Free'
+    block:
+      name: '${devicename} Heap Max Block'
+    loop_time:
+      name: '${devicename} Loop Time'
+text_sensor:
+  - platform: debug
+    device:
+      name: '${devicename} Device Info'
+      id: '${devicename}_device_info'    
