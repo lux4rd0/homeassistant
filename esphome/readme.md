@@ -1,1 +1,1 @@
-
+In this section of my Home Assistant configurations, you’ll find sets of files related to my [ESPhome](https://esphome.io/) efforts. You’ll mostly find versioned sets of my personal ESPhome configurations for a variety of [esp32](https://www.espressif.com/en/products/socs/esp32) devices supporting a combination of projects. For specific configurations and examples, please visit my ESPhome blog for details.
