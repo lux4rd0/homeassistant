@@ -1,6 +1,6 @@
 **WeatherFlow - Lilygo T5 4.7" Screen**
 
-[lilygo_t5_weatherflow.yaml](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/esphome/lilygo_t5_weatherflow.yaml)
+[lilygo_t5_weatherflow.yaml](https://github.com/lux4rd0/homeassistant/blob/main/esphome/lilygo_t5_weatherflow.yaml)
 
 There are three screens built into one YAML configuration file. They represent:
 
