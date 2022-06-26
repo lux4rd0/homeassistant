@@ -5,7 +5,7 @@ These [WeatherFlow](https://weatherflow.com/) scripts for [Home Assistant](https
 
 [sensor.yaml](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/sensor.yaml)
 
-This file gets added to your Home Assistant configuration. I split out my main configuration.yaml file into sub-files - so you'd need to have an include directive in you want to do the same. Something like:
+This file gets added to your Home Assistant configuration. I split out my main `configuration.yaml` file into sub-files. Your configruation will need an include directive in you want to do the same. Something like:
 
     default_config:
     sensor: !include sensor.yaml
@@ -50,7 +50,7 @@ from the JSON file fetched by the weatherflow_fetch_forecast.sh scripts.
 
 [weatherflow_fetch_forecast.sh](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_fetch_forecast.sh)
 
-This script polls the [WeatherFlow API](https://weatherflow.github.io/Tempest/api/) for all the information on the forecast and current conditions. The other scripts use the output of this file to populate each Home Assistant sensor.
+This script polls the [WeatherFlow API](https://weatherflow.github.io/Tempest/api/) for all the information on the forecast and current conditions. The other scripts use the output of this file to populate each Home Assistant sensor. The output of the file is called `weatherflow_forecast_out.txt` and will be created in the same folder as the scripts.
 
 Before using it, you need to edit the file and update it to reflect your WeatherFlow **Station ID** and **API token**. You can also update the units to reflect your preferences.
 
