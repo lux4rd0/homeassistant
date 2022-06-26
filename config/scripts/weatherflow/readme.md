@@ -1,10 +1,10 @@
-These WeatherFlow scripts for [Home Assistant](https://www.home-assistant.io/) provide sensor and sensor_text details for [ESPhome](https://esphome.io/) in order to display [WeatherFlow](https://weatherflow.com/) data. To successfully use these items, please follow the instructions below, making changes relevant to your own deployment.
+These WeatherFlow scripts for [Home Assistant](https://www.home-assistant.io/) provide sensor and sensor_text details for [ESPhome](https://esphome.io/) in order to display [WeatherFlow](https://weatherflow.com/) data. Please follow the instructions below to successfully use these items, making changes relevant to your deployment.
 
 **Home Assistant YAML Configuration**
 
 [sensor.yaml](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/sensor.yaml)
 
-This file gets added to your Home Assistant configuration. I actually split out my main configuration.yaml file into sub files - so you'd need to have an inlcude directive in you want to do the same. Something like:
+This file gets added to your Home Assistant configuration. I split out my main configuration.yaml file into sub-files - so you'd need to have an include directive in you want to do the same. Something like:
 
     default_config:
     sensor: !include sensor.yaml
@@ -24,11 +24,11 @@ This configruation sets up mulitple command_line collectors that poll the other 
 
 **Home Assistant File System**
 
-Each of these shell script files should be placed into the Home Assistant file system. They're already configured for:
+These shell script files should be placed into the Home Assistant file system. They're already configured for:
 
     /config/scripts/weatherflow
 
-If you wish to place them someplace else, be sure to update each of the scripts to reflect the different folder path. You will need to change the permissions on each of thes files to be exeuctable by the Home Assistant user.
+If you wish to place them someplace else, be sure to update each of the scripts to reflect the different folder paths. You will need to change the permissions on each file to be executable by the Home Assistant user.
 
     chmod 755 /config/scripts/weatherflow/*.sh
 
@@ -49,9 +49,9 @@ from the JSON file fetched by the weatherflow_fetch_forecast.sh scripts.
 
 [weatherflow_fetch_forecast.sh](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_fetch_forecast.sh)
 
-This script polls the [WeatherFlow API](https://weatherflow.github.io/Tempest/api/) for all of the forecast and current conditions information. The output of this file is used by the other scripts to populate each of the Home Assistant sensors.
+This script polls the [WeatherFlow API](https://weatherflow.github.io/Tempest/api/) for all the information on the forecast and current conditions. The other scripts use the output of this file to populate each Home Assistant sensor.
 
-Before you can use it, you need edit the file and update it to reflect your WeatherFlow **Station ID** and **API token**. You can also update the units to reflect your own preferences.
+Before using it, you need to edit the file and update it to reflect your WeatherFlow **Station ID** and **API token**. You can also update the units to reflect your preferences.
 
     WEATHERFLOW_STATION_ID="<station_id>"
     WEATEHRFLOW_TOKEN="<token>"
@@ -100,8 +100,7 @@ Returns these elements for **Hourly Forecast**:
     - precip_probability
     - precip_probability_icon
 
-Requires a hour parameter to be passed to the script.
+Requires an hour parameter to be passed to the script.
 *For example (the 8th hour, index starts at 0):*
 
     bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 7
-
