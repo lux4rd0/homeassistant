@@ -76,7 +76,6 @@
   command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 3
   value_template: '{{ value_json.day_num }}'
   scan_interval: 300
-
 - platform: command_line
   name: weatherflow_hourly_forecast_0
   json_attributes:
