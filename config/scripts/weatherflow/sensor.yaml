@@ -1,0 +1,439 @@
+- platform: command_line
+  name: weatherflow_fetch_forecast
+  command: bash /config/scripts/weatherflow/weatherflow_fetch_forecast.sh
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_current_conditions
+  json_attributes:
+    - conditions
+    - icon
+    - relative_humidity
+    - air_temperature
+  command: bash /config/scripts/weatherflow/weatherflow_current_conditions.sh
+  value_template: '{{ value_json.conditions }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_daily_forecast_0
+  json_attributes:
+    - day_num
+    - month_num
+    - conditions
+    - icon
+    - air_temp_high
+    - air_temp_low
+    - precip_probability
+    - sunrise
+    - sunset
+    - day_name
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 0
+  value_template: '{{ value_json.day_num }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_daily_forecast_1
+  json_attributes:
+    - day_num
+    - month_num
+    - conditions
+    - icon
+    - air_temp_high
+    - air_temp_low
+    - precip_probability
+    - sunrise
+    - sunset
+    - day_name
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 1
+  value_template: '{{ value_json.day_num }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_daily_forecast_2
+  json_attributes:
+    - day_num
+    - month_num
+    - conditions
+    - icon
+    - air_temp_high
+    - air_temp_low
+    - precip_probability
+    - sunrise
+    - sunset
+    - day_name
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 2
+  value_template: '{{ value_json.day_num }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_daily_forecast_3
+  json_attributes:
+    - day_num
+    - month_num
+    - conditions
+    - icon
+    - air_temp_high
+    - air_temp_low
+    - precip_probability
+    - sunrise
+    - sunset
+    - day_name
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 3
+  value_template: '{{ value_json.day_num }}'
+  scan_interval: 300
+
+- platform: command_line
+  name: weatherflow_hourly_forecast_0
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 0
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_1
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 1
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_2
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 2
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_3
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 3
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_4
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 4
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_5
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 5
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_6
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 6
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_7
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 7
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_8
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 8
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_9
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 9
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_10
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 10
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_11
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 11
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_12
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 12
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_13
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 13
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_14
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 14
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_15
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 15
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_16
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 16
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_17
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 17
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_18
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 18
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_19
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 19
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_20
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 20
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_21
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 21
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_22
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 22
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
+- platform: command_line
+  name: weatherflow_hourly_forecast_23
+  json_attributes:
+    - air_temperature
+    - am_pm
+    - conditions
+    - icon
+    - local_hour
+    - local_hour_icon
+    - pixel_height
+    - precip_probability
+    - precip_probability_icon
+  command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 23
+  value_template: '{{ value_json.local_hour }}'
+  scan_interval: 300
