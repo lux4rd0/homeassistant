@@ -1,6 +1,4 @@
-These WeatherFlow scripts for Home Assistant provide sensor and sensor_text details for ESPhome in order to display WeatherFlow data. To successfully use these items, please follow the instructions below, making changes relevant to your own deployment.
-
-Download each of the files from my [Github](https://github.com/lux4rd0/homeassistant/tree/main/config/scripts/weatherflow):
+These WeatherFlow scripts for [Home Assistant](https://www.home-assistant.io/) provide sensor and sensor_text details for [ESPhome](https://esphome.io/) in order to display [WeatherFlow](https://weatherflow.com/) data. To successfully use these items, please follow the instructions below, making changes relevant to your own deployment.
 
 **Home Assistant YAML Configuration**
 
