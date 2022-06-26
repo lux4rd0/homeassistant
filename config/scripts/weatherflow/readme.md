@@ -52,7 +52,7 @@ from the JSON file fetched by the weatherflow_fetch_forecast.sh scripts.
 
 This script polls the [WeatherFlow API](https://weatherflow.github.io/Tempest/api/) for all the information on the forecast and current conditions. The other scripts use the output of this file to populate each Home Assistant sensor. The output of the file is called `weatherflow_forecast_out.txt` and will be created in the same folder as the scripts.
 
-Before using it, you need to edit the file and update it to reflect your WeatherFlow **Station ID** and **API token**. You can also update the units to reflect your preferences.
+Before using it, edit the file to reflect your own WeatherFlow **Station ID** and **API token**. You can also update the units to reflect your preferences.
 
     WEATHERFLOW_STATION_ID="<station_id>"
     WEATEHRFLOW_TOKEN="<token>"
