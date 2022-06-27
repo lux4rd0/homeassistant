@@ -1,3 +1,4 @@
+
 **WeatherFlow - Lilygo T5 4.7" Screen**
 
 [lilygo_t5_weatherflow.yaml](https://github.com/lux4rd0/homeassistant/blob/main/esphome/lilygo_t5_weatherflow.yaml)
@@ -24,7 +25,7 @@ YAML file details:
       sleep_time: 15min
       night_sleep_time: 375min
 
-Provides for device name substitution. Any common sensors, buttons, switches, etc. - get swapped in for this name. I usually use the hostname. run_time and sleep_time are for the intervals providing for deep sleep. Night Sleep Time is for the 6 hours set for overnight sleep. Usually, this would be 360 minutes for 6 hours, but there's a fair amount of system clock drift during sleep - so I set this just over the 360 minutes so it doesn't get stuck when it wakes up in the morning.
+Provides for device name substitution. Any common sensors, buttons, switches, etc. - get swapped in for this name. I usually use the hostname. `run_time` and `sleep_time` are for the intervals providing for deep sleep. `night_sleep_time` is used for the 6 hours configured for overnight sleep. Usually, this would be 360 minutes for 6 hours, but there's a fair amount of system clock drift during sleep - so I set this just over the 360 minutes so the refresh doesn't get stuck when the Lilygo wakes up in the morning.
 
     esp32:
       board: m5stack-core2
@@ -33,7 +34,7 @@ Provides for device name substitution. Any common sensors, buttons, switches, et
         version: 2.0.2
         platform_version: '4.3.0'
 
-The Lilygo T5 isn't in the official [esp32 board list](https://registry.platformio.org/platforms/platformio/espressif32/boards) yet, but the [m5stack-core2](https://docs.platformio.org/en/latest/boards/espressif32/m5stack-core2.html) has the same configurations. This helps with the 16MB Flash 8MB PSRAM. The reason we're specifying the framework is that using a lot of sensors from Home Assistant causes some kernel panics at startup. Once ESPhome is updated to newer frameworks, this may be removed.
+The Lilygo T5 isn't in the official [esp32 board list](https://registry.platformio.org/platforms/platformio/espressif32/boards) yet, but the [m5stack-core2](https://docs.platformio.org/en/latest/boards/espressif32/m5stack-core2.html) has the same configurations. This helps with the 16MB Flash 8MB PSRAM. The reason the framework is specified is to remove the kernel paneics that happens when using a lot of sensors from Home Assistant. Once ESPHome is updated to newer frameworks, this should be removed.
 
     wifi:
       ssid: !secret wifi_ssid
@@ -44,7 +45,7 @@ The Lilygo T5 isn't in the official [esp32 board list](https://registry.platform
       domain: .tylephony.com
       power_save_mode: none
 
-This most likely can be what you've already templated with your ESPhome. Just using secrets files and domain names to help find my devices more consistently.
+This most likely can be what you've already templated with your ESPHome. Just using secrets files and domain names to help find my devices more consistently.
 
     deep_sleep:
       run_duration: '${run_time}'
@@ -54,7 +55,7 @@ This most likely can be what you've already templated with your ESPhome. Just us
         pins: GPIO39
         mode: ALL_LOW
 
-Deep sleep settings. These pull from the substitutions at the top of the YAML file. The `esp32_ext1_wakeup` is needed to get around the display not refreshing on its own.
+Deep sleep settings. These pull from the substitutions at the top of the YAML file. The `esp32_ext1_wakeup` is needed to get around the display not refreshing on its own on wake.
 
     font:
 
@@ -107,7 +108,11 @@ Provides two buttons in Home Assistant to restart the device and refresh the dis
         name: '${devicename} Prevent Deep Sleep'
         entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
 
-These binary sensors provide the ability to use the three Lilygo buttons and send status back to Home Assistant. The 4th physical button isn't usable, and the 5th one is a reset. The `${devicename}_prevent_deep_sleep` provides status to know if the device knows if it should sleep or not.
+These binary sensors provide the ability to use the three Lilygo buttons and send status back to Home Assistant. The 4th physical button isn't directly usable, and the 5th one is a device reset. The `${devicename}_prevent_deep_sleep` is used to dermine if it should sleep or not.
+
+You will need to define an [input_boolean](https://www.home-assistant.io/integrations/input_boolean/) that is part of Home Assistant helpers and can be found in Devices & Services. This needs to be added manually, and the Entity ID must match the devicename/sensor in ESPHome. 
+
+![enter image description here](https://labs.lux4rd0.com/wp-content/uploads/2022/06/lilygo_t5_input_boolean.png)
 
     external_components:
       - source: 'github://ashald/esphome@lilygo-t5-47'
@@ -164,7 +169,7 @@ This is the start of the display drawing - part of the display YAML stanza. It l
         device_class: voltage
         update_interval: 60s
 
-The Sensor section accounts for sending and receiving data between ESPHome and Home Assistant. The first sensors report Wi-Fi signal, uptime,  battery, and debug information. You can choose to remove update and debug if you don't want them reported. Both **Wi-Fi** and **Battery Voltage** are shown on the display. Battery Voltage is reported from the `github://ashald/esphome@lilygo-t5-47` Display Driver. Remove the `name:` line if you don't want them reported to Home Asssitant.
+The Sensor section accounts for sending and receiving data between ESPHome and Home Assistant. The first sensors report Wi-Fi signal, uptime,  battery, and debug information. You can choose to remove update and debug if you don't want them reported. Both **Wi-Fi** and **Battery Voltage** are shown on the display. Battery Voltage is reported from the `github://ashald/esphome@lilygo-t5-47` Display Driver. Remove the `name:` line if you don't want them reported to Home Assistant.
 
 Below those, you'll find the bulk of the Home Assistant sensors used to display data:
 
@@ -250,10 +255,6 @@ The last part is the script to refresh the screen and either prevent deep sleep 
                 - deep_sleep.enter:
                     id: deep_sleep_control
                     sleep_duration: '${sleep_time}'
-
-You will need to define an [input_boolean](https://www.home-assistant.io/integrations/input_boolean/) that is part of Home Assistant helpers and can be found in Devices & Services. This needs to be added manually, and the Entity ID must match the devicename/sensor in ESPHome. 
-
-![enter image description here](https://labs.lux4rd0.com/wp-content/uploads/2022/06/lilygo_t5_input_boolean.png)
 
 If Prevent Deep Sleep is toggled on, the display will still refresh but not go into a deep sleep. This is useful if you want to change the display pages and refresh them manually - or if you need to do a firmware upgrade. 
 
