@@ -1,0 +1,182 @@
+substitutions:
+  devicename: clock_display
+  run_time: 1min
+  sleep_time: 55s
+  night_sleep_time: 375min
+esphome:
+  name: '${devicename}'
+esp32:
+  board: m5stack-core2
+debug:
+  update_interval: 60s
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery: true
+time:
+  - platform: homeassistant
+    id: ntp
+logger:
+  baud_rate: 0
+  level: DEBUG
+switch:
+  - platform: restart
+    name: '${devicename} Restart'
+api:
+  reboot_timeout: 2min
+ota:
+  password: !secret ota_password
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: '${devicename}'
+    password: !secret wifi_password
+  domain: .tylephony.com
+  power_save_mode: light
+  fast_connect: on
+deep_sleep:
+  run_duration: '${run_time}'
+  sleep_duration: '${sleep_time}'
+  id: deep_sleep_control
+  esp32_ext1_wakeup:
+    pins: GPIO39
+    mode: ALL_LOW
+font:
+  - file: fonts/Black Gladiator.ttf
+    id: font_time
+    glyphs:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - ' '
+      - ':'
+      - A
+      - M
+      - P
+    size: 440
+button:
+  - platform: restart
+    name: '${devicename} Restart'
+    internal: false
+  - platform: template
+    name: '${devicename} Refresh'
+    icon: 'mdi:update'
+    on_press:
+      then:
+        - component.update: '${devicename}_display'
+    internal: false
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: true
+    name: '${devicename} Button 1'
+  - platform: gpio
+    pin:
+      number: GPIO34
+      inverted: true
+    name: '${devicename} Button 2'
+    internal: false
+  - platform: gpio
+    pin:
+      number: GPIO35
+      inverted: true
+    name: '${devicename} Button 3'
+    internal: false
+  - platform: homeassistant
+    id: '${devicename}_prevent_deep_sleep'
+    name: '${devicename} Prevent Deep Sleep'
+    entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
+external_components:
+  - source: 'github://ashald/esphome@lilygo-t5-47'
+    components:
+      - lilygo_t5_47
+    refresh: 0s
+display:
+  platform: lilygo_t5_47
+  full_update_every: 1
+  cycles_render: 40
+  cycles_invert: 40
+  id: '${devicename}_display'
+  update_interval: never
+  lambda: |-
+    it.strftime(480, 270, id(font_time), TextAlign::CENTER, "%I:%M",id(ntp).now());
+sensor:
+  - platform: wifi_signal
+    name: '${devicename} WiFi Signal'
+    id: '${devicename}_WiFi_Signal'
+    update_interval: 60s
+  - platform: uptime
+    name: '${devicename} Uptime'
+    update_interval: 60s
+  - platform: debug
+    free:
+      name: '${devicename} Heap Free'
+    block:
+      name: '${devicename} Heap Max Block'
+    loop_time:
+      name: '${devicename} Loop Time'
+  - id: '${devicename}_battery_voltage'
+    name: '${devicename} Battery Voltage'
+    platform: lilygo_t5_47
+    unit_of_measurement: V
+    state_class: measurement
+    device_class: voltage
+    update_interval: 60s
+text_sensor:
+  - platform: debug
+    device:
+      name: '${devicename} Device Info'
+      id: '${devicename}_device_info'
+  - platform: homeassistant
+    entity_id: 'input_select.${devicename}_page'
+    id: '${devicename}_page'
+    on_value:
+      then:
+        - logger.log: 'Received input_select.${devicename}_page'
+        - script.execute: all_data_received
+script:
+  - id: all_data_received
+    then:
+      - component.update: '${devicename}_display'
+      - if:
+          condition:
+            binary_sensor.is_on: '${devicename}_prevent_deep_sleep'
+          then:
+            - logger.log: 'Skipping sleep, per prevent_deep_sleep'
+            - deep_sleep.prevent: deep_sleep_control
+          else:
+            - script.execute: enter_sleep
+  - id: enter_sleep
+    then:
+      - if:
+          condition:
+            lambda: |-
+              auto time = id(ntp).now();
+              if (!time.is_valid()) {
+                return false;
+              }
+              return (time.hour < 6);
+          then:
+            - logger.log: 'Nighttime, entering long sleep for ${night_sleep_time}'
+            - deep_sleep.enter:
+                id: deep_sleep_control
+                sleep_duration: '${night_sleep_time}'
+          else:
+            - logger.log: 'Daytime, entering short sleep for sleepSeconds'
+            - lambda: |-
+                auto currentSeconds = id(ntp).now();
+                int sleepSeconds = (60 - currentSeconds.second) * 1000;
+                ESP_LOGI("sleepSeconds", "sleepSeconds");
+                id(deep_sleep_control).set_sleep_duration(sleepSeconds);
+            - deep_sleep.enter:
+                id: deep_sleep_control
