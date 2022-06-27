@@ -35,7 +35,7 @@ wifi:
     password: !secret wifi_password
   domain: .tylephony.com
   power_save_mode: light
-  fast_connect: on
+  fast_connect: 'on'
 deep_sleep:
   run_duration: '${run_time}'
   sleep_duration: '${sleep_time}'
@@ -74,28 +74,6 @@ button:
       then:
         - component.update: '${devicename}_display'
     internal: false
-binary_sensor:
-  - platform: gpio
-    pin:
-      number: GPIO39
-      inverted: true
-    name: '${devicename} Button 1'
-  - platform: gpio
-    pin:
-      number: GPIO34
-      inverted: true
-    name: '${devicename} Button 2'
-    internal: false
-  - platform: gpio
-    pin:
-      number: GPIO35
-      inverted: true
-    name: '${devicename} Button 3'
-    internal: false
-  - platform: homeassistant
-    id: '${devicename}_prevent_deep_sleep'
-    name: '${devicename} Prevent Deep Sleep'
-    entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
 external_components:
   - source: 'github://ashald/esphome@lilygo-t5-47'
     components:
@@ -108,8 +86,9 @@ display:
   cycles_invert: 40
   id: '${devicename}_display'
   update_interval: never
-  lambda: |-
-    it.strftime(480, 270, id(font_time), TextAlign::CENTER, "%I:%M",id(ntp).now());
+  lambda: >-
+    it.strftime(480, 270, id(font_time), TextAlign::CENTER,
+    "%I:%M",id(ntp).now());
 sensor:
   - platform: wifi_signal
     name: '${devicename} WiFi Signal'
@@ -132,18 +111,37 @@ sensor:
     state_class: measurement
     device_class: voltage
     update_interval: 60s
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: true
+    name: '${devicename} Button 1'
+  - platform: gpio
+    pin:
+      number: GPIO34
+      inverted: true
+    name: '${devicename} Button 2'
+    internal: false
+  - platform: gpio
+    pin:
+      number: GPIO35
+      inverted: true
+    name: '${devicename} Button 3'
+    internal: false
+  - platform: homeassistant
+    id: '${devicename}_prevent_deep_sleep'
+    name: '${devicename} Prevent Deep Sleep'
+    entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
+    on_value:
+      then:
+        - logger.log: 'Received input_select.${devicename}_page'
+        - script.execute: all_data_received
 text_sensor:
   - platform: debug
     device:
       name: '${devicename} Device Info'
       id: '${devicename}_device_info'
-  - platform: homeassistant
-    entity_id: 'input_select.${devicename}_page'
-    id: '${devicename}_page'
-    on_value:
-      then:
-        - logger.log: 'Received input_select.${devicename}_page'
-        - script.execute: all_data_received
 script:
   - id: all_data_received
     then:
