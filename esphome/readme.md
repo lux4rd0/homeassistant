@@ -4,4 +4,8 @@ In this section of my Home Assistant configurations, you’ll find sets of files
 
 Additional details are provided for:
 
+ - [Lilygo T5 - Clock Display](https://github.com/lux4rd0/homeassistant/blob/main/esphome/lilygo_t5_clock.md)
+
+![enter image description here](https://labs.lux4rd0.com/wp-content/uploads/2022/06/lilygo_t5_Clock-300x168.png)
+
  - [Lilygo T5 - WeatherFlow Display](https://github.com/lux4rd0/homeassistant/blob/main/esphome/lilygo_t5_weatherflow.md)
