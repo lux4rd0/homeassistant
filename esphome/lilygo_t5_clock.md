@@ -1,4 +1,5 @@
 
+
 **WeatherFlow - Lilygo T5 4.7" Screen**
 
 [lilygo_t5_clock.yaml](https://github.com/lux4rd0/homeassistant/blob/main/esphome/lilygo_t5_clock.yaml)
@@ -6,6 +7,8 @@
 A simple clock that provides the current hour:minute on screen refresh:
 
 ![enter image description here](https://labs.lux4rd0.com/wp-content/uploads/2022/06/lilygo_t5_Clock-300x168.png)
+
+More details may be found on my [ESPHome E Ink](https://labs.lux4rd0.com/home-assistant/esphome/e-ink-display/) blog.
 
 YAML file details:
 
