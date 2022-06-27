@@ -17,6 +17,8 @@ There are three screens built into one YAML configuration file. They represent:
 
 ![enter image description here](https://labs.lux4rd0.com/wp-content/uploads/2022/06/lilygo_t5_WeatherFlow-4-Day-Overview-300x168.png)
 
+More details may be found on my [ESPHome E Ink](https://labs.lux4rd0.com/home-assistant/esphome/e-ink-display/) blog.
+
 YAML file details:
 
     substitutions:
