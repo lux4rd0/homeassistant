@@ -2,8 +2,12 @@ substitutions:
   devicename: esp01
 esphome:
   name: ${devicename}
-  platform: ESP32
+esp32:
   board: esp32dev
+  framework:
+    type: arduino
+    version: 2.0.2
+    platform_version: '4.3.0'
 debug:
   update_interval: 60s
 logger:

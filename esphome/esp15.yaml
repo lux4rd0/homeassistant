@@ -465,6 +465,7 @@ font:
       - 8
       - 9
       - '%'
+      - ' '
     size: 50
   - file: 'gfonts://Alef'
     id: font_humidity_percent_c
@@ -1364,7 +1365,7 @@ display:
       it.line(480, 356, 960, 356);
       it.line(480, 0, 480, 540);
 
-        } else {
+        } else if (id(${devicename}_page).state == "C") {
 
             // tab
 
@@ -2041,7 +2042,73 @@ display:
             it.printf(hourly_precip_prob_x + (hourly_column * 22), hourly_precip_prob_y, id(font_hourly_c), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_22_precip_prob).state);
             it.printf(hourly_precip_percentage_x + (hourly_column * 22), hourly_precip_percentage_y, id(font_humidity_percent_c), TextAlign::BOTTOM_RIGHT, "%%");
 
+        } else if (id(${devicename}_page).state == "C") {
+
+
+          // tab
+
+
+
+              int last_update_x_c = 955;
+              int last_update_y_c = 205;
+
+              int wifi_x_c = 870;
+              int wifi_y_c = 205;
+
+              int battery_voltage_x_c = 890;
+              int battery_voltage_y_c = 205;
+
+              // Last Updated
+
+              it.strftime(last_update_x_c, last_update_y_c, id(font_lettering_c), TextAlign::TOP_RIGHT, "%I:%M %p", id(ntp).now());
+
+              // WiFi Signal Strength
+
+              if (id(${devicename}_WiFi_Signal).has_state()) {
+                if (id(${devicename}_WiFi_Signal).state >= -50) {
+                  //Excellent
+                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤨");
+                  ESP_LOGI("WiFi", "Exellent");
+                } else if (id(${devicename}_WiFi_Signal).state >= -60) {
+                  //Good
+                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤥");
+                  ESP_LOGI("WiFi", "Good");
+                } else if (id(${devicename}_WiFi_Signal).state >= -67) {
+                  //Fair
+                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤢");
+                  ESP_LOGI("WiFi", "Fair");
+                } else if (id(${devicename}_WiFi_Signal).state >= -70) {
+                  //Weak
+                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤟");
+                  ESP_LOGI("WiFi", "Weak");
+                } else {
+                  //Unlikely working signal
+                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤫");
+                  ESP_LOGI("WiFi", "Unlikely");
+                }
+              }
+
+              // Battery Voltage
+
+              if (id(${devicename}_battery_voltage).has_state()) {
+                if (id(${devicename}_battery_voltage).state >= 3.7) {
+                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰁹");
+                } else if (id(${devicename}_battery_voltage).state >= 3.5) {
+                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰂁");
+                } else if (id(${devicename}_battery_voltage).state >= 3.3) {
+                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰁿");
+                } else if (id(${devicename}_battery_voltage).state >= 3.1) {
+                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰁽");
+                } else if (id(${devicename}_battery_voltage).state >= 3.0) {
+                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰁻");
+                } else {
+                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󱃍");
+                }
+
+              }
+
         }
+
 
 sensor:
   - platform: wifi_signal

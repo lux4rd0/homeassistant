@@ -2,8 +2,12 @@ substitutions:
   devicename: esp04
 esphome:
   name: ${devicename}
-  platform: ESP32
+esp32:
   board: esp32dev
+  framework:
+    type: arduino
+    version: 2.0.2
+    platform_version: '4.3.0'
 debug:
   update_interval: 60s
 logger:
@@ -91,7 +95,27 @@ light:
       - lambda:
           name: Breathing Red
           update_interval: 50ms
-          lambda: "static int step = 0;\nconst int step_limit = 80;\nfloat brightness;\n\nauto call = id(${devicename}_light).turn_on();\ncall.set_rgb(1,0,0);\n\nbrightness = (float)step / ((float)step_limit / 2.0f);\n\nif(brightness > 1.0f){\n\tbrightness = 1.0f - (brightness - 1.0f );\n}\n\ncall.set_brightness(brightness);\ncall.set_white(0.0);\ncall.set_transition_length(0);\ncall.perform();\n\nstep = ++step % step_limit; "
+          lambda: |-
+            static int step = 0;
+            const int step_limit = 80;
+            float brightness;
+
+            auto call = id(${devicename}_light).turn_on();
+            call.set_rgb(1, 0, 0);
+
+            brightness = (float)step / ((float)step_limit / 2.0f);
+
+            if (brightness > 1.0f) {
+              brightness = 1.0f - (brightness - 1.0f);
+            }
+
+            call.set_brightness(brightness);
+            call.set_white(0.0);
+            call.set_transition_length(0);
+            call.perform();
+
+            step = ++step % step_limit;
+
       - strobe:
           name: Strobe Effect With Custom Values
           colors:

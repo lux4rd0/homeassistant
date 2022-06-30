@@ -83,6 +83,7 @@ font:
       - 8
       - 9
       - '%'
+      - ' '
     size: 45
   - file: fonts/Open 24 Display St.ttf
     id: font_humidity_percent
