@@ -55,7 +55,7 @@ This script polls the [WeatherFlow API](https://weatherflow.github.io/Tempest/ap
 Before using it, edit the file to reflect your own WeatherFlow **Station ID** and **API token**. You can also update the units to reflect your preferences.
 
     WEATHERFLOW_STATION_ID="<station_id>"
-    WEATEHRFLOW_TOKEN="<token>"
+    WEATHERFLOW_TOKEN="<token>"
     
     WEATHERFLOW_UNITS_TEMP="f"
     WEATHERFLOW_UNITS_WIND="mph"
