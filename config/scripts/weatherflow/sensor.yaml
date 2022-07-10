@@ -5,10 +5,38 @@
 - platform: command_line
   name: weatherflow_current_conditions
   json_attributes:
+    - time
     - conditions
     - icon
-    - relative_humidity
     - air_temperature
+    - sea_level_pressure
+    - station_pressure
+    - pressure_trend
+    - relative_humidity
+    - wind_avg
+    - wind_direction
+    - wind_direction_cardinal
+    - wind_gust
+    - solar_radiation
+    - uv
+    - brightness
+    - feels_like
+    - dew_point
+    - wet_bulb_temperature
+    - wet_bulb_globe_temperature
+    - delta_t
+    - air_density
+    - lightning_strike_count_last_1hr
+    - lightning_strike_count_last_3hr
+    - lightning_strike_last_distance
+    - lightning_strike_last_distance_msg
+    - lightning_strike_last_epoch
+    - precip_accum_local_day
+    - precip_accum_local_yesterday
+    - precip_minutes_local_day
+    - precip_minutes_local_yesterday
+    - is_precip_local_day_rain_check
+    - is_precip_local_yesterday_rain_check
   command: bash /config/scripts/weatherflow/weatherflow_current_conditions.sh
   value_template: '{{ value_json.conditions }}'
   scan_interval: 300
