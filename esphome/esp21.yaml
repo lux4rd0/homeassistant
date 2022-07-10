@@ -2067,7 +2067,7 @@ display:
             it.printf(hourly_precip_prob_x + (hourly_column * 22), hourly_precip_prob_y, id(font_hourly_c), TextAlign::BOTTOM_RIGHT, "%.0f", id(wf_h_fc_22_precip_prob).state);
             it.printf(hourly_precip_percentage_x + (hourly_column * 22), hourly_precip_percentage_y, id(font_humidity_percent_c), TextAlign::BOTTOM_RIGHT, "%%");
 
-        } else if (id(${devicename}_page).state == "C") {
+        } else if (id(${devicename}_page).state == "D") {
 
 
           // tab

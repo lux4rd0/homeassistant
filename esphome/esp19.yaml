@@ -1,21 +1,17 @@
 substitutions:
   devicename: esp19
-  run_time: 5min #can be as long as needed to get data 
-  sleep_time: 15min # normal sleep time
-  night_sleep_time: 6h # 1st sleep time after midnight
+  run_time: 2min
+  sleep_time: 15min
+  night_sleep_time: 365min
 esphome:
   name: ${devicename}
-  platformio_options:
-    build_flags: 
-      - -DCONFIG_ARDUINO_LOOP_STACK_SIZE=32768
 esp32:
   board: featheresp32
   variant: esp32
   framework:
     type: arduino
     version: 2.0.2
-    source: https://github.com/espressif/arduino-esp32.git#2.0.2
-    platform_version: https://github.com/platformio/platform-espressif32.git#feature/arduino-upstream
+    platform_version: '4.3.0'
 debug:
   update_interval: 60s
 time:
