@@ -7,18 +7,19 @@ hour=$1
 
 hourly_temperature_hi=$(echo "${output}" | jq .forecast.hourly[0:23] |jq ' [ .[].air_temperature ] | max ')
 hourly_temperature_low=$(echo "${output}" | jq .forecast.hourly[0:23] |jq ' [ .[].air_temperature ] | min ')
-hourly_temperature_difference=$(bc <<< "${hourly_temperature_hi}-${hourly_temperature_low}")
+hourly_temperature_difference=$(bc <<< "${hourly_temperature_hi} - ${hourly_temperature_low}")
 
 hourly_hour=$(echo "${output}" | jq -r  '.forecast.hourly['"${hour}"'].time | strflocaltime("%-I")')
 hourly_am_pm=$(echo "${output}" | jq -r '.forecast.hourly['"${hour}"'].time | strflocaltime("%p")')
 
 hourly_air_temperature=$(echo "${output}" | jq '.forecast.hourly['"${hour}"'].air_temperature')
-hourly_temperature_pixel_height=$(bc <<< "scale=2;((${hourly_air_temperature}-${hourly_temperature_low})/${hourly_temperature_difference})*100")
+hourly_temperature_pixel_height=$(bc <<< "scale=2;((${hourly_air_temperature} - ${hourly_temperature_low})/${hourly_temperature_difference})*100")
 
 hourly_conditions=$(echo "${output}" | jq  '.forecast.hourly['"${hour}"'].conditions')
 
 hourly_icon=$(echo "${output}" | jq -r  '.forecast.hourly['"${hour}"'].icon')
 hourly_precip_probability=$(echo "${output}" | jq  '.forecast.hourly['"${hour}"'].precip_probability')
+
 
 if [ "${hourly_icon}" == "clear-day" ]; then hourly_icon="/"; fi
 if [ "${hourly_icon}" == "clear-night" ]; then hourly_icon="'"; fi
@@ -98,6 +99,7 @@ if [ "${hourly_hour}" == "11" ] && [ "${hourly_am_pm}" == "PM" ]; then hourly_ho
 
 if [ "${hourly_hour}" == "12" ] && [ "${hourly_am_pm}" == "AM" ]; then hourly_hour_icon="󱑖"; fi
 if [ "${hourly_hour}" == "12" ] && [ "${hourly_am_pm}" == "PM" ]; then hourly_hour_icon="󱑊"; fi
+
 
 echo "{
   \"conditions\": ${hourly_conditions},
