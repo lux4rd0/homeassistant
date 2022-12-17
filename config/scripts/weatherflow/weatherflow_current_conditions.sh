@@ -1,6 +1,7 @@
 #!/bin/bash
 
 output=$(</config/scripts/weatherflow/weatherflow_forecast_out.txt)
+#output=$(<weatherflow_forecast_out.txt)
 
 eval "$(echo "${output}" | jq -r '.current_conditions | to_entries | .[] | .key + "=" + (.value | @sh)')"
 
@@ -19,7 +20,7 @@ if [ "${icon}" == "possibly-snow-night" ]; then icon="O"; fi
 if [ "${icon}" == "possibly-thunderstorm-day" ]; then icon="y"; fi
 if [ "${icon}" == "possibly-thunderstorm-night" ]; then icon="x"; fi
 if [ "${icon}" == "rainy" ]; then icon="b"; fi
-if [ "${icon}" == "sleet" ]; then icon="%%"; fi
+if [ "${icon}" == "sleet" ]; then icon="%"; fi
 if [ "${icon}" == "snow" ]; then icon="."; fi
 if [ "${icon}" == "thunderstorm" ]; then icon="w"; fi
 if [ "${icon}" == "windy" ]; then icon="j"; fi
