@@ -39,10 +39,38 @@ If you wish to place them someplace else, be sure to update each of the scripts 
 
 Returns these data elements for **Current Conditions**:
 
-        - conditions
-        - icon
-        - relative_humidity
-        - air_temperature
+    - air_density
+    - air_temperature
+    - brightness
+    - conditions
+    - delta_t
+    - dew_point
+    - feels_like
+    - icon
+    - is_precip_local_day_rain_check
+    - is_precip_local_yesterday_rain_check
+    - lightning_strike_count_last_1hr
+    - lightning_strike_count_last_3hr
+    - lightning_strike_last_distance
+    - lightning_strike_last_distance_msg
+    - lightning_strike_last_epoch
+    - precip_accum_local_day
+    - precip_accum_local_yesterday
+    - precip_minutes_local_day
+    - precip_minutes_local_yesterday
+    - pressure_trend
+    - relative_humidity
+    - sea_level_pressure
+    - solar_radiation
+    - station_pressure
+    - time
+    - uv
+    - wet_bulb_globe_temperature
+    - wet_bulb_temperature
+    - wind_avg
+    - wind_direction
+    - wind_direction_cardinal
+    - wind_gust
 
 from the JSON file fetched by the weatherflow_fetch_forecast.sh scripts.
 
@@ -69,16 +97,18 @@ Before using it, edit the file to reflect your WeatherFlow **Station ID** and **
 
 Returns these elements for **Daily Forecast**:
 
-    - day_num
-    - month_num
-    - conditions
-    - icon
     - air_temp_high
+    - air_temp_high_x
     - air_temp_low
+    - air_temp_low_x
+    - conditions
+    - day_name
+    - day_num
+    - icon
+    - month_num
     - precip_probability
     - sunrise
     - sunset
-    - day_name
 
 Requires a day parameter to be passed to the script.
 *For example (the 4th day, index starts at 0):*
