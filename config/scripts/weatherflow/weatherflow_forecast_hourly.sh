@@ -1,6 +1,7 @@
 #!/bin/bash
 
 output=$(</config/scripts/weatherflow/weatherflow_forecast_out.txt)
+#output=$(<weatherflow_forecast_out.txt)
 
 hour=$1
 
@@ -19,7 +20,6 @@ hourly_conditions=$(echo "${output}" | jq  '.forecast.hourly['"${hour}"'].condit
 hourly_icon=$(echo "${output}" | jq -r  '.forecast.hourly['"${hour}"'].icon')
 hourly_precip_probability=$(echo "${output}" | jq  '.forecast.hourly['"${hour}"'].precip_probability')
 
-
 if [ "${hourly_icon}" == "clear-day" ]; then hourly_icon="/"; fi
 if [ "${hourly_icon}" == "clear-night" ]; then hourly_icon="'"; fi
 if [ "${hourly_icon}" == "cloudy" ]; then hourly_icon="a"; fi
@@ -35,7 +35,7 @@ if [ "${hourly_icon}" == "possibly-snow-night" ]; then hourly_icon="O"; fi
 if [ "${hourly_icon}" == "possibly-thunderstorm-day" ]; then hourly_icon="y"; fi
 if [ "${hourly_icon}" == "possibly-thunderstorm-night" ]; then hourly_icon="x"; fi
 if [ "${hourly_icon}" == "rainy" ]; then hourly_icon="b"; fi
-if [ "${hourly_icon}" == "sleet" ]; then hourly_icon="%%"; fi
+if [ "${hourly_icon}" == "sleet" ]; then hourly_icon="%"; fi
 if [ "${hourly_icon}" == "snow" ]; then hourly_icon="."; fi
 if [ "${hourly_icon}" == "thunderstorm" ]; then hourly_icon="w"; fi
 if [ "${hourly_icon}" == "windy" ]; then hourly_icon="j"; fi
@@ -98,7 +98,6 @@ if [ "${hourly_hour}" == "11" ] && [ "${hourly_am_pm}" == "PM" ]; then hourly_ho
 
 if [ "${hourly_hour}" == "12" ] && [ "${hourly_am_pm}" == "AM" ]; then hourly_hour_icon="󱑖"; fi
 if [ "${hourly_hour}" == "12" ] && [ "${hourly_am_pm}" == "PM" ]; then hourly_hour_icon="󱑊"; fi
-
 
 echo "{
   \"conditions\": ${hourly_conditions},
