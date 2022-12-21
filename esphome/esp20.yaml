@@ -155,6 +155,7 @@ font:
       - 9
       - '%'
       - ' '
+      - '-'
     size: 70
   - file: fonts/Open 24 Display St.ttf
     id: font_humidity_percent
@@ -179,6 +180,7 @@ font:
       - 7
       - 8
       - 9
+      - '-'
     size: 120
   - file: fonts/Open 24 Display St.ttf
     id: font_temperature_degree

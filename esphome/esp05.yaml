@@ -137,6 +137,7 @@ font:
       - 7
       - 8
       - 9
+      - '-'
     size: 120
   - file: fonts/Open 24 Display St.ttf
     id: font_temperature_degree
@@ -157,6 +158,7 @@ font:
       - 7
       - 8
       - 9
+      - '-'
   - file: fonts/digital-7 (mono).ttf
     id: font_lo_temperature
     size: 24

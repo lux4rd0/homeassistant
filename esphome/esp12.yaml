@@ -159,6 +159,7 @@ font:
       - 9
       - '%'
       - ' '
+      - '-'
     size: 90
   - file: fonts/Open 24 Display St.ttf
     id: font_current_degree

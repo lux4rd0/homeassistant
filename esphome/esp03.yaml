@@ -35,32 +35,43 @@ i2c:
   - id: bus_a
     sda: 21
     scl: 22
-    scan: true
+    scan: True
+    frequency: 100kHz
 sensor:
-  - platform: ccs811
-    baseline: 11950
-    eco2:
-      name: ${devicename} CO2
-    tvoc:
-      name: ${devicename} TVOC
-    address: 91
-    temperature: ${devicename}_temperature
-    humidity: ${devicename}_humidity
-    update_interval: 60s
-  - platform: bme280
-    temperature:
-      name: ${devicename} Temperature
-      id: ${devicename}_temperature
-      oversampling: 16x
-    pressure:
-      name: ${devicename} Pressure
-      id: ${devicename}_pressure
-    humidity:
-      name: ${devicename} Humidity
-      id: ${devicename}_humidity
-    address: 119
-    update_interval: 60s
-    iir_filter: 16x
+  - platform: sps30
+    i2c_id: bus_a
+    pm_1_0:
+      name: "${devicename} Workshop PM <1µm Weight concentration"
+      id: "${devicename}_PM_1_0"
+    pm_2_5:
+      name: "${devicename} Workshop PM <2.5µm Weight concentration"
+      id: "${devicename}_PM_2_5"
+    pm_4_0:
+      name: "${devicename} Workshop PM <4µm Weight concentration"
+      id: "${devicename}_PM_4_0"
+    pm_10_0:
+      name: "${devicename} Workshop PM <10µm Weight concentration"
+      id: "w${devicename}_PM_10_0"
+    pmc_0_5:
+      name: "${devicename} Workshop PM <0.5µm Number concentration"
+      id: "${devicename}_PMC_0_5"
+    pmc_1_0:
+      name: "${devicename} Workshop PM <1µm Number concentration"
+      id: "${devicename}_PMC_1_0"
+    pmc_2_5:
+      name: "${devicename} Workshop PM <2.5µm Number concentration"
+      id: "${devicename}_PMC_2_5"
+    pmc_4_0:
+      name: "${devicename} Workshop PM <4µm Number concentration"
+      id: "${devicename}_PMC_4_0"
+    pmc_10_0:
+      name: "${devicename} Workshop PM <10µm Number concentration"
+      id: "${devicename}_PMC_10_0"
+    pm_size:
+      name: "${devicename} Typical Particle size"
+      id: "${devicename}_pm_size"
+    address: 0x69
+    update_interval: 10s
   - platform: wifi_signal
     name: '${devicename} WiFi Signal'
     id: '${devicename}_WiFi_Signal'

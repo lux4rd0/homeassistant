@@ -1,7 +1,7 @@
 substitutions:
   devicename: esp17
-  run_time: 1min
-  sleep_time: 55s
+  run_time: 7s
+  sleep_time: 53s
   night_sleep_time: 375min
 esphome:
   name: '${devicename}'
@@ -14,17 +14,39 @@ mqtt:
   username: !secret mqtt_username
   password: !secret mqtt_password
   discovery: true
+  discovery_retain: false
+  birth_message:
+  will_message:
+  on_message:
+    - topic: ${devicename}/deep_sleep
+      payload: 'OFF'
+      then:
+        - logger.log: 'refresh_display_deep_sleep_off'
+        - wait_until:
+             condition: 
+               lambda: return id(${devicename}_battery_percent).state > 0;
+        - script.execute: refresh_display_deep_sleep_off
+    - topic: ${devicename}/deep_sleep
+      payload: 'ON'
+      then:
+        - logger.log: 'refresh_display_deep_sleep_on'
+        - wait_until:
+             condition: 
+               lambda: return id(${devicename}_battery_percent).state > 0;
+        - script.execute: refresh_display_deep_sleep_on
+  
 time:
-  - platform: homeassistant
-    id: ntp
+  - platform: sntp
+    id: time_sntp
+    servers: nas02.tylephony.com
 logger:
   baud_rate: 0
   level: DEBUG
 switch:
   - platform: restart
     name: '${devicename} Restart'
-api:
-  reboot_timeout: 2min
+#api:
+#  reboot_timeout: 2min
 ota:
   password: !secret ota_password
 wifi:
@@ -36,6 +58,12 @@ wifi:
   domain: .tylephony.com
   power_save_mode: light
   fast_connect: on
+  manual_ip:
+    static_ip: 10.10.2.87
+    gateway: 10.10.0.1
+    subnet: 255.255.192.0
+    dns1: 10.10.0.81
+    dns2: 10.10.3.81
 deep_sleep:
   run_duration: '${run_time}'
   sleep_duration: '${sleep_time}'
@@ -63,6 +91,28 @@ font:
       - M
       - P
     size: 440
+  - file: 'gfonts://Chicle'
+    id: font_lettering
+    size: 40
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_battery
+    size: 32
+    glyphs:
+      - "\U000F0079"
+      - "\U000F0081"
+      - "\U000F007F"
+      - "\U000F007D"
+      - "\U000F007B"
+      - "\U000F10CD"
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_wifi
+    size: 32
+    glyphs:
+      - "\U000F091F"
+      - "\U000F0922"
+      - "\U000F0925"
+      - "\U000F0928"
+      - "\U000F092B"
 button:
   - platform: restart
     name: '${devicename} Restart'
@@ -74,6 +124,148 @@ button:
       then:
         - component.update: '${devicename}_display'
     internal: false
+external_components:
+  - source: 'github://ashald/esphome@lilygo-t5-47'
+    components:
+      - lilygo_t5_47
+    refresh: 60s
+display:
+  platform: lilygo_t5_47
+  full_update_every: 1
+  cycles_render: 40
+  cycles_invert: 40
+  id: '${devicename}_display'
+  update_interval: never
+  lambda: |-
+
+    it.strftime(480, 270, id(font_time), TextAlign::CENTER, "%I:%M", id(time_sntp).now());
+
+
+    int battery_percentage_x = 860;
+
+
+    if (id(${devicename}_battery_percent).state <= 100) {
+
+    // Lines
+
+    it.line(0, 10, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 12, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 14, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 16, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 18, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 20, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 22, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 24, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 26, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 28, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.line(0, 30, battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20);
+
+    it.printf(960 * (id(${devicename}_battery_percent).state / 100) + 30, 20, id(font_lettering), TextAlign::CENTER_LEFT, "%.0f%%", id(${devicename}_battery_percent).state);
+
+    // Battery Voltage
+
+    if (id(${devicename}_battery_voltage).has_state()) {
+      if (id(${devicename}_battery_voltage).state >= 3.7) {
+        it.print(battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20, id(font_battery), TextAlign::CENTER_LEFT, "󰁹");
+      } else if (id(${devicename}_battery_voltage).state >= 3.5) {
+        it.print(battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20, id(font_battery), TextAlign::CENTER_LEFT, "󰂁");
+      } else if (id(${devicename}_battery_voltage).state >= 3.3) {
+        it.print(battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20, id(font_battery), TextAlign::CENTER_LEFT, "󰁿");
+      } else if (id(${devicename}_battery_voltage).state >= 3.1) {
+        it.print(battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20, id(font_battery), TextAlign::CENTER_LEFT, "󰁽");
+      } else if (id(${devicename}_battery_voltage).state >= 3.0) {
+        it.print(battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20, id(font_battery), TextAlign::CENTER_LEFT, "󰁻");
+      } else {
+        it.print(battery_percentage_x * (id(${devicename}_battery_percent).state / 100), 20, id(font_battery), TextAlign::CENTER_LEFT, "󱃍");
+      }
+    }
+
+    } else {
+      
+      it.print(895, 20, id(font_battery), TextAlign::CENTER_LEFT, "󰁹");
+      it.printf(890, 20, id(font_lettering), TextAlign::CENTER_RIGHT, "Charging %.1f V", id(${devicename}_battery_voltage).state);
+      
+    }
+
+    int wifi_x_a = 955;
+    int wifi_y_a = 20;
+
+    // WiFi Signal Strength
+
+    if (id(${devicename}_WiFi_Signal).has_state()) {
+      if (id(${devicename}_WiFi_Signal).state >= -50) {
+        //Excellent
+        it.print(wifi_x_a, wifi_y_a, id(font_wifi), TextAlign::CENTER_RIGHT, "󰤨");
+        ESP_LOGI("WiFi", "Exellent");
+      } else if (id(${devicename}_WiFi_Signal).state >= -60) {
+        //Good
+        it.print(wifi_x_a, wifi_y_a, id(font_wifi), TextAlign::CENTER_RIGHT, "󰤥");
+        ESP_LOGI("WiFi", "Good");
+      } else if (id(${devicename}_WiFi_Signal).state >= -67) {
+        //Fair
+        it.print(wifi_x_a, wifi_y_a, id(font_wifi), TextAlign::CENTER_RIGHT, "󰤢");
+        ESP_LOGI("WiFi", "Fair");
+      } else if (id(${devicename}_WiFi_Signal).state >= -70) {
+        //Weak
+        it.print(wifi_x_a, wifi_y_a, id(font_wifi), TextAlign::CENTER_RIGHT, "󰤟");
+        ESP_LOGI("WiFi", "Weak");
+      } else {
+        //Unlikely working signal
+        it.print(wifi_x_a, wifi_y_a, id(font_wifi), TextAlign::CENTER_RIGHT, "󰤫");
+        ESP_LOGI("WiFi", "Unlikely");
+      }
+    }
+sensor:
+  - platform: wifi_signal
+    name: '${devicename} WiFi Signal'
+    id: '${devicename}_WiFi_Signal'
+    update_interval: .5s
+  - platform: uptime
+    name: '${devicename} Uptime'
+    update_interval: .5s
+  - platform: debug
+    free:
+      name: '${devicename} Heap Free'
+    block:
+      name: '${devicename} Heap Max Block'
+    loop_time:
+      name: '${devicename} Loop Time'
+  - id: '${devicename}_battery_voltage'
+    name: '${devicename} Battery Voltage'
+    platform: lilygo_t5_47
+    unit_of_measurement: V
+    state_class: measurement
+    device_class: voltage
+    update_interval: .5s
+  - id: '${devicename}_battery_percent'
+    name: '${devicename} Battery Percent'
+    platform: template
+    unit_of_measurement: '%'
+    state_class: measurement
+    device_class: battery
+    update_interval: .5s
+    lambda: >-
+      return (((id(${devicename}_battery_voltage).state - 3.00) / 1.2) *
+      100.00);
+      // High 4.2V, Low 3.0V - sum = ((volt - low) / (high - low)) * 100;
+    internal: true
+
+text_sensor:
+  - platform: debug
+    device:
+      name: '${devicename} Device Info'
+      id: '${devicename}_device_info'
+
 binary_sensor:
   - platform: gpio
     pin:
@@ -92,76 +284,28 @@ binary_sensor:
       inverted: true
     name: '${devicename} Button 3'
     internal: false
-  - platform: homeassistant
-    id: '${devicename}_prevent_deep_sleep'
-    name: '${devicename} Prevent Deep Sleep'
-    entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
-external_components:
-  - source: 'github://ashald/esphome@lilygo-t5-47'
-    components:
-      - lilygo_t5_47
-    refresh: 0s
-display:
-  platform: lilygo_t5_47
-  full_update_every: 1
-  cycles_render: 40
-  cycles_invert: 40
-  id: '${devicename}_display'
-  update_interval: never
-  lambda: |-
-    it.strftime(480, 270, id(font_time), TextAlign::CENTER, "%I:%M",id(ntp).now());
-sensor:
-  - platform: wifi_signal
-    name: '${devicename} WiFi Signal'
-    id: '${devicename}_WiFi_Signal'
-    update_interval: 60s
-  - platform: uptime
-    name: '${devicename} Uptime'
-    update_interval: 60s
-  - platform: debug
-    free:
-      name: '${devicename} Heap Free'
-    block:
-      name: '${devicename} Heap Max Block'
-    loop_time:
-      name: '${devicename} Loop Time'
-  - id: '${devicename}_battery_voltage'
-    name: '${devicename} Battery Voltage'
-    platform: lilygo_t5_47
-    unit_of_measurement: V
-    state_class: measurement
-    device_class: voltage
-    update_interval: 60s
-text_sensor:
-  - platform: debug
-    device:
-      name: '${devicename} Device Info'
-      id: '${devicename}_device_info'
-  - platform: homeassistant
-    entity_id: 'input_select.${devicename}_page'
-    id: '${devicename}_page'
-    on_value:
-      then:
-        - logger.log: 'Received input_select.${devicename}_page'
-        - script.execute: all_data_received
+#  - platform: homeassistant
+#    id: '${devicename}_prevent_deep_sleep'
+#    name: '${devicename} Prevent Deep Sleep'
+#    entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
 script:
-  - id: all_data_received
+  - id: refresh_display_deep_sleep_on
     then:
       - component.update: '${devicename}_display'
-      - if:
-          condition:
-            binary_sensor.is_on: '${devicename}_prevent_deep_sleep'
-          then:
-            - logger.log: 'Skipping sleep, per prevent_deep_sleep'
-            - deep_sleep.prevent: deep_sleep_control
-          else:
-            - script.execute: enter_sleep
+#      - delay: 1s
+      - script.execute: enter_sleep
+  - id: refresh_display_deep_sleep_off
+    then:
+      - component.update: '${devicename}_display'
+      - logger.log: 'Skipping sleep, per prevent_deep_sleep'
+#      - delay: 1s
+      - deep_sleep.prevent: deep_sleep_control
   - id: enter_sleep
     then:
       - if:
           condition:
             lambda: |-
-              auto time = id(ntp).now();
+              auto time = id(time_sntp).now();
               if (!time.is_valid()) {
                 return false;
               }
@@ -174,8 +318,9 @@ script:
           else:
             - logger.log: 'Daytime, entering short sleep for sleepSeconds'
             - lambda: |-
-                auto currentSeconds = id(ntp).now();
+                auto currentSeconds = id(time_sntp).now();
                 int sleepSeconds = (60 - currentSeconds.second) * 1000;
+                ESP_LOGI("currentSeconds", "currentSeconds");
                 ESP_LOGI("sleepSeconds", "sleepSeconds");
                 id(deep_sleep_control).set_sleep_duration(sleepSeconds);
             - deep_sleep.enter:

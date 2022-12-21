@@ -1,0 +1,610 @@
+substitutions:
+  devicename: esp23
+  run_time: 2min
+  sleep_time: 60min
+  night_sleep_time: 365min
+esphome:
+  name: '${devicename}'
+  platformio_options:
+    board_upload.flash_size: 16MB
+esp32:
+  board: m5stack-core2
+  framework:
+    type: arduino
+    version: 2.0.2
+    platform_version: '4.3.0'
+debug:
+  update_interval: 60s
+time:
+  - platform: homeassistant
+    id: ntp
+logger:
+  baud_rate: 0
+  level: DEBUG
+switch:
+  - platform: restart
+    name: '${devicename} Restart'
+api:
+  reboot_timeout: 2min
+ota:
+  password: !secret ota_password
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: '${devicename}'
+    password: !secret wifi_password
+  domain: .tylephony.com
+  power_save_mode: none
+deep_sleep:
+  run_duration: '${run_time}'
+  sleep_duration: '${sleep_time}'
+  id: deep_sleep_control
+  esp32_ext1_wakeup:
+    pins: GPIO39
+    mode: ALL_LOW
+font:
+  - file: fonts/Calama.ttf
+    id: font_lettering
+    size: 100
+  - file: fonts/Calama.ttf
+    id: font_temperature
+    size: 70
+  - file: fonts/dripicons-weather.ttf
+    id: font_icon_small
+    size: 130
+    glyphs:
+      - /
+      - ''''
+      - a
+      - k
+      - R
+      - A
+      - E
+      - D
+      - '"'
+      - t
+      - P
+      - O
+      - 'y'
+      - x
+      - b
+      - '%'
+      - .
+      - w
+      - j
+  - file: fonts/pie4map.ttf
+    id: font_pie
+    size: 50
+button:
+  - platform: restart
+    name: '${devicename} Restart'
+    internal: false
+  - platform: template
+    name: '${devicename} Refresh'
+    icon: 'mdi:update'
+    on_press:
+      then:
+        - component.update: '${devicename}_display'
+    internal: false
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: true
+    name: '${devicename} Button 1'
+  - platform: gpio
+    pin:
+      number: GPIO34
+      inverted: true
+    name: '${devicename} Button 2'
+    internal: false
+  - platform: gpio
+    pin:
+      number: GPIO35
+      inverted: true
+    name: '${devicename} Button 3'
+    internal: false
+  - platform: homeassistant
+    id: '${devicename}_prevent_deep_sleep'
+    name: '${devicename} Prevent Deep Sleep'
+    entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
+external_components:
+  - source: 'github://ashald/esphome@lilygo-t5-47'
+    components:
+      - lilygo_t5_47
+    refresh: 0s
+#  - source: github://pr#3577
+#    components: wifi
+#    refresh: 0s
+  - source: 'github://pr#3255'
+    components:
+      - display
+      - online_image
+display:
+  platform: lilygo_t5_47
+  full_update_every: 1
+  cycles_render: 40
+  cycles_invert: 40
+  id: '${devicename}_display'
+  update_interval: never
+
+  lambda: |-
+
+        // Hourly Details
+
+        int column_x = 68;
+        int column_y = 2;
+        int pad_x = 138;
+        int pad_y = 80;
+
+        if (id(event_day_0_summary).state == "DAD") {
+
+          it.filled_rectangle(pad_x * 0, 0, pad_x, 539);
+          it.line((pad_x * 1) - 1, 0, (pad_x * 1) - 1, 539, COLOR_OFF);
+
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 0), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_weekday_0).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 1), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_0).state, id(event_day_0).state);
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 2), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_day_0_summary).state.c_str());
+          it.printf(column_x + (pad_x * 0), column_y + 250, id(font_icon_small), COLOR_OFF, TextAlign::TOP_CENTER, "%s", id(wf_d_fc_0_icon).state.c_str());
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 5), id(font_temperature), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_0_air_temp_high).state, id(wf_d_fc_0_air_temp_low).state);
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 6) - 20, id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_0_precip_prob).state);
+
+        } else {
+
+          it.line((pad_x * 1) - 1, 0, (pad_x * 1) - 1, 539);
+
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 0), id(font_lettering), TextAlign::TOP_CENTER, id(event_weekday_0).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 1), id(font_lettering), TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_0).state, id(event_day_0).state);
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 2), id(font_lettering), TextAlign::TOP_CENTER, id(event_day_0_summary).state.c_str());
+          it.printf(column_x + (pad_x * 0), column_y + 250, id(font_icon_small), TextAlign::TOP_CENTER, "%s", id(wf_d_fc_0_icon).state.c_str());
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 5), id(font_temperature), TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_0_air_temp_high).state, id(wf_d_fc_0_air_temp_low).state);
+          it.printf(column_x + (pad_x * 0), column_y + (pad_y * 6) - 20, id(font_lettering), TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_0_precip_prob).state);
+
+        }
+
+        if (id(event_day_1_summary).state == "DAD") {
+
+          it.filled_rectangle(pad_x * 1, 0, pad_x, 539);
+          it.line((pad_x * 2) - 1, 0, (pad_x * 2) - 1, 539, COLOR_OFF);
+
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 0), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_weekday_1).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 1), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_1).state, id(event_day_1).state);
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 2), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_day_1_summary).state.c_str());
+          it.printf(column_x + (pad_x * 1), column_y + 250, id(font_icon_small), COLOR_OFF, TextAlign::TOP_CENTER, "%s", id(wf_d_fc_1_icon).state.c_str());
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 5), id(font_temperature), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_1_air_temp_high).state, id(wf_d_fc_1_air_temp_low).state);
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 6) - 20, id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_1_precip_prob).state);
+
+        } else {
+
+          it.line((pad_x * 2) - 1, 0, (pad_x * 2) - 1, 539);
+
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 0), id(font_lettering), TextAlign::TOP_CENTER, id(event_weekday_1).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 1), id(font_lettering), TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_1).state, id(event_day_1).state);
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 2), id(font_lettering), TextAlign::TOP_CENTER, id(event_day_1_summary).state.c_str());
+          it.printf(column_x + (pad_x * 1), column_y + 250, id(font_icon_small), TextAlign::TOP_CENTER, "%s", id(wf_d_fc_1_icon).state.c_str());
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 5), id(font_temperature), TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_1_air_temp_high).state, id(wf_d_fc_1_air_temp_low).state);
+          it.printf(column_x + (pad_x * 1), column_y + (pad_y * 6) - 20, id(font_lettering), TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_1_precip_prob).state);
+
+        }
+
+        if (id(event_day_2_summary).state == "DAD") {
+
+          it.filled_rectangle(pad_x * 2, 0, pad_x, 539);
+          it.line((pad_x * 2) - 1, 0, (pad_x * 2) - 1, 539, COLOR_OFF);
+
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 0), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_weekday_2).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 1), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_2).state, id(event_day_2).state);
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 2), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_day_2_summary).state.c_str());
+          it.printf(column_x + (pad_x * 2), column_y + 250, id(font_icon_small), COLOR_OFF, TextAlign::TOP_CENTER, "%s", id(wf_d_fc_2_icon).state.c_str());
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 5), id(font_temperature), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_2_air_temp_high).state, id(wf_d_fc_2_air_temp_low).state);
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 6) - 20, id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_2_precip_prob).state);
+
+        } else {
+
+          it.line((pad_x * 2) - 1, 0, (pad_x * 2) - 1, 539);
+
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 0), id(font_lettering), TextAlign::TOP_CENTER, id(event_weekday_2).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 1), id(font_lettering), TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_2).state, id(event_day_2).state);
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 2), id(font_lettering), TextAlign::TOP_CENTER, id(event_day_2_summary).state.c_str());
+          it.printf(column_x + (pad_x * 2), column_y + 250, id(font_icon_small), TextAlign::TOP_CENTER, "%s", id(wf_d_fc_2_icon).state.c_str());
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 5), id(font_temperature), TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_2_air_temp_high).state, id(wf_d_fc_2_air_temp_low).state);
+          it.printf(column_x + (pad_x * 2), column_y + (pad_y * 6) - 20, id(font_lettering), TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_2_precip_prob).state);
+
+        }
+
+        if (id(event_day_3_summary).state == "DAD") {
+
+          it.filled_rectangle(pad_x * 3, 0, pad_x, 539);
+          it.line((pad_x * 3) - 1, 0, (pad_x * 3) - 1, 539, COLOR_OFF);
+
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 0), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_weekday_3).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 1), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_3).state, id(event_day_3).state);
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 2), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_day_3_summary).state.c_str());
+          it.printf(column_x + (pad_x * 3), column_y + 250, id(font_icon_small), COLOR_OFF, TextAlign::TOP_CENTER, "%s", id(wf_d_fc_3_icon).state.c_str());
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 5), id(font_temperature), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_3_air_temp_high).state, id(wf_d_fc_3_air_temp_low).state);
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 6) - 20, id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_3_precip_prob).state);
+
+        } else {
+
+          it.line((pad_x * 3) - 1, 0, (pad_x * 3) - 1, 539);
+
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 0), id(font_lettering), TextAlign::TOP_CENTER, id(event_weekday_3).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 1), id(font_lettering), TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_3).state, id(event_day_3).state);
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 2), id(font_lettering), TextAlign::TOP_CENTER, id(event_day_3_summary).state.c_str());
+          it.printf(column_x + (pad_x * 3), column_y + 250, id(font_icon_small), TextAlign::TOP_CENTER, "%s", id(wf_d_fc_3_icon).state.c_str());
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 5), id(font_temperature), TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_3_air_temp_high).state, id(wf_d_fc_3_air_temp_low).state);
+          it.printf(column_x + (pad_x * 3), column_y + (pad_y * 6) - 20, id(font_lettering), TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_3_precip_prob).state);
+
+        }
+
+        if (id(event_day_4_summary).state == "DAD") {
+
+          it.filled_rectangle(pad_x * 4, 0, pad_x, 539);
+          it.line((pad_x * 4) - 1, 0, (pad_x * 4) - 1, 539, COLOR_OFF);
+
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 0), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_weekday_4).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 1), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_4).state, id(event_day_4).state);
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 2), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_day_4_summary).state.c_str());
+          it.printf(column_x + (pad_x * 4), column_y + 250, id(font_icon_small), COLOR_OFF, TextAlign::TOP_CENTER, "%s", id(wf_d_fc_4_icon).state.c_str());
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 5), id(font_temperature), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_4_air_temp_high).state, id(wf_d_fc_4_air_temp_low).state);
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 6) - 20, id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_4_precip_prob).state);
+
+        } else {
+
+          it.line((pad_x * 4) - 1, 0, (pad_x * 4) - 1, 539);
+
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 0), id(font_lettering), TextAlign::TOP_CENTER, id(event_weekday_4).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 1), id(font_lettering), TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_4).state, id(event_day_4).state);
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 2), id(font_lettering), TextAlign::TOP_CENTER, id(event_day_4_summary).state.c_str());
+          it.printf(column_x + (pad_x * 4), column_y + 250, id(font_icon_small), TextAlign::TOP_CENTER, "%s", id(wf_d_fc_4_icon).state.c_str());
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 5), id(font_temperature), TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_4_air_temp_high).state, id(wf_d_fc_4_air_temp_low).state);
+          it.printf(column_x + (pad_x * 4), column_y + (pad_y * 6) - 20, id(font_lettering), TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_4_precip_prob).state);
+
+        }
+
+        if (id(event_day_5_summary).state == "DAD") {
+
+          it.filled_rectangle(pad_x * 5, 0, pad_x, 539);
+          it.line((pad_x * 5) - 1, 0, (pad_x * 5) - 1, 539, COLOR_OFF);
+
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 0), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_weekday_5).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 1), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_5).state, id(event_day_5).state);
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 2), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_day_5_summary).state.c_str());
+          it.printf(column_x + (pad_x * 5), column_y + 250, id(font_icon_small), COLOR_OFF, TextAlign::TOP_CENTER, "%s", id(wf_d_fc_5_icon).state.c_str());
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 5), id(font_temperature), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_5_air_temp_high).state, id(wf_d_fc_5_air_temp_low).state);
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 6) - 20, id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_5_precip_prob).state);
+
+        } else {
+
+          it.line((pad_x * 5) - 1, 0, (pad_x * 5) - 1, 539);
+
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 0), id(font_lettering), TextAlign::TOP_CENTER, id(event_weekday_5).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 1), id(font_lettering), TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_5).state, id(event_day_5).state);
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 2), id(font_lettering), TextAlign::TOP_CENTER, id(event_day_5_summary).state.c_str());
+          it.printf(column_x + (pad_x * 5), column_y + 250, id(font_icon_small), TextAlign::TOP_CENTER, "%s", id(wf_d_fc_5_icon).state.c_str());
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 5), id(font_temperature), TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_5_air_temp_high).state, id(wf_d_fc_5_air_temp_low).state);
+          it.printf(column_x + (pad_x * 5), column_y + (pad_y * 6) - 20, id(font_lettering), TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_5_precip_prob).state);
+
+        }
+
+        if (id(event_day_6_summary).state == "DAD") {
+
+          it.filled_rectangle(pad_x * 6, 0, pad_x, 539);
+          it.line((pad_x * 6) - 1, 0, (pad_x * 6) - 1, 539, COLOR_OFF);
+
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 0), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_weekday_6).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 1), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_6).state, id(event_day_6).state);
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 2), id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, id(event_day_6_summary).state.c_str());
+          it.printf(column_x + (pad_x * 6), column_y + 250, id(font_icon_small), COLOR_OFF, TextAlign::TOP_CENTER, "%s", id(wf_d_fc_6_icon).state.c_str());
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 5), id(font_temperature), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_6_air_temp_high).state, id(wf_d_fc_6_air_temp_low).state);
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 6) - 20, id(font_lettering), COLOR_OFF, TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_6_precip_prob).state);
+
+        } else {
+
+          it.line((pad_x * 6) - 1, 0, (pad_x * 6) - 1, 539);
+
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 0), id(font_lettering), TextAlign::TOP_CENTER, id(event_weekday_6).state.substr(0, 3).c_str());
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 1), id(font_lettering), TextAlign::TOP_CENTER, "%.0f/%.0f", id(event_month_6).state, id(event_day_6).state);
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 2), id(font_lettering), TextAlign::TOP_CENTER, id(event_day_6_summary).state.c_str());
+          it.printf(column_x + (pad_x * 6), column_y + 250, id(font_icon_small), TextAlign::TOP_CENTER, "%s", id(wf_d_fc_6_icon).state.c_str());
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 5), id(font_temperature), TextAlign::TOP_CENTER, "%.0f°-%.0f°", id(wf_d_fc_6_air_temp_high).state, id(wf_d_fc_6_air_temp_low).state);
+          it.printf(column_x + (pad_x * 6), column_y + (pad_y * 6) - 20, id(font_lettering), TextAlign::TOP_CENTER, "%.0f%%", id(wf_d_fc_6_precip_prob).state);
+
+        }
+
+sensor:
+  - platform: wifi_signal
+    name: '${devicename} WiFi Signal'
+    id: '${devicename}_WiFi_Signal'
+    update_interval: 60s
+  - platform: uptime
+    name: '${devicename} Uptime'
+    update_interval: 60s
+  - platform: debug
+    free:
+      name: '${devicename} Heap Free'
+    block:
+      name: '${devicename} Heap Max Block'
+    loop_time:
+      name: '${devicename} Loop Time'
+  - id: '${devicename}_battery_voltage'
+    name: '${devicename} Battery Voltage'
+    platform: lilygo_t5_47
+    unit_of_measurement: V
+    state_class: measurement
+    device_class: voltage
+    update_interval: 60s
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_air_temp_high
+    attribute: air_temp_high
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_air_temp_low
+    attribute: air_temp_low
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_precip_prob
+    attribute: precip_probability
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_day_0
+    id: event_day_0
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_month_0
+    id: event_month_0
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_air_temp_high
+    attribute: air_temp_high
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_air_temp_low
+    attribute: air_temp_low
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_precip_prob
+    attribute: precip_probability
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_day_1
+    id: event_day_1
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_month_1
+    id: event_month_1
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_air_temp_high
+    attribute: air_temp_high
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_air_temp_low
+    attribute: air_temp_low
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_precip_prob
+    attribute: precip_probability
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_day_2
+    id: event_day_2
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_month_2
+    id: event_month_2
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_3
+    id: wf_d_fc_3_air_temp_high
+    attribute: air_temp_high
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_3
+    id: wf_d_fc_3_air_temp_low
+    attribute: air_temp_low
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_3
+    id: wf_d_fc_3_precip_prob
+    attribute: precip_probability
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_day_3
+    id: event_day_3
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_month_3
+    id: event_month_3
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_4
+    id: wf_d_fc_4_air_temp_high
+    attribute: air_temp_high
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_4
+    id: wf_d_fc_4_air_temp_low
+    attribute: air_temp_low
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_4
+    id: wf_d_fc_4_precip_prob
+    attribute: precip_probability
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_day_4
+    id: event_day_4
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_month_4
+    id: event_month_4
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_5
+    id: wf_d_fc_5_air_temp_high
+    attribute: air_temp_high
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_5
+    id: wf_d_fc_5_air_temp_low
+    attribute: air_temp_low
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_5
+    id: wf_d_fc_5_precip_prob
+    attribute: precip_probability
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_day_5
+    id: event_day_5
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_month_5
+    id: event_month_5
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_6
+    id: wf_d_fc_6_air_temp_high
+    attribute: air_temp_high
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_6
+    id: wf_d_fc_6_air_temp_low
+    attribute: air_temp_low
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_day_6
+    id: event_day_6
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_month_6
+    id: event_month_6
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_6
+    id: wf_d_fc_6_precip_prob
+    attribute: precip_probability
+    on_value:
+      then:
+        - logger.log: Received sensor.weatherflow_daily_forecast_6
+        - script.execute: all_data_received
+text_sensor:
+  - platform: debug
+    device:
+      name: '${devicename} Device Info'
+      id: '${devicename}_device_info'
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_icon
+    attribute: icon
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_1
+    id: wf_d_fc_1_icon
+    attribute: icon
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_2
+    id: wf_d_fc_2_icon
+    attribute: icon
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_3
+    id: wf_d_fc_3_icon
+    attribute: icon
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_4
+    id: wf_d_fc_4_icon
+    attribute: icon
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_5
+    id: wf_d_fc_5_icon
+    attribute: icon
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_6
+    id: wf_d_fc_6_icon
+    attribute: icon
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_weekday_0
+    id: event_weekday_0
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_0
+    id: event_day_0_summary
+    attribute: summary
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_weekday_1
+    id: event_weekday_1
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_1
+    id: event_day_1_summary
+    attribute: summary
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_weekday_2
+    id: event_weekday_2
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_2
+    id: event_day_2_summary
+    attribute: summary
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_weekday_3
+    id: event_weekday_3
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_3
+    id: event_day_3_summary
+    attribute: summary
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_weekday_4
+    id: event_weekday_4
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_4
+    id: event_day_4_summary
+    attribute: summary
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_weekday_5
+    id: event_weekday_5
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_5
+    id: event_day_5_summary
+    attribute: summary
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_weekday_6
+    id: event_weekday_6
+    filters:
+      - to_upper: null
+  - platform: homeassistant
+    entity_id: sensor.ical_schedule_event_6
+    id: event_day_6_summary
+    attribute: summary
+    filters:
+      - to_upper: null
+script:
+  - id: all_data_received
+    then:
+      - component.update: '${devicename}_display'
+      - delay: 5s
+      - if:
+          condition:
+            binary_sensor.is_on: '${devicename}_prevent_deep_sleep'
+          then:
+            - logger.log: 'Skipping sleep, per prevent_deep_sleep'
+            - deep_sleep.prevent: deep_sleep_control
+          else:
+            - script.execute: enter_sleep
+  - id: enter_sleep
+    then:
+      - if:
+          condition:
+            lambda: |-
+              auto time = id(ntp).now();
+              if (!time.is_valid()) { 
+                return false;
+              }
+              return (time.hour < 6); 
+          then:
+            - logger.log: 'Nighttime, entering long sleep for ${night_sleep_time}'
+            - deep_sleep.enter:
+                id: deep_sleep_control
+                sleep_duration: '${night_sleep_time}'
+          else:
+            - logger.log: 'Daytime, entering short sleep for ${sleep_time}'
+            - deep_sleep.enter:
+                id: deep_sleep_control
+                sleep_duration: '${sleep_time}'

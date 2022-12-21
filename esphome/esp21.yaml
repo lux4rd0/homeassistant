@@ -194,6 +194,7 @@ font:
       - 7
       - 8
       - 9
+      - '-'
     size: 136
   - file: 'gfonts://Alef'
     id: font_temperature_degree_a
@@ -366,6 +367,7 @@ font:
       - 7
       - 8
       - 9
+      - '-'
   - file: fonts/digital-7 (mono).ttf
     id: font_current_temperature_b
     size: 240
@@ -380,6 +382,7 @@ font:
       - 7
       - 8
       - 9
+      - '-'
   - file: fonts/Google Sans Bold.ttf
     id: font_current_degree_b
     size: 150
@@ -578,6 +581,7 @@ font:
       - 9
       - '%'
       - ' '
+      - '-'
     size: 100
   - file: 'gfonts://Alef'
     id: font_current_humidity_percent_c
@@ -589,6 +593,109 @@ font:
     size: 80
     glyphs:
       - °
+
+# Page D
+
+#  - file: 'fonts/Arrows ADF.ttf'
+  - file: 'fonts/PIZZADUDEPOINTERS.ttf'
+    id: font_compass_pointer
+    size: 68
+  - file: fonts/Calama.ttf
+    id: font_lettering_d
+    size: 50
+  - file: fonts/dripicons-weather.ttf
+    id: font_icon_large_d
+    size: 160
+    glyphs:
+      - /
+      - ''''
+      - a
+      - k
+      - R
+      - A
+      - E
+      - D
+      - '"'
+      - t
+      - P
+      - O
+      - 'y'
+      - x
+      - b
+      - '%'
+      - .
+      - w
+      - j
+  - file: fonts/digital-7 (mono).ttf
+    id: font_current_d
+    glyphs:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - '%'
+      - ' '
+      - '-'
+    size: 200
+  - file: fonts/digital-7 (mono).ttf
+    id: font_wind_d
+    glyphs:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - '%'
+      - ' '
+    size: 200
+  - file: 'gfonts://Alef'
+    id: font_current_degree_d
+    size: 100
+    glyphs:
+      - °
+  - file: 'gfonts://Alef'
+    id: font_current_humidity_percent_d
+    glyphs:
+      - '%'
+    size: 66
+
+  - file: fonts/weathericons-regular-webfont.ttf
+    id: font_sunrise_sunset
+    size: 50
+    glyphs:
+      - "" # sunrise
+      - "" # sunset
+  - file: fonts/Calama.ttf
+    id: font_sunrise_sunset_time
+    size: 46
+    glyphs:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - ':'
+      - ' '
+      - A
+      - M
+      - P
+
 button:
   - platform: restart
     name: '${devicename} Restart'
@@ -627,9 +734,13 @@ external_components:
     components:
       - lilygo_t5_47
     refresh: 0s
-  - source: github://pr#3577
-    components: wifi
-    refresh: 0s
+#  - source: github://pr#3577
+#    components: wifi
+#    refresh: 0s
+  - source: 'github://pr#3255'
+    components:
+      - display
+      - online_image
 display:
   platform: lilygo_t5_47
   full_update_every: 1
@@ -806,10 +917,10 @@ display:
 
         it.printf(forecast_x_0, forecast_header_y_0, id(font_lettering_a), TextAlign::TOP_CENTER, "CURRENTLY");
 
-        if (id(wf_current_conditions_air_temp).state >= 100) {
-          it.printf(forecast_x_0 - 21, forecast_state_y_0, id(font_current_a), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temp).state);
+        if (id(wf_current_conditions_air_temperature).state >= 100) {
+          it.printf(forecast_x_0 - 21, forecast_state_y_0, id(font_current_a), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
         } else {
-          it.printf(forecast_x_0, forecast_state_y_0, id(font_current_a), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temp).state);
+          it.printf(forecast_x_0, forecast_state_y_0, id(font_current_a), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
         }
         it.printf(forecast_degree_x_0, forecast_degree_y_0, id(font_current_degree_a), TextAlign::TOP_CENTER, "°");
 
@@ -1233,7 +1344,7 @@ display:
       }
 
       // Outside Temperature
-      it.printf(253, 528, id(font_current_temperature_b), TextAlign::BASELINE_RIGHT, "%.0f", id(wf_current_conditions_air_temp).state);
+      it.printf(253, 528, id(font_current_temperature_b), TextAlign::BASELINE_RIGHT, "%.0f", id(wf_current_conditions_air_temperature).state);
       it.printf(253, 475, id(font_current_degree_b), TextAlign::BASELINE_LEFT, "°");
 
       // Today's HI LO Temperature
@@ -1487,12 +1598,12 @@ display:
             int forecast_state_pad_y_0 = 102;
 
             it.printf(forecast_x_0, forecast_y_0, id(font_lettering_c), TextAlign::TOP_CENTER, "CURRENTLY");
-            if (id(wf_current_conditions_air_temp).state >= 100) {
-              it.printf(forecast_x_0 - 23, forecast_state_y_0, id(font_current_c), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temp).state);
-            } else if (id(wf_current_conditions_air_temp).state == 0) {
+            if (id(wf_current_conditions_air_temperature).state >= 100) {
+              it.printf(forecast_x_0 - 23, forecast_state_y_0, id(font_current_c), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
+            } else if (id(wf_current_conditions_air_temperature).state == 0) {
               it.printf(forecast_x_0, forecast_state_y_0, id(font_current_c), TextAlign::TOP_CENTER, " 0");
             } else {
-              it.printf(forecast_x_0, forecast_state_y_0, id(font_current_c), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temp).state);
+              it.printf(forecast_x_0, forecast_state_y_0, id(font_current_c), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
             }
             it.printf(forecast_degree_x_0, forecast_degree_y_0, id(font_current_degree_c), TextAlign::TOP_CENTER, "°");
 
@@ -2069,71 +2180,197 @@ display:
 
         } else if (id(${devicename}_page).state == "D") {
 
+           // tab
 
-          // tab
+           int large_weather_icon_x_page_d = 90;
+           int large_weather_icon_y_page_d = 0;
 
+           int current_conditions_state_y_page_d = 25;
 
+           int current_conditions_x_page_d = 310;
+           int current_conditions_y_page_d = 0;
 
-              int last_update_x_c = 955;
-              int last_update_y_c = 205;
+           int current_conditions_pad_x_page_d = 260;
+           int current_conditions_pad_y_page_d = 180;
 
-              int wifi_x_c = 870;
-              int wifi_y_c = 205;
+           int overninetynine_pad_x_page_d = 45;
 
-              int battery_voltage_x_c = 890;
-              int battery_voltage_y_c = 205;
+           int current_conditions_degree_x_page_d = 414;
+           int current_conditions_degree_y_page_d = 13;
 
-              // Last Updated
+           int current_conditions_percent_x_page_d = 416;
+           int current_conditions_percent_y_page_d = 12;
 
-              it.strftime(last_update_x_c, last_update_y_c, id(font_lettering_c), TextAlign::TOP_RIGHT, "%I:%M %p", id(ntp).now());
+           int wind_direction_pad_x_page_d = 50;
+           int wind_direction_y_page_d = 64;
 
-              // WiFi Signal Strength
+           it.printf(large_weather_icon_x_page_d, large_weather_icon_y_page_d, id(font_icon_large_d), TextAlign::TOP_CENTER, "%s", id(wf_current_conditions_icon).state.c_str());
+           it.printf(large_weather_icon_x_page_d, current_conditions_y_page_d + current_conditions_pad_y_page_d, id(font_lettering_d), TextAlign::TOP_CENTER, "%s", id(wf_current_conditions_conditions).state.c_str());
 
-              if (id(${devicename}_WiFi_Signal).has_state()) {
-                if (id(${devicename}_WiFi_Signal).state >= -50) {
-                  //Excellent
-                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤨");
-                  ESP_LOGI("WiFi", "Exellent");
-                } else if (id(${devicename}_WiFi_Signal).state >= -60) {
-                  //Good
-                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤥");
-                  ESP_LOGI("WiFi", "Good");
-                } else if (id(${devicename}_WiFi_Signal).state >= -67) {
-                  //Fair
-                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤢");
-                  ESP_LOGI("WiFi", "Fair");
-                } else if (id(${devicename}_WiFi_Signal).state >= -70) {
-                  //Weak
-                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤟");
-                  ESP_LOGI("WiFi", "Weak");
-                } else {
-                  //Unlikely working signal
-                  it.print(wifi_x_c, wifi_y_c, id(font_wifi_c), TextAlign::TOP_RIGHT, "󰤫");
-                  ESP_LOGI("WiFi", "Unlikely");
-                }
-              }
+           // row 1
 
-              // Battery Voltage
+           it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_y_page_d, id(font_lettering_d), TextAlign::TOP_CENTER, "CURRENTLY");
+           if (id(wf_current_conditions_air_temperature).state >= 100) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0) - overninetynine_pad_x_page_d, current_conditions_state_y_page_d, id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
+           } else if (id(wf_current_conditions_air_temperature).state == 0) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_state_y_page_d, id(font_current_d), TextAlign::TOP_CENTER, " 0");
+           } else {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_state_y_page_d, id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_air_temperature).state);
+           }
+           it.printf(current_conditions_degree_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_degree_y_page_d, id(font_current_degree_d), TextAlign::TOP_CENTER, "°");
 
-              if (id(${devicename}_battery_voltage).has_state()) {
-                if (id(${devicename}_battery_voltage).state >= 3.7) {
-                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰁹");
-                } else if (id(${devicename}_battery_voltage).state >= 3.5) {
-                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰂁");
-                } else if (id(${devicename}_battery_voltage).state >= 3.3) {
-                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰁿");
-                } else if (id(${devicename}_battery_voltage).state >= 3.1) {
-                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰁽");
-                } else if (id(${devicename}_battery_voltage).state >= 3.0) {
-                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󰁻");
-                } else {
-                  it.print(battery_voltage_x_c, battery_voltage_y_c, id(font_battery_c), TextAlign::TOP_RIGHT, "󱃍");
-                }
+           it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_y_page_d + (current_conditions_pad_y_page_d * 0), id(font_lettering_d), TextAlign::TOP_CENTER, "FEELS LIKE");
+           if (id(wf_current_conditions_feels_like).state >= 100) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1) - overninetynine_pad_x_page_d + (current_conditions_pad_y_page_d * 0), current_conditions_state_y_page_d, id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_feels_like).state);
+           } else if (id(wf_current_conditions_feels_like).state == 0) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 0), id(font_current_d), TextAlign::TOP_CENTER, " 0");
+           } else {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 0), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_feels_like).state);
+           }
+           it.printf(current_conditions_degree_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_degree_y_page_d + (current_conditions_pad_y_page_d * 0), id(font_current_degree_d), TextAlign::TOP_CENTER, "°");
 
-              }
+           it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 2), current_conditions_y_page_d + (current_conditions_pad_y_page_d * 0), id(font_lettering_d), TextAlign::TOP_CENTER, "CHANCE");
+           if (id(wf_d_fc_0_precip_prob).state >= 100) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 2) - overninetynine_pad_x_page_d, current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 0), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_precip_prob).state);
+           } else if (id(wf_d_fc_0_precip_prob).state == 0) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 2), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 0), id(font_current_d), TextAlign::TOP_CENTER, " 0");
+           } else {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 2), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 0), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_precip_prob).state);
+           }
+           it.printf(current_conditions_percent_x_page_d + (current_conditions_pad_x_page_d * 2), current_conditions_percent_y_page_d + (current_conditions_pad_y_page_d * 0), id(font_current_humidity_percent_d), TextAlign::TOP_CENTER, "%%");
 
-        }
+           // row 2
 
+           it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_lettering_d), TextAlign::TOP_CENTER, "HIGH");
+           if (id(wf_d_fc_0_air_temp_high).state >= 100) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0) - overninetynine_pad_x_page_d, current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_air_temp_high).state);
+           } else if (id(wf_d_fc_0_air_temp_high).state == 0) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_d), TextAlign::TOP_CENTER, " 0");
+           } else {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_air_temp_high).state);
+           }
+           it.printf(current_conditions_degree_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_degree_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_degree_d), TextAlign::TOP_CENTER, "°");
+
+           it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_lettering_d), TextAlign::TOP_CENTER, "LOW");
+           if (id(wf_d_fc_0_air_temp_low).state >= 100) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1) - overninetynine_pad_x_page_d, current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_air_temp_low).state);
+           } else if (id(wf_d_fc_0_air_temp_low).state == 0) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_d), TextAlign::TOP_CENTER, " 0");
+           } else {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_d_fc_0_air_temp_low).state);
+           }
+           it.printf(current_conditions_degree_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_degree_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_degree_d), TextAlign::TOP_CENTER, "°");
+
+           it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 2), current_conditions_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_lettering_d), TextAlign::TOP_CENTER, "HUMIDITY");
+           if (id(wf_current_conditions_relative_humidity).state >= 100) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 2) - overninetynine_pad_x_page_d, current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_relative_humidity).state);
+           } else if (id(wf_current_conditions_relative_humidity).state == 0) {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 2), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_d), TextAlign::TOP_CENTER, " 0");
+           } else {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 2), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_relative_humidity).state);
+           }
+           it.printf(current_conditions_percent_x_page_d + (current_conditions_pad_x_page_d * 2), current_conditions_percent_y_page_d + (current_conditions_pad_y_page_d * 1), id(font_current_humidity_percent_d), TextAlign::TOP_CENTER, "%%");
+
+           // row 3
+
+           it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_lettering_d), TextAlign::TOP_CENTER, "WIND AVERAGE");
+           it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_wind_d), TextAlign::TOP_CENTER, " %.0f", id(wf_current_conditions_wind_avg).state);
+           //it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 2) + 50, id(font_wind_d), TextAlign::TOP_CENTER, " %.0f",  id(wf_current_conditions_wind_gust).state);
+
+           //it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 0), current_conditions_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_lettering_d), TextAlign::TOP_CENTER, "DIRECTION");
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "N") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "S");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "NNE") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "T");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "NE") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "T");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "ENE") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "T");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "E") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "U");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "ESE") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "V");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "SE") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "V");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "SSE") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "V");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "S") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "W");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "SSW") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "X");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "SW") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "X");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "WSW") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "X");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "W") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "Q");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "WNW") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "R");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "NW") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "R");
+           }
+
+           if (id(wf_current_conditions_wind_direction_cardinal).state == "NNW") {
+             it.printf(current_conditions_x_page_d - wind_direction_pad_x_page_d, wind_direction_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_compass_pointer), TextAlign::TOP_CENTER, "R");
+           }
+
+           it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_lettering_d), TextAlign::TOP_CENTER, "UV");
+
+           if (id(wf_current_conditions_uv).state >= 10) {
+
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_current_d), TextAlign::TOP_CENTER, "%.0f", id(wf_current_conditions_uv).state);
+           } else {
+             it.printf(current_conditions_x_page_d + (current_conditions_pad_x_page_d * 1), current_conditions_state_y_page_d + (current_conditions_pad_y_page_d * 2), id(font_current_d), TextAlign::TOP_CENTER, " %.0f", id(wf_current_conditions_uv).state);
+           }
+
+           //sunrise_sunset
+
+           it.printf(45, 220, id(font_sunrise_sunset), TextAlign::TOP_CENTER, "");
+           it.printf(45, 290, id(font_sunrise_sunset_time), TextAlign::TOP_CENTER, "%s AM", id(wf_d_fc_0_sunrise).state.c_str());
+
+           it.printf(135, 220, id(font_sunrise_sunset), TextAlign::TOP_CENTER, "");
+           it.printf(135, 290, id(font_sunrise_sunset_time), TextAlign::TOP_CENTER, "%s PM", id(wf_d_fc_0_sunset).state.c_str());
+
+           if (id(wf_current_conditions_lightning_strike_count_last_1hr).state >= 1) {
+
+             it.image(0, 300, id(online_image_lightning));
+
+           } else {
+
+             //it.image(0, 300, id(online_image_temperature));
+
+           }
+
+           }
 
 sensor:
   - platform: wifi_signal
@@ -2281,8 +2518,97 @@ sensor:
     attribute: air_temp_low
   - platform: homeassistant
     entity_id: sensor.weatherflow_current_conditions
-    id: wf_current_conditions_air_temp
+    id: wf_current_conditions_air_temperature
     attribute: air_temperature
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_sea_level_pressure
+    attribute: sea_level_pressure
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_station_pressure
+    attribute: station_pressure
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_relative_humidity
+    attribute: relative_humidity
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_wind_avg
+    attribute: wind_avg
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_wind_direction
+    attribute: wind_direction
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_wind_gust
+    attribute: wind_gust
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_solar_radiation
+    attribute: solar_radiation
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_uv
+    attribute: uv
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_brightness
+    attribute: brightness
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_feels_like
+    attribute: feels_like
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_dew_point
+    attribute: dew_point
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_wet_bulb_temperature
+    attribute: wet_bulb_temperature
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_wet_bulb_globe_temperature
+    attribute: wet_bulb_globe_temperature
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_delta_t
+    attribute: delta_t
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_air_density
+    attribute: air_density
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_lightning_strike_count_last_1hr
+    attribute: lightning_strike_count_last_1hr
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_lightning_strike_count_last_3hr
+    attribute: lightning_strike_count_last_3hr
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_lightning_strike_last_distance
+    attribute: lightning_strike_last_distance
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_precip_accum_local_day
+    attribute: precip_accum_local_day
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_precip_accum_local_yesterday
+    attribute: precip_accum_local_yesterday
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_precip_minutes_local_day
+    attribute: precip_minutes_local_day
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_precip_minutes_local_yesterday
+    attribute: precip_minutes_local_yesterday
+
   - platform: homeassistant
     entity_id: sensor.weatherflow_hourly_forecast_0
     id: wf_h_fc_0_air_temp
@@ -2681,6 +3007,14 @@ text_sensor:
     id: wf_d_fc_0_day_name
     attribute: day_name
   - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_sunrise
+    attribute: sunrise
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_daily_forecast_0
+    id: wf_d_fc_0_sunset
+    attribute: sunset
+  - platform: homeassistant
     entity_id: sensor.weatherflow_daily_forecast_1
     id: wf_d_fc_1_conditions
     attribute: conditions
@@ -2718,12 +3052,32 @@ text_sensor:
     attribute: icon
   - platform: homeassistant
     entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_time
+    attribute: time
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
     id: wf_current_conditions_conditions
     attribute: conditions
   - platform: homeassistant
     entity_id: sensor.weatherflow_current_conditions
     id: wf_current_conditions_icon
     attribute: icon
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_pressure_trend
+    attribute: pressure_trend
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_wind_direction_cardinal
+    attribute: wind_direction_cardinal
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_lightning_strike_last_distance_msg
+    attribute: lightning_strike_last_distance_msg
+  - platform: homeassistant
+    entity_id: sensor.weatherflow_current_conditions
+    id: wf_current_conditions_lightning_strike_last_epoch
+    attribute: lightning_strike_last_epoch
   - platform: homeassistant
     entity_id: sensor.weatherflow_hourly_forecast_0
     id: wf_h_fc_0_am_pm
@@ -2812,3 +3166,8 @@ script:
                 id: deep_sleep_control
                 sleep_duration: '${sleep_time}'
 
+online_image:
+  - url: "http://attic.tylephony.com/esphome/lightning.png"
+    id: online_image_lightning
+  - url: "http://attic.tylephony.com/esphome/temperature.png"
+    id: online_image_temperature    
