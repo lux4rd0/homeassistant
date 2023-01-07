@@ -29,7 +29,7 @@ if [ "${hourly_icon}" == "partly-cloudy-day" ]; then hourly_icon="R"; fi
 if [ "${hourly_icon}" == "partly-cloudy-night" ]; then hourly_icon="A"; fi
 if [ "${hourly_icon}" == "possibly-rainy-day" ]; then hourly_icon="E"; fi
 if [ "${hourly_icon}" == "possibly-rainy-night" ]; then hourly_icon="D"; fi
-if [ "${hourly_icon}" == "possibly-sleet-day" ]; then hourly_icon="\\\""; fi
+if [ "${hourly_icon}" == "possibly-sleet-day" ]; then hourly_icon='\"'; fi
 if [ "${hourly_icon}" == "possibly-sleet-night" ]; then hourly_icon="t"; fi
 if [ "${hourly_icon}" == "possibly-snow-day" ]; then hourly_icon="P"; fi
 if [ "${hourly_icon}" == "possibly-snow-night" ]; then hourly_icon="O"; fi
