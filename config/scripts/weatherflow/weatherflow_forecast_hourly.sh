@@ -100,7 +100,6 @@ if [ "${hourly_hour}" == "11" ] && [ "${hourly_am_pm}" == "PM" ]; then hourly_ho
 if [ "${hourly_hour}" == "12" ] && [ "${hourly_am_pm}" == "AM" ]; then hourly_hour_icon="󱑖"; fi
 if [ "${hourly_hour}" == "12" ] && [ "${hourly_am_pm}" == "PM" ]; then hourly_hour_icon="󱑊"; fi
 
-
 echo "{
   \"conditions\": ${hourly_conditions},
   \"icon\": \"${hourly_icon}\",
