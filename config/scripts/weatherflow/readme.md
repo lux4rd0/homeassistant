@@ -1,27 +1,56 @@
-
 These [WeatherFlow](https://weatherflow.com/) scripts for [Home Assistant](https://www.home-assistant.io/) provide sensor and sensor_text details for [ESPHome](https://esphome.io/) in order to display WeatherFlow data. Please follow the instructions below to successfully use these items, making changes relevant to your deployment.
 
 **Home Assistant YAML Configuration**
 
-[sensor.yaml](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/sensor.yaml)
+[command_line_weatherflow.yaml](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/sensor.yaml)
 
 This file gets added to your Home Assistant configuration. I split out my main `configuration.yaml` file into sub-files. Your configuration will need an include directive in you want to do the same. Something like:
 
     default_config:
-    sensor: !include sensor.yaml
+    sensor: !include command_line_weatherflow.yaml
 
 This configuration sets up multiple command_line collectors that poll the other scripts and takes the JSON response and creates templated values in Home Assistant. ESPHome then uses these values to display the data on the E Ink displays. A snippet looks something like this (for Current Conditions):
 
-    - platform: command_line
-      name: weatherflow_current_conditions
-      json_attributes:
-        - conditions
-        - icon
-        - relative_humidity
-        - air_temperature
-      command: bash /config/scripts/weatherflow/weatherflow_current_conditions.sh
-      value_template: '{{ value_json.conditions }}'
-      scan_interval: 300
+    - sensor:
+        name: weatherflow_current_conditions
+        json_attributes:
+          - time
+          - conditions
+          - icon
+          - air_temperature
+          - sea_level_pressure
+          - station_pressure
+          - pressure_trend
+          - relative_humidity
+          - wind_avg
+          - wind_direction
+          - wind_direction_cardinal
+          - wind_gust
+          - solar_radiation
+          - uv
+          - brightness
+          - feels_like
+          - dew_point
+          - wet_bulb_temperature
+          - wet_bulb_globe_temperature
+          - delta_t
+          - air_density
+          - lightning_strike_count_last_1hr
+          - lightning_strike_count_last_3hr
+          - lightning_strike_last_distance
+          - lightning_strike_last_distance_msg
+          - lightning_strike_last_epoch
+          - precip_accum_local_day
+          - precip_accum_local_yesterday
+          - precip_minutes_local_day
+          - precip_minutes_local_yesterday
+          - is_precip_local_day_rain_check
+          - is_precip_local_yesterday_rain_check
+        command: bash /config/scripts/weatherflow/weatherflow_current_conditions.sh
+        command_timeout: 30
+        value_template: '{{ value_json.conditions }}'
+        scan_interval: 300
+
 
 **Home Assistant File System**
 
@@ -29,7 +58,7 @@ These shell script files should be placed into the Home Assistant file system. T
 
     /config/scripts/weatherflow
 
-If you wish to place them someplace else, be sure to update each of the scripts to reflect the different folder paths. You will need to change the permissions on each file to be executable by the Home Assistant user.
+If you wish to place them somewhere else, be sure to update each of the scripts to reflect the different folder paths. You will need to change the permissions on each file to be executable by the Home Assistant user.
 
     chmod 755 /config/scripts/weatherflow/*.sh
 
