@@ -7,14 +7,13 @@ esphome:
   name: '${devicename}'
   platformio_options:
     board_upload.flash_size: 16MB
+  comment: SparkleLux Quotes
 esp32:
   board: m5stack-core2
   framework:
     type: arduino
     version: 2.0.2
-    platform_version: '4.3.0'
-debug:
-  update_interval: 60s
+    platform_version: 4.3.0
 time:
   - platform: homeassistant
     id: ntp
@@ -67,8 +66,6 @@ font:
       - .
       - w
       - j
-
-    
 button:
   - platform: restart
     name: '${devicename} Restart'
@@ -102,107 +99,67 @@ binary_sensor:
     id: '${devicename}_prevent_deep_sleep'
     name: '${devicename} Prevent Deep Sleep'
     entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
-
+    on_state:
+      then:
+        - script.execute: refresh_display
 external_components:
-  - source: 'github://ashald/esphome@lilygo-t5-47'
+  - source: custom_components
     components:
       - lilygo_t5_47
     refresh: 0s
-
 display:
   platform: lilygo_t5_47
   full_update_every: 1
-  rotation: 0
   cycles_render: 40
   cycles_invert: 40
   id: '${devicename}_display'
   update_interval: never
+  lambda: >-
 
-  lambda: |-
+    // Static variable to store the last chosen image index
 
-    // Images
+    static int last_image_index = -1; 
 
+    // Define an array of image pointers
 
+    esphome::image::Image* images[4] = {id(image_0), id(image_1), id(image_2),
+    id(image_3)};
 
-    if (id(${devicename}_random).state == 0) {
+    int image_index;
 
-    it.image(0, 0, id(image_0));
-    
-    }
+    do {
+      // Generate a random number between 0 and 3
+      image_index = random(0, 4);
+    } while (image_index == last_image_index); // Repeat if the new index is the
+    same as the last
 
-    if (id(${devicename}_random).state == 1) {
+    // Update the last image index
 
-    it.image(0, 0, id(image_1));
-    
-    }
+    last_image_index = image_index;
 
-    if (id(${devicename}_random).state == 2) {
+    // Display the randomly chosen image
 
-    it.image(0, 0, id(image_2));
-    
-    }
-
-    if (id(${devicename}_random).state == 3) {
-
-    it.image(0, 0, id(image_3));
-    
-    }
-
-    if (id(${devicename}_random).state == 4) {
-
-    it.image(0, 0, id(image_4));
-    
-    }
-
-    if (id(${devicename}_random).state == 5) {
-
-    it.image(0, 0, id(image_5));
-    
-    }
+    it.image(0, 0, images[image_index]);
 sensor:
   - platform: wifi_signal
     name: '${devicename} WiFi Signal'
     id: '${devicename}_WiFi_Signal'
-    update_interval: 60s
+    update_interval: 10s
   - platform: uptime
     name: '${devicename} Uptime'
-    update_interval: 60s
-  - platform: debug
-    free:
-      name: '${devicename} Heap Free'
-    block:
-      name: '${devicename} Heap Max Block'
-    loop_time:
-      name: '${devicename} Loop Time'
+    update_interval: 10s
   - id: '${devicename}_battery_voltage'
     name: '${devicename} Battery Voltage'
     platform: lilygo_t5_47
     unit_of_measurement: V
     state_class: measurement
     device_class: voltage
-    update_interval: 60s
-#  - platform: template
-#    name: '${devicename} Random Numbers'
-#    id: '${devicename}_random_sensor'
-#    lambda: return rand() % 6;
-#    update_interval: 5s
-  - platform: homeassistant
-    entity_id: sensor.${devicename}_random
-    id: ${devicename}_random
-    on_value:
-      then:
-        - logger.log: Received sensor.${devicename}_random
-        - script.execute: random_number_generated
-text_sensor:
-  - platform: debug
-    device:
-      name: '${devicename} Device Info'
-      id: '${devicename}_device_info'
+    update_interval: 10s
+
 script:
-  - id: random_number_generated
+  - id: refresh_display
     then:
       - component.update: '${devicename}_display'
-      - delay: 1s
       - if:
           condition:
             binary_sensor.is_on: '${devicename}_prevent_deep_sleep'
@@ -211,42 +168,43 @@ script:
             - deep_sleep.prevent: deep_sleep_control
           else:
             - script.execute: enter_sleep
+
   - id: enter_sleep
     then:
       - if:
           condition:
             lambda: |-
               auto time = id(ntp).now();
-              if (!time.is_valid()) { 
-                return false;
-              }
-              return (time.hour < 6); 
+              // Check if time is valid
+              return time.is_valid();
           then:
-            - logger.log: 'Nighttime, entering long sleep for ${night_sleep_time}'
-            - deep_sleep.enter:
-                id: deep_sleep_control
-                sleep_duration: '${night_sleep_time}'
+            - if:
+                condition:
+                  lambda: |-
+                    return id(ntp).now().hour < 6; 
+                then:
+                  - logger.log: 'Nighttime, entering long sleep for ${night_sleep_time}'
+                  - deep_sleep.enter:
+                      id: deep_sleep_control
+                      sleep_duration: '${night_sleep_time}'
+                else:
+                  - logger.log: 'Daytime, entering short sleep for ${sleep_time}'
+                  - deep_sleep.enter:
+                      id: deep_sleep_control
+                      sleep_duration: '${sleep_time}'
           else:
-            - logger.log: 'Daytime, entering short sleep for ${sleep_time}'
-            - deep_sleep.enter:
-                id: deep_sleep_control
-                sleep_duration: '${sleep_time}'
+            - logger.log: 'Time not valid, not entering sleep'
+
 image:
-  - file: images/Message - What The Fuck Are You Waiting For.png
+  - file: images/Message - Right Motion.png
     id: image_0
     type: TRANSPARENT_BINARY
-  - file: images/Message - It's Okay To Be Sad Or Mad But Do Something About It.png
+  - file: images/Message - Stiff Muscle.png
     id: image_1
     type: TRANSPARENT_BINARY
-  - file: images/Message - Telling Someone I Miss You.png
+  - file: images/Message - Hold On.png
     id: image_2
     type: TRANSPARENT_BINARY
-  - file: images/Message - If Your Life Is A Mess.png
+  - file: images/Message - Do a long one.png
     id: image_3
-    type: TRANSPARENT_BINARY
-  - file: images/Message - The Way They Leave Tells You Everything.png
-    id: image_4
-    type: TRANSPARENT_BINARY
-  - file: images/Message - If They Are Stupid Enough to Walk Away, Be Smart Enough to Let Them Go.png
-    id: image_5
     type: TRANSPARENT_BINARY
