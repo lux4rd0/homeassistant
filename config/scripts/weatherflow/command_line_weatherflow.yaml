@@ -1,6 +1,6 @@
 - sensor:
     name: weatherflow_fetch_forecast
-    command: bash /config/scripts/weatherflow/weatherflow_fetch_forecast.sh
+    command: python3 /config/scripts/weatherflow/weatherflow_fetch_forecast.py
     command_timeout: 30
     scan_interval: 300
 - sensor:
@@ -38,7 +38,7 @@
       - precip_minutes_local_yesterday
       - is_precip_local_day_rain_check
       - is_precip_local_yesterday_rain_check
-    command: bash /config/scripts/weatherflow/weatherflow_current_conditions.sh
+    command: python3 /config/scripts/weatherflow/weatherflow_current_conditions.py
     command_timeout: 30
     value_template: '{{ value_json.conditions }}'
     scan_interval: 300
@@ -57,10 +57,10 @@
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 0
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 0
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
-    scan_interval: 300       
+    scan_interval: 300
 - sensor:
     name: weatherflow_daily_forecast_1
     json_attributes:
@@ -76,7 +76,7 @@
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 1
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 1
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
     scan_interval: 300
@@ -95,7 +95,7 @@
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 2
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 2
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
     scan_interval: 300
@@ -114,7 +114,7 @@
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 3
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 3
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
     scan_interval: 300
@@ -122,7 +122,7 @@
     name: weatherflow_daily_forecast_4
     json_attributes:
       - day_num
-      - month_num            
+      - month_num
       - conditions
       - icon
       - air_temp_high
@@ -133,7 +133,7 @@
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 4
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 4
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
     scan_interval: 300
@@ -152,7 +152,7 @@
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 5
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 5
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
     scan_interval: 300
@@ -171,7 +171,7 @@
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 6
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 6
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
     scan_interval: 300
@@ -184,13 +184,13 @@
       - icon
       - air_temp_high
       - air_temp_high_x
-      - air_temp_low         
+      - air_temp_low
       - air_temp_low_x
       - precip_probability
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 7
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 7
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
     scan_interval: 300
@@ -209,7 +209,7 @@
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 8
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 8
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
     scan_interval: 300
@@ -228,7 +228,7 @@
       - sunrise
       - sunset
       - day_name
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 9
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 9
     command_timeout: 30
     value_template: '{{ value_json.day_num }}'
     scan_interval: 300
@@ -244,7 +244,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 0
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 0
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -260,7 +260,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 1
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 1
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -276,7 +276,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 2
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 2
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -292,7 +292,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 3
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 3
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -308,7 +308,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 4
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 4
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -324,7 +324,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 5
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 5
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -340,7 +340,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 6
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 6
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -356,7 +356,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 7
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 7
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -370,9 +370,9 @@
       - local_hour
       - local_hour_icon
       - pixel_height
-      - precip_probability   
+      - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 8
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 8
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -388,7 +388,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 9
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 9
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -404,7 +404,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 10
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 10
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -420,7 +420,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 11
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 11
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -432,11 +432,11 @@
       - conditions
       - icon
       - local_hour
-      - local_hour_icon      
+      - local_hour_icon
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 12
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 12
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -452,7 +452,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 13
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 13
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -468,7 +468,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 14
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 14
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -484,7 +484,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 15
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 15
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -494,13 +494,13 @@
       - air_temperature
       - am_pm
       - conditions
-      - icon                 
+      - icon
       - local_hour
       - local_hour_icon
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 16
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 16
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -516,7 +516,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 17
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 17
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -532,7 +532,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 18
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 18
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -548,7 +548,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 19
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 19
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -556,7 +556,7 @@
     name: weatherflow_hourly_forecast_20
     json_attributes:
       - air_temperature
-      - am_pm                
+      - am_pm
       - conditions
       - icon
       - local_hour
@@ -564,7 +564,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 20
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 20
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -580,7 +580,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 21
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 21
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -596,7 +596,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 22
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 22
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
@@ -612,7 +612,7 @@
       - pixel_height
       - precip_probability
       - precip_probability_icon
-    command: bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 23
+    command: python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 23
     command_timeout: 30
     value_template: '{{ value_json.local_hour }}'
     scan_interval: 300
