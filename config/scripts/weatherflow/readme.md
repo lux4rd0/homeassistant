@@ -47,7 +47,7 @@ This configuration sets up multiple command_line collectors that poll the other 
           - precip_minutes_local_yesterday
           - is_precip_local_day_rain_check
           - is_precip_local_yesterday_rain_check
-        command: bash /config/scripts/weatherflow/weatherflow_current_conditions.sh
+        command: puthon3 /config/scripts/weatherflow/weatherflow_current_conditions.py
         command_timeout: 30
         value_template: '{{ value_json.conditions }}'
         scan_interval: 300
