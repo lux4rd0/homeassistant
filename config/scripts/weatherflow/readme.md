@@ -1,15 +1,16 @@
-These [WeatherFlow](https://weatherflow.com/) scripts for [Home Assistant](https://www.home-assistant.io/) provide sensor and sensor_text details for [ESPHome](https://esphome.io/) in order to display WeatherFlow data. Please follow the instructions below to successfully use these items, making changes relevant to your deployment.
+
+These [WeatherFlow](https://weatherflow.com/) scripts for [Home Assistant](https://www.home-assistant.io/) provide sensor and sensor_text details for [ESPHome](https://esphome.io/) to display WeatherFlow data. Please follow the instructions below to successfully use these items, making changes relevant to your deployment.
 
 **Home Assistant YAML Configuration**
 
 [command_line_weatherflow.yaml](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/sensor.yaml)
 
-This file gets added to your Home Assistant configuration. I split out my main `configuration.yaml` file into sub-files. Your configuration will need an include directive in you want to do the same. Something like:
+This file gets added to your Home Assistant configuration. I split out my main `configuration.yaml` file into sub-files. If you want to do the same, your configuration will need an include directive. Something like:
 
     default_config:
     sensor: !include command_line_weatherflow.yaml
 
-This configuration sets up multiple command_line collectors that poll the other scripts and takes the JSON response and creates templated values in Home Assistant. ESPHome then uses these values to display the data on the E Ink displays. A snippet looks something like this (for Current Conditions):
+This configuration sets up multiple command_line collectors that poll the other scripts, takes the JSON response, and creates templated values in Home Assistant. ESPHome then uses these values to display the data on the E Ink displays. A snippet looks something like this (for Current Conditions):
 
     - sensor:
         name: weatherflow_current_conditions
@@ -58,13 +59,12 @@ These shell script files should be placed into the Home Assistant file system. T
 
     /config/scripts/weatherflow
 
-If you wish to place them somewhere else, be sure to update each of the scripts to reflect the different folder paths. You will need to change the permissions on each file to be executable by the Home Assistant user.
+If you wish to place them somewhere else, be sure to update each of the scripts to reflect the different folder paths.
 
-    chmod 755 /config/scripts/weatherflow/*.sh
 
 **WeatherFlow Current Conditions**
 
-[weatherflow_current_conditions.sh](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_current_conditions.sh)
+[weatherflow_current_conditions.py](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_current_conditions.py)
 
 Returns these data elements for **Current Conditions**:
 
@@ -105,9 +105,9 @@ from the JSON file fetched by the weatherflow_fetch_forecast.sh scripts.
 
 **WeatherFlow Fetch Forecast**
 
-[weatherflow_fetch_forecast.sh](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_fetch_forecast.sh)
+[weatherflow_fetch_forecast.py](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_fetch_forecast.py)
 
-This script polls the [WeatherFlow API](https://weatherflow.github.io/Tempest/api/) for all the information on the forecast and current conditions. The other scripts use the output of this file to populate each Home Assistant sensor. The file's output is called `weatherflow_forecast_out.txt` and will be created in the same folder as the scripts.
+This script polls the [WeatherFlow API](https://weatherflow.github.io/Tempest/api/) for all the information on the forecast and current conditions. The other scripts use the output of this file to populate each Home Assistant sensor. The file's output is `weatherflow_forecast_out.txt` and will be created in the same folder as the scripts.
 
 Before using it, edit the file to reflect your WeatherFlow **Station ID** and **API token**. You can also update the units to reflect your preferences.
 
@@ -122,7 +122,7 @@ Before using it, edit the file to reflect your WeatherFlow **Station ID** and **
 
 **WeatherFlow Forecast Daily**
 
-[weatherflow_forecast_daily.sh](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_forecast_daily.sh)
+[weatherflow_forecast_daily.py](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_forecast_daily.py)
 
 Returns these elements for **Daily Forecast**:
 
@@ -140,13 +140,13 @@ Returns these elements for **Daily Forecast**:
     - sunset
 
 Requires a day parameter to be passed to the script.
-*For example (the 4th day, index starts at 0):*
+*For example (on the 4th day, the index starts at 0):*
 
-    bash /config/scripts/weatherflow/weatherflow_forecast_daily.sh 3
+    python3 /config/scripts/weatherflow/weatherflow_forecast_daily.py 3
 
 **WeatherFlow Forecast Hourly**
 
-[weatherflow_forecast_hourly.sh](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_forecast_hourly.sh)
+[weatherflow_forecast_hourly.py](https://raw.githubusercontent.com/lux4rd0/homeassistant/main/config/scripts/weatherflow/weatherflow_forecast_hourly.py)
 
 Returns these elements for **Hourly Forecast**:
 
@@ -161,6 +161,6 @@ Returns these elements for **Hourly Forecast**:
     - precip_probability_icon
 
 Requires an hour parameter to be passed to the script.
-*For example (the 8th hour, index starts at 0):*
+*For example (the 8th hour, the index starts at 0):*
 
-    bash /config/scripts/weatherflow/weatherflow_forecast_hourly.sh 7
+    python3 /config/scripts/weatherflow/weatherflow_forecast_hourly.py 7
