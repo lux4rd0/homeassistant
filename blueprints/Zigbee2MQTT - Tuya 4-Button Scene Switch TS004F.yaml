@@ -1,70 +1,66 @@
 blueprint:
-  name: Tuya 4-Button Scene Switch (TS004) [Z2M]
-  description: Tuya 4-Button Scene Switch via Zigbee2MQTT
+  name: Zigbee2MQTT - Tuya 4-Button Scene Switch TS004F
+  description: Automate your Tuya 4-Button Scene Switch (TS004F) via Zigbee2MQTT.
   domain: automation
-  #Input declarations
   input:
-    controller:
-      name: Zigbee2MQTT Controller Name
-      description: Exact name as shown in Zigbee2MQTT (beware trailing space)
-      default: ''
-    base_topic:
-      name: (Zigbee2MQTT) Base mqtt topic
-      description: The base topic as configured in z2m (keep unless Z2M non-default configuation)
-      default: zigbee2mqtt
-    #Button 1
+    switch:
+      name: TS004F Switch
+      description: Tuya 4-Button Scene Switch to use
+      selector:
+        entity:
+          domain: sensor
+          integration: mqtt
+          multiple: false
     button_one_short_press:
       name: Single Press - Button 1
       description: Action to run on button 1 (upper-left) single press
       default: []
       selector:
         action: {}
+    button_one_hold:
+      name: Hold - Button 1
+      description: Action to run on button 1 (upper-left) single press
+      default: []
+      selector:
+        action: {}
     button_one_double_press:
       name: Double Press - Button 1
-      description: Action to run on button 1 (upper-left) double press
+      description: Action to run on button 1 (upper-left) single press
       default: []
       selector:
         action: {}
-    button_one_long_press:
-      name: Long Press - Button 1
-      description: Action to run on button 1 (upper-left) long press
-      default: []
-      selector:
-        action: {}
-    #Button 2
-    button_two_short_press:
-      name: Single Press - Button 2
+    button_two_hold:
+      name: Hold - Button 2
       description: Action to run on button 2 (upper-right) single press
       default: []
       selector:
         action: {}
     button_two_double_press:
       name: Double Press - Button 2
-      description: Action to run on button 2 (upper-right) double press
+      description: Action to run on button 2 (upper-right) single press
       default: []
       selector:
         action: {}
-    button_two_long_press:
-      name: Long Press - Button 2
-      description: Action to run on button 2 (upper-right) long press
+    button_two_short_press:
+      name: Single Press - Button 2
+      description: Action to run on button 2 (lower-right) single press
       default: []
       selector:
         action: {}
-    #Button 3
     button_three_short_press:
       name: Single Press - Button 3
       description: Action to run on button 3 (lower-left) single press
       default: []
       selector:
         action: {}
-    button_three_double_press:
-      name: Double Press - Button 3
-      description: Action to run on button 3 (lower-left) double press
+    button_three_hold:
+      name: Hold - Button 3
+      description: Action to run on button 3 (lower-left) long press
       default: []
       selector:
         action: {}
-    button_three_long_press:
-      name: Long Press - Button 3
+    button_three_double_press:
+      name: Double Press - Button 3
       description: Action to run on button 3 (lower-left) long press
       default: []
       selector:
@@ -75,64 +71,68 @@ blueprint:
       default: []
       selector:
         action: {}
-    button_four_double_press:
-      name: Double Press - Button 4
-      description: Action to run on button 4 (lower-right) double press
-      default: []
-      selector:
-        action: {}
-    button_four_long_press:
+    button_four_hold:
       name: Long Press - Button 4
       description: Action to run on button 4 (lower-right) long press
       default: []
       selector:
         action: {}
-  
-mode: parallel
+    button_four_double_press:
+      name: Double Press - Button 4
+      description: Action to run on button 4 (lower-right) long press
+      default: []
+      selector:
+        action: {}
+  source_url: https://gist.github.com/edememinov/1ae89374ece50d2aa4beee4bf8f3fd76
+mode: single
 max_exceeded: silent
-trigger_variables:
-  base_topic: !input base_topic
-  controller: !input controller
+variables:
+  command: "{{ trigger.payload }}"
+  topic: "{{ trigger.topic }}"
+  switch_name: !input switch
+  deviceName: "{{ state_attr(switch_name, 'friendly_name') }}"
 trigger:
-- platform: mqtt
-  topic: '{{ base_topic ~ ''/'' ~ controller }}'
+  - platform: mqtt
+    topic: zigbee2mqtt/+/action
 action:
-- variables:
-    command: '{{ trigger.payload_json.action }}'
-- choose:
-  - conditions:
-    - '{{ command == ''1_single'' }}'
-    sequence: !input button_one_short_press
-  - conditions:
-    - '{{ command == ''2_single'' }}'
-    sequence: !input button_two_short_press
-  - conditions:
-    - '{{ command == ''3_single'' }}'
-    sequence: !input button_three_short_press
-  - conditions:
-    - '{{ command == ''4_single'' }}'
-    sequence: !input button_four_short_press
-  - conditions:
-    - '{{ command == ''1_double'' }}'
-    sequence: !input button_one_double_press
-  - conditions:
-    - '{{ command == ''2_double'' }}'
-    sequence: !input button_two_double_press
-  - conditions:
-    - '{{ command == ''3_double'' }}'
-    sequence: !input button_three_double_press
-  - conditions:
-    - '{{ command == ''4_double'' }}'
-    sequence: !input button_four_double_press
-  - conditions:
-    - '{{ command == ''1_hold'' }}'
-    sequence: !input button_one_long_press
-  - conditions:
-    - '{{ command == ''2_hold'' }}'
-    sequence: !input button_two_long_press
-  - conditions:
-    - '{{ command == ''3_hold'' }}'
-    sequence: !input button_three_long_press
-  - conditions:
-    - '{{ command == ''4_hold'' }}'
-    sequence: !input button_four_long_press
+  - choose:
+      - conditions:
+          - "{{ topic.split('/')[1] + ' action' == deviceName }}"
+        sequence:
+          - choose:
+              - conditions:
+                  - "{{ command == '1_single' }}"
+                sequence: !input button_one_short_press
+              - conditions:
+                  - "{{ command == '2_single' }}"
+                sequence: !input button_two_short_press
+              - conditions:
+                  - "{{ command == '3_single' }}"
+                sequence: !input button_three_short_press
+              - conditions:
+                  - "{{ command == '4_single' }}"
+                sequence: !input button_four_short_press
+              - conditions:
+                  - "{{ command == '1_double' }}"
+                sequence: !input button_one_double_press
+              - conditions:
+                  - "{{ command == '2_double' }}"
+                sequence: !input button_two_double_press
+              - conditions:
+                  - "{{ command == '3_double' }}"
+                sequence: !input button_three_double_press
+              - conditions:
+                  - "{{ command == '4_double' }}"
+                sequence: !input button_four_double_press
+              - conditions:
+                  - "{{ command == '1_hold' }}"
+                sequence: !input button_one_hold
+              - conditions:
+                  - "{{ command == '2_hold' }}"
+                sequence: !input button_two_hold
+              - conditions:
+                  - "{{ command == '3_hold' }}"
+                sequence: !input button_three_hold
+              - conditions:
+                  - "{{ command == '4_hold' }}"
+                sequence: !input button_four_hold
