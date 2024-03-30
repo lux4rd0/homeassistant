@@ -1,0 +1,125 @@
+blueprint:
+  name: Zigbee2MQTT - Tuya Moes Smart Knob (Operation Mode = event or command)
+  description: Automate your Tuya Smart Knob - ERS-10TZBVK-AA
+  domain: automation
+  input:
+    switch:
+      name: Tuya Smart Knob
+      description: Tuya Smart Knob used in command or event mode (triple press will switch modes)
+      selector:
+        entity:
+          integration: mqtt
+          domain:
+          - sensor                  
+          multiple: false
+    event_button_short_press:
+      name: Event - Single Press
+      description: Action to run on single press (careful not to turn knob instead)
+      default: []
+      selector:
+        action: {}
+    event_button_double_press:
+      name: Event - Double Press
+      description: (Most likely won't work in command) Action to run on double press (careful not to turn knob instead)
+      default: []
+      selector:
+        action: {}
+    event_button_long_press:
+      name: Event - Long Press
+      description: Action to run on long press (at least 4 seconds - careful not to
+        turn knob instead)
+      default: []
+      selector:
+        action: {}
+    event_button_rotate_right:
+      name: Event - Rotate Right
+      description: Action to run when Smart Knob is rotated right
+      default: []
+      selector:
+        action: {}
+    event_button_rotate_left:
+      name: Event - Rotate Left
+      description: Action to run when Smart Knob is rotated left
+      default: []
+      selector:
+        action: {}
+    command_button_short_press:
+      name: Command - Single Press
+      description: Action to run on single press (careful not to turn knob instead)
+      default: []
+      selector:
+        action: {}
+    command_button_long_press:
+      name: Command - Long Press
+      description: Action to run on long press (at least 4 seconds - careful not to
+        turn knob instead)
+      default: []
+      selector:
+        action: {}
+    command_button_rotate_right:
+      name: Command - Rotate Right
+      description: Action to run when Smart Knob is rotated right
+      default: []
+      selector:
+        action: {}
+    command_button_rotate_left:
+      name: Command - Rotate Left
+      description: Action to run when Smart Knob is rotated left
+      default: []
+      selector:
+        action: {}
+    command_button_rotate_press_right:
+      name: Command - Rotate Press Right
+      description: Action to run when Smart Knob is rotated left
+      default: []
+      selector:
+        action: {}
+    command_button_rotate_press_left:
+      name: Command - Rotate Press Left
+      description: Action to run when Smart Knob is rotated left
+      default: []
+      selector:
+        action: {}
+  source_url: https://dummyurl.com/new
+mode: restart
+max_exceeded: silent
+trigger:
+- platform: state
+  entity_id: !input switch
+action:
+- variables:
+    command: '{{ trigger.to_state.state }}'
+- choose:
+  - conditions:
+    - '{{ command == ''single'' }}'
+    sequence: !input event_button_short_press
+  - conditions:
+    - '{{ command == ''double'' }}'
+    sequence: !input event_button_double_press
+  - conditions:
+    - '{{ command == ''hold'' }}'
+    sequence: !input event_button_long_press
+  - conditions:
+    - '{{ command == ''rotate_right'' }}'
+    sequence: !input event_button_rotate_right
+  - conditions:
+    - '{{ command == ''rotate_left'' }}'
+    sequence: !input event_button_rotate_left
+  - conditions:
+    - '{{ command == ''toggle'' }}'
+    sequence: !input command_button_short_press
+  - conditions:
+    - '{{ command == ''hue_move'' }}'
+    sequence: !input command_button_long_press
+  - conditions:
+    - '{{ command == ''brightness_step_up'' }}'
+    sequence: !input command_button_rotate_right
+  - conditions:
+    - '{{ command == ''brightness_step_down'' }}'
+    sequence: !input command_button_rotate_left
+  - conditions:
+    - '{{ command == ''color_temperature_step_up'' }}'
+    sequence: !input command_button_rotate_press_right
+  - conditions:
+    - '{{ command == ''color_temperature_step_down'' }}'
+    sequence: !input command_button_rotate_press_left
