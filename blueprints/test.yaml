@@ -41,17 +41,17 @@ blueprint:
 mode: restart
 max_exceeded: silent
 trigger:
-  - platform: state
-    entity_id: !input switch
+  - platform: mqtt
+    topic: zigbee2mqtt/+/action
 action:
+  - variables:
+      action_payload: '{{ trigger.payload | from_json }}'
+      button_action: '{{ action_payload.action }}'
   - service: system_log.write
     data:
-      message: >
-        Triggered. State: '{{ trigger.to_state.state }}', 
-        Attributes: '{{ trigger.to_state.attributes }}'
+      message: "Received MQTT message. Action: {{ button_action }}"
       level: info
-
   - choose:
-    - conditions:
-        - "{{ trigger.to_state.state == '1_single' }}"
-      sequence: !input button_one_short_press
+      - conditions:
+          - "{{ button_action == '1_single' }}"
+        sequence: !input button_one_short_press
