@@ -42,19 +42,16 @@ mode: restart
 max_exceeded: silent
 trigger:
   - platform: mqtt
-    topic: zigbee2mqtt/+/action
+    topic: zigbee2mqtt/Bedroom_SparkleLux_Button_Remote/action
 action:
   - variables:
-      action_payload: "{{ trigger.payload | from_json }}"
-      command: "{{ action_payload.action }}"
+      payload: "{{ trigger.payload | from_json }}"
+      command: "{{ payload.action }}"
   - service: system_log.write
     data:
-      message: "Received MQTT message. Command: {{ command }}"
+      message: "Received MQTT Command: {{ command }}"
       level: info
   - choose:
       - conditions:
           - "{{ command == '1_single' }}"
         sequence: !input button_one_short_press
-      - conditions:
-          - "{{ command == '2_single' }}"
-        sequence: !input button_two_short_press
