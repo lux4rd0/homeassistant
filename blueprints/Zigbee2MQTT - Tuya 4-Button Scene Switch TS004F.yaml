@@ -97,15 +97,15 @@ trigger:
 action:
   - service: system_log.write
     data:
-      message: "Extracted Device Name from Topic: {{ topic.split('/')[1] }}, Device Name Variable: {{ deviceName.split(' ')[0] + ' ' + deviceName.split(' ')[1] + ' ' + deviceName.split(' ')[2] }}"
+      message: "Topic: {{ trigger.topic }}, Command: {{ trigger.payload_json.action }}"
       level: info
   - choose:
-    - conditions:
-        - "{{ topic.split('/')[1] == deviceName.split(' ')[0] + ' ' + deviceName.split(' ')[1] + ' ' + deviceName.split(' ')[2] }}"
-      sequence:
+      - conditions:
+          - "{{ trigger.topic == 'zigbee2mqtt/Bedroom SparkleLux Button Remote/action' }}"
+        sequence:
           - choose:
               - conditions:
-                  - "{{ command == '1_single' }}"
+                  - "{{ trigger.payload_json.action == '1_single' }}"
                 sequence: !input "button_one_short_press"
               - conditions:
                   - "{{ command == '2_single' }}"
