@@ -97,12 +97,12 @@ trigger:
 action:
   - service: system_log.write
     data:
-      message: "Condition Check: '{{ 'zigbee2mqtt/' + deviceName == topic }}' Evaluated to: {{ 'zigbee2mqtt/' + deviceName == topic }}"
+      message: "Extracted Device Name from Topic: {{ topic.split('/')[1] }}, Device Name Variable: {{ deviceName.split(' ')[0] + ' ' + deviceName.split(' ')[1] + ' ' + deviceName.split(' ')[2] }}"
       level: info
   - choose:
-      - conditions:
-          - "{{ 'zigbee2mqtt/' + deviceName.split(' ')[0] + ' ' + deviceName.split(' ')[1] + ' ' + deviceName.split(' ')[2] == topic.rsplit('/', 1)[0] }}"
-        sequence:
+    - conditions:
+        - "{{ topic.split('/')[1] == deviceName.split(' ')[0] + ' ' + deviceName.split(' ')[1] + ' ' + deviceName.split(' ')[2] }}"
+      sequence:
           - choose:
               - conditions:
                   - "{{ command == '1_single' }}"
