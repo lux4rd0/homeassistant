@@ -86,7 +86,8 @@ blueprint:
 mode: single
 max_exceeded: silent
 variables:
-  command: "{{ trigger.payload }}"
+  payload: "{{ trigger.payload_json }}"
+  command: "{{ payload.action }}"
   topic: "{{ trigger.topic }}"
   switch_name: !input "switch"
   deviceName: "{{ state_attr(switch_name, 'friendly_name') }}"
