@@ -45,13 +45,16 @@ trigger:
     topic: zigbee2mqtt/+/action
 action:
   - variables:
-      action_payload: '{{ trigger.payload | from_json }}'
-      button_action: '{{ action_payload.action }}'
+      action_payload: "{{ trigger.payload | from_json }}"
+      command: "{{ action_payload.action }}"
   - service: system_log.write
     data:
-      message: "Received MQTT message. Action: {{ button_action }}"
+      message: "Received MQTT message. Command: {{ command }}"
       level: info
   - choose:
       - conditions:
-          - "{{ button_action == '1_single' }}"
+          - "{{ command == '1_single' }}"
         sequence: !input button_one_short_press
+      - conditions:
+          - "{{ command == '2_single' }}"
+        sequence: !input button_two_short_press
