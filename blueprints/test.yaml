@@ -44,13 +44,14 @@ trigger:
   - platform: state
     entity_id: !input switch
 action:
-  - variables:
-      action_payload: '{{ trigger.payload_json }}'
-      command: '{{ action_payload.action }}'
+  - service: system_log.write
+    data:
+      message: >
+        Triggered. State: '{{ trigger.to_state.state }}', 
+        Attributes: '{{ trigger.to_state.attributes }}'
+      level: info
+
   - choose:
-      - conditions:
-          - '{{ command == ''1_single'' }}'
-        sequence: !input button_one_short_press
-      - conditions:
-          - '{{ command == ''2_single'' }}'
-        sequence: !input button_two_short_press
+    - conditions:
+        - "{{ trigger.to_state.state == '1_single' }}"
+      sequence: !input button_one_short_press
