@@ -1,0 +1,61 @@
+
+blueprint:
+  name: Zigbee2MQTT - Tuya 4-Button Scene Switch TS004F (test)
+  description: Automate your Tuya 4-Button Scene Switch via Zigbee2MQTT
+  domain: automation
+  input:
+    switch:
+      name: TS004F Switch
+      description: Tuya 4-Button Wireless Switch
+      selector:
+        entity:
+          domain: sensor
+          integration: mqtt
+          multiple: false
+    button_one_short_press:
+      name: Button 1 - Single Press
+      description: Action to run on button 1 single press
+      default: []
+      selector:
+        action: {}
+    button_one_double_press:
+      name: Button 1 - Double Press
+      description: Action to run on button 1 double press
+      default: []
+      selector:
+        action: {}
+    button_one_long_press:
+      name: Button 1 - Long Press
+      description: Action to run on button 1 long press
+      default: []
+      selector:
+        action: {}
+    button_two_short_press:
+      name: Button 2 - Single Press
+      description: Action to run on button 2 single press
+      default: []
+      selector:
+        action: {}
+
+
+mode: restart
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input switch
+action:
+  - variables:
+      command: '{{ trigger.to_state.state }}'
+  - choose:
+      - conditions:
+          - '{{ command == ''1_single'' }}'
+        sequence: !input button_one_short_press
+      - conditions:
+          - '{{ command == ''1_double'' }}'
+        sequence: !input button_one_double_press
+      - conditions:
+          - '{{ command == ''1_hold'' }}'
+        sequence: !input button_one_long_press
+      - conditions:
+          - '{{ command == ''2_single'' }}'
+        sequence: !input button_two_short_press
