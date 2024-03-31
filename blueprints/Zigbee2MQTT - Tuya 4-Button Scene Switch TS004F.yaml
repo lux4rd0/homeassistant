@@ -95,9 +95,13 @@ trigger:
   - platform: mqtt
     topic: zigbee2mqtt/+/action
 action:
+  - service: system_log.write
+    data:
+      message: "Condition Check: '{{ 'zigbee2mqtt/' + deviceName == topic }}' Evaluated to: {{ 'zigbee2mqtt/' + deviceName == topic }}"
+      level: info
   - choose:
       - conditions:
-          - "{{ 'zigbee2mqtt/' + deviceName.replace(' Action', '') == topic.split('/action')[0] }}"
+          - "{{ 'zigbee2mqtt/' + deviceName.split(' ')[0] + ' ' + deviceName.split(' ')[1] + ' ' + deviceName.split(' ')[2] == topic.rsplit('/', 1)[0] }}"
         sequence:
           - choose:
               - conditions:
