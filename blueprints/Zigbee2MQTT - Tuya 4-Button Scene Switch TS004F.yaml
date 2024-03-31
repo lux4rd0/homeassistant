@@ -97,15 +97,17 @@ trigger:
 action:
   - service: system_log.write
     data:
-      message: "Topic: {{ trigger.topic }}, Payload: {{ trigger.payload }}"
+      message: "Topic: {{ trigger.topic }}, Raw Payload: '{{ trigger.payload }}'"
       level: info
+  - variables:
+      action_payload: "{{ trigger.payload | from_json }}"
   - choose:
       - conditions:
           - "{{ trigger.topic == 'zigbee2mqtt/Bedroom SparkleLux Button Remote/action' }}"
         sequence:
           - choose:
               - conditions:
-                  - "{{ trigger.payload | from_json | default({'action': None})['action'] == '1_single' }}"
+                  - "{{ action_payload.action == '1_single' }}"
                 sequence: !input "button_one_short_press"
               - conditions:
                   - "{{ command == '2_single' }}"
