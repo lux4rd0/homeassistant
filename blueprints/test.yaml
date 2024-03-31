@@ -45,17 +45,12 @@ trigger:
     entity_id: !input switch
 action:
   - variables:
-      command: '{{ trigger.to_state.state }}'
+      action_payload: '{{ trigger.payload_json }}'
+      command: '{{ action_payload.action }}'
   - choose:
       - conditions:
           - '{{ command == ''1_single'' }}'
         sequence: !input button_one_short_press
-      - conditions:
-          - '{{ command == ''1_double'' }}'
-        sequence: !input button_one_double_press
-      - conditions:
-          - '{{ command == ''1_hold'' }}'
-        sequence: !input button_one_long_press
       - conditions:
           - '{{ command == ''2_single'' }}'
         sequence: !input button_two_short_press
