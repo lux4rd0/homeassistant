@@ -97,7 +97,7 @@ trigger:
 action:
   - service: system_log.write
     data:
-      message: "Topic: {{ trigger.topic }}, Command: {{ trigger.payload_json.action }}"
+      message: "Topic: {{ trigger.topic }}, Payload: {{ trigger.payload }}"
       level: info
   - choose:
       - conditions:
@@ -105,7 +105,7 @@ action:
         sequence:
           - choose:
               - conditions:
-                  - "{{ trigger.payload_json.action == '1_single' }}"
+                  - "{{ trigger.payload | from_json | default({'action': None})['action'] == '1_single' }}"
                 sequence: !input "button_one_short_press"
               - conditions:
                   - "{{ command == '2_single' }}"
