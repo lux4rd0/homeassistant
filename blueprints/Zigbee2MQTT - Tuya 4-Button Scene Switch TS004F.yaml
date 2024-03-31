@@ -97,7 +97,7 @@ trigger:
 action:
   - choose:
       - conditions:
-          - "{{ 'zigbee2mqtt/' + deviceName.split(' ')[0] + ' ' + deviceName.split(' ')[1] + ' ' + deviceName.split(' ')[2] == topic.split('/action')[0] }}"
+          - "{{ 'zigbee2mqtt/' + deviceName.replace(' Action', '') == topic.split('/action')[0] }}"
         sequence:
           - choose:
               - conditions:
