@@ -1,144 +1,193 @@
 blueprint:
   name: Zigbee2MQTT - Tuya 4-Button Scene Switch TS004F
-  description: Automate your Tuya 4-Button Scene Switch (TS004F) via Zigbee2MQTT. Link - https://www.zigbee2mqtt.io/devices/TS004F.html
+  description: >
+    Automate your Tuya 4-Button Scene Switch (TS004F) via Zigbee2MQTT.
+    This blueprint allows you to configure actions for each button press type on
+    the Tuya 4-Button Scene Switch (TS004F). The switch can be integrated with
+    Home Assistant using Zigbee2MQTT. Each button supports single-press, double-
+    press, and long press actions.
+
+    **Instructions:**
+    1. **Switch**: Select your Tuya 4-Button Scene Switch from the entity dropdown.
+    2. **Base MQTT Topic**: By default, the base MQTT topic is set to `zigbee2mqtt`.
+       You can change this if your Zigbee2MQTT setup uses a different base topic.
+    3. **Actions**: For each button, configure the desired actions for a single press,
+       double press and hold.
+
+    **Notes:**
+    - Ensure that your switch is correctly integrated with Zigbee2MQTT and Home
+      Assistant.
+    - The friendly name of the switch is used to dynamically construct the MQTT
+      topic for handling actions.
+    - This blueprint includes logging steps for debugging. Check the Home Assistant
+      logs for information on received commands and matching conditions.
   domain: automation
   input:
     switch:
       name: TS004F Switch
-      description: Tuya 4-Button Wireless Switch
+      description: Tuya 4-Button Scene Switch to use
       selector:
         entity:
           domain: sensor
           integration: mqtt
+          multiple: false
     button_one_short_press:
-      name: Button 1 - Single Press
-      description: Action to run on button 1 (bottom-left) single press
+      name: Single Press - Button 1
+      description: Action to run on button 1 (upper-left) single press
       default: []
       selector:
-        action: null
+        action: {}
     button_one_hold:
-      name: Button 1 - Hold
-      description: Action to run on button 1 (bottom-left) single press
+      name: Hold - Button 1
+      description: Action to run on button 1 (upper-left) hold
       default: []
       selector:
-        action: null
+        action: {}
     button_one_double_press:
-      name: Button 1 - Double Press
-      description: Action to run on button 1 (bottom-left) single press
+      name: Double Press - Button 1
+      description: Action to run on button 1 (upper-left) double press
       default: []
       selector:
-        action: null
-    button_two_short_press:
-      name: Button 2 - Single Press
-      description: Action to run on button 2 (lower-right) single press
-      default: []
-      selector:
-        action: null
+        action: {}
     button_two_hold:
-      name: Button 2 - Hold
-      description: Action to run on button 2 (lower-right) single press
+      name: Hold - Button 2
+      description: Action to run on button 2 (upper-right) hold
       default: []
       selector:
-        action: null
+        action: {}
     button_two_double_press:
-      name: Button 2 - Double Press
+      name: Double Press - Button 2
+      description: Action to run on button 2 (upper-right) double press
+      default: []
+      selector:
+        action: {}
+    button_two_short_press:
+      name: Single Press - Button 2
       description: Action to run on button 2 (lower-right) single press
       default: []
       selector:
-        action: null
+        action: {}
     button_three_short_press:
-      name: Button 3 - Single Press
-      description: Action to run on button 3 (top-right) single press
+      name: Single Press - Button 3
+      description: Action to run on button 3 (lower-left) single press
       default: []
       selector:
-        action: null
+        action: {}
     button_three_hold:
-      name: Button 3 - Hold
-      description: Action to run on button 3 (top-right) single press
+      name: Hold - Button 3
+      description: Action to run on button 3 (lower-left) hold
       default: []
       selector:
-        action: null
+        action: {}
     button_three_double_press:
-      name: Button 3 - Double Press
-      description: Action to run on button 3 (top-right) single press
+      name: Double Press - Button 3
+      description: Action to run on button 3 (lower-left) double press
       default: []
       selector:
-        action: null
+        action: {}
     button_four_short_press:
-      name: Button 4 - Single Press
-      description: Action to run on button 4 (top-left) single press
+      name: Single Press - Button 4
+      description: Action to run on button 4 (lower-right) single press
       default: []
       selector:
-        action: null
+        action: {}
     button_four_hold:
-      name: Button 4 - Long Press
-      description: Action to run on button 4 (lower-left) long press
+      name: Hold - Button 4
+      description: Action to run on button 4 (lower-right) hold
       default: []
       selector:
-        action: null
+        action: {}
     button_four_double_press:
-      name: Button 4 - Double Press
-      description: Action to run on button 4 (lower-left) long press
+      name: Double Press - Button 4
+      description: Action to run on button 4 (lower-right) double press
       default: []
       selector:
-        action: null
-  source_url: https://gist.github.com/whalelion/5f19317ea530687a768ed2c34218cbc4
+        action: {}
+  source_url: https://gist.github.com/edememinov/1ae89374ece50d2aa4beee4bf8f3fd76
 mode: single
 max_exceeded: silent
 variables:
-  payload: "{{ trigger.payload_json }}"
-  command: "{{ payload.action }}"
+  command: "{{ trigger.payload }}"
   topic: "{{ trigger.topic }}"
-  switch_name: !input "switch"
-  deviceName: "{{ state_attr(switch_name, 'friendly_name') }}"
+  switch_name: !input switch
+  friendly_name: "{{ state_attr(switch_name, 'friendly_name') }}"
+  friendly_name_processed: "{{ friendly_name | lower | replace(' ', '_') | replace('-', '_') | replace('_action', '') }}"
+  topic_device_name: "{{ topic.split('/')[1] | lower | replace(' ', '_') | replace('-', '_') }}"
 trigger:
   - platform: mqtt
     topic: zigbee2mqtt/+/action
 action:
   - service: system_log.write
     data:
-      message: "Topic: {{ trigger.topic }}, Raw Payload: '{{ trigger.payload }}'"
+      message: 'Received command {{ command }} from topic {{ topic }}'
       level: info
-  - variables:
-      action_payload: "{{ trigger.payload | from_json }}"
+  - service: system_log.write
+    data:
+      message: 'Friendly name: {{ friendly_name }}, Processed: {{ friendly_name_processed }}'
+      level: info
+  - service: system_log.write
+    data:
+      message: 'Topic device name: {{ topic_device_name }}'
+      level: info
+  - service: system_log.write
+    data:
+      message: 'Match condition: {{ topic_device_name == friendly_name_processed }}'
+      level: info
   - choose:
       - conditions:
-          - "{{ trigger.topic == 'zigbee2mqtt/Bedroom SparkleLux Button Remote/action' }}"
+          - condition: template
+            value_template: "{{ topic_device_name == friendly_name_processed }}"
         sequence:
+          - service: system_log.write
+            data:
+              message: 'Matched device name: {{ friendly_name_processed }}'
+              level: info
           - choose:
               - conditions:
-                  - "{{ action_payload.action == '1_single' }}"
-                sequence: !input "button_one_short_press"
+                  - condition: template
+                    value_template: "{{ command == '1_single' }}"
+                sequence: !input button_one_short_press
               - conditions:
-                  - "{{ command == '2_single' }}"
-                sequence: !input "button_two_short_press"
+                  - condition: template
+                    value_template: "{{ command == '2_single' }}"
+                sequence: !input button_two_short_press
               - conditions:
-                  - "{{ command == '3_single' }}"
-                sequence: !input "button_three_short_press"
+                  - condition: template
+                    value_template: "{{ command == '3_single' }}"
+                sequence: !input button_three_short_press
               - conditions:
-                  - "{{ command == '4_single' }}"
-                sequence: !input "button_four_short_press"
+                  - condition: template
+                    value_template: "{{ command == '4_single' }}"
+                sequence: !input button_four_short_press
               - conditions:
-                  - "{{ command == '1_double' }}"
-                sequence: !input "button_one_double_press"
+                  - condition: template
+                    value_template: "{{ command == '1_double' }}"
+                sequence: !input button_one_double_press
               - conditions:
-                  - "{{ command == '2_double' }}"
-                sequence: !input "button_two_double_press"
+                  - condition: template
+                    value_template: "{{ command == '2_double' }}"
+                sequence: !input button_two_double_press
               - conditions:
-                  - "{{ command == '3_double' }}"
-                sequence: !input "button_three_double_press"
+                  - condition: template
+                    value_template: "{{ command == '3_double' }}"
+                sequence: !input button_three_double_press
               - conditions:
-                  - "{{ command == '4_double' }}"
-                sequence: !input "button_four_double_press"
+                  - condition: template
+                    value_template: "{{ command == '4_double' }}"
+                sequence: !input button_four_double_press
               - conditions:
-                  - "{{ command == '1_hold' }}"
-                sequence: !input "button_one_hold"
+                  - condition: template
+                    value_template: "{{ command == '1_hold' }}"
+                sequence: !input button_one_hold
               - conditions:
-                  - "{{ command == '2_hold' }}"
-                sequence: !input "button_two_hold"
+                  - condition: template
+                    value_template: "{{ command == '2_hold' }}"
+                sequence: !input button_two_hold
               - conditions:
-                  - "{{ command == '3_hold' }}"
-                sequence: !input "button_three_hold"
+                  - condition: template
+                    value_template: "{{ command == '3_hold' }}"
+                sequence: !input button_three_hold
               - conditions:
-                  - "{{ command == '4_hold' }}"
-                sequence: !input "button_four_hold"
+                  - condition: template
+                    value_template: "{{ command == '4_hold' }}"
+                sequence: !input button_four_hold
