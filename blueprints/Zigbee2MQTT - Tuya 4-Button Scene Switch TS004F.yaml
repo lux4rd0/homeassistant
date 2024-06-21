@@ -103,7 +103,7 @@ blueprint:
       default: []
       selector:
         action: {}
-  source_url: https://gist.github.com/edememinov/1ae89374ece50d2aa4beee4bf8f3fd76
+  source_url: https://raw.githubusercontent.com/lux4rd0/homeassistant/main/blueprints/Zigbee2MQTT%20-%20Tuya%204-Button%20Scene%20Switch%20TS004F.yaml
 mode: single
 max_exceeded: silent
 variables:
