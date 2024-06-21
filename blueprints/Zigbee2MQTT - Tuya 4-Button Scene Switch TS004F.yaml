@@ -2,19 +2,24 @@ blueprint:
   name: Zigbee2MQTT - Tuya 4-Button Scene Switch TS004F
   description: >
     Automate your Tuya 4-Button Scene Switch (TS004F) via Zigbee2MQTT.
+
     This blueprint allows you to configure actions for each button press type on
     the Tuya 4-Button Scene Switch (TS004F). The switch can be integrated with
-    Home Assistant using Zigbee2MQTT. Each button supports single-press, double-
+    Home Assistant using Zigbee2MQTT. Each button supports single press, double
     press, and long press actions.
 
     **Instructions:**
+
     1. **Switch**: Select your Tuya 4-Button Scene Switch from the entity dropdown.
+
     2. **Base MQTT Topic**: By default, the base MQTT topic is set to `zigbee2mqtt`.
        You can change this if your Zigbee2MQTT setup uses a different base topic.
-    3. **Actions**: For each button, configure the desired actions for a single press,
-       double press and hold.
+
+    3. **Actions**: For each button, configure the desired actions for single press,
+       double press, and hold.
 
     **Notes:**
+
     - Ensure that your switch is correctly integrated with Zigbee2MQTT and Home
       Assistant.
     - The friendly name of the switch is used to dynamically construct the MQTT
