@@ -1,0 +1,432 @@
+substitutions:
+  devicename: esp25
+  run_time: 2min
+  sleep_time: 15min
+  night_sleep_time: 365min
+esphome:
+  name: '${devicename}'
+  comment: Display - Packages  
+esp32:
+  board: m5stack-core2
+  flash_size: 16MB
+  framework:
+    type: arduino
+    version: 2.0.2
+    platform_version: '4.3.0'
+#debug:
+#  update_interval: 60s
+time:
+  - platform: homeassistant
+    id: ntp
+logger:
+  baud_rate: 0
+  level: DEBUG
+switch:
+  - platform: restart
+    name: '${devicename} Restart'
+api:
+  reboot_timeout: 2min
+ota:
+  platform: esphome
+  password: !secret ota_password
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: '${devicename}'
+    password: !secret wifi_password
+  domain: .tylephony.com
+  power_save_mode: none
+deep_sleep:
+  run_duration: '${run_time}'
+  sleep_duration: '${sleep_time}'
+  id: deep_sleep_control
+  esp32_ext1_wakeup:
+    pins:
+      - number: GPIO39
+        allow_other_uses: true
+    mode: ALL_LOW
+font:
+
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_battery
+    size: 28
+    glyphs:
+      - "\U000F0079"
+      - "\U000F0081"
+      - "\U000F007F"
+      - "\U000F007D"
+      - "\U000F007B"
+      - "\U000F10CD"
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: font_wifi
+    size: 28
+    glyphs:
+      - "\U000F091F"
+      - "\U000F0922"
+      - "\U000F0925"
+      - "\U000F0928"
+      - "\U000F092B"
+
+
+  - file: fonts/Calama.ttf
+    id: font_lettering_column
+    size: 40
+  - file: fonts/Calama.ttf
+    id: font_lettering_count
+    size: 140
+
+    
+button:
+  - platform: restart
+    name: '${devicename} Restart'
+    internal: false
+  - platform: template
+    name: '${devicename} Refresh'
+    icon: 'mdi:update'
+    on_press:
+      then:
+        - component.update: '${devicename}_display'
+    internal: false
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: true
+      allow_other_uses: true
+    name: '${devicename} Button 1'
+  - platform: gpio
+    pin:
+      number: GPIO34
+      inverted: true
+    name: '${devicename} Button 2'
+    internal: false
+  - platform: gpio
+    pin:
+      number: GPIO35
+      inverted: true
+    name: '${devicename} Button 3'
+    internal: false
+  - platform: homeassistant
+    id: '${devicename}_prevent_deep_sleep'
+    name: '${devicename} Prevent Deep Sleep'
+    entity_id: 'input_boolean.${devicename}_prevent_deep_sleep'
+external_components:
+  - source: 'custom_components'
+    components:
+      - lilygo_t5_47
+    refresh: 0s
+
+display:
+  platform: lilygo_t5_47
+  full_update_every: 1
+  cycles_render: 40
+  cycles_invert: 40
+  id: '${devicename}_display'
+  update_interval: never
+
+  lambda: |-
+    // Constants for positioning
+    const int wifi_x = 10, wifi_y = 0;
+    const int battery_voltage_x = 32, battery_voltage_y = 0;
+    
+    // Grid constants for cleaner layout
+    const int grid_width = 960;
+    const int grid_height = 540;
+    
+    // Helper function to display WiFi signal strength
+    auto display_wifi_signal = [&]() {
+      if (!id(${devicename}_WiFi_Signal).has_state()) return;
+
+      int state = id(${devicename}_WiFi_Signal).state;
+      const char* icon;
+      const char* logMessage;
+
+      if (state >= -50) { icon = "󰤨"; logMessage = "Excellent"; }
+      else if (state >= -60) { icon = "󰤥"; logMessage = "Good"; }
+      else if (state >= -67) { icon = "󰤢"; logMessage = "Fair"; }
+      else if (state >= -70) { icon = "󰤟"; logMessage = "Weak"; }
+      else { icon = "󰤫"; logMessage = "Unlikely"; }
+
+      it.print(wifi_x, wifi_y, id(font_wifi), TextAlign::TOP_LEFT, icon);
+      ESP_LOGI("WiFi", logMessage);
+    };
+
+    // Helper function to display battery voltage
+    auto display_battery_voltage = [&]() {
+      if (!id(${devicename}_battery_voltage).has_state()) return;
+
+      float voltage = id(${devicename}_battery_voltage).state;
+      const char* icon;
+
+      if (voltage >= 3.7) { icon = "󰁹"; }
+      else if (voltage >= 3.5) { icon = "󰂁"; }
+      else if (voltage >= 3.3) { icon = "󰁿"; }
+      else if (voltage >= 3.1) { icon = "󰁽"; }
+      else if (voltage >= 3.0) { icon = "󰁻"; }
+      else { icon = "󱃍"; }
+
+      it.print(battery_voltage_x, battery_voltage_y, id(font_battery), TextAlign::TOP_LEFT, icon);
+    };
+
+    // Draw grid lines function
+    auto draw_grid = [&]() {
+      // Draw horizontal lines
+      it.line(0, 32, 960, 32);
+      it.line(0, 159, 960, 159);
+      it.line(0, 286, 960, 286);
+      it.line(0, 413, 960, 413);
+      
+      // Draw vertical lines
+      it.line(220, 0, 220, 540);
+      it.line(368, 0, 368, 540);
+      it.line(516, 0, 516, 540);
+      it.line(664, 0, 664, 540);
+      it.line(812, 0, 812, 540);
+    };
+
+    // Display logos function
+    auto display_logos = [&]() {
+      it.image(10, 50, id(logo_amazon));
+      it.image(10, 174, id(logo_fedex));
+      it.image(10, 301, id(logo_ups));
+      it.image(10, 426, id(logo_usps));
+    };
+
+    // Display headers function
+    auto display_headers = [&]() {
+      if (id(mail_updated_formated).has_state()) {
+        it.printf(210, 0, id(font_lettering_column), TextAlign::TOP_RIGHT, "%s", id(mail_updated_formated).state.c_str());
+      }
+      
+      it.printf(294, 0, id(font_lettering_column), TextAlign::TOP_CENTER, "DELIVERED");
+      it.printf(442, 0, id(font_lettering_column), TextAlign::TOP_CENTER, "DELIVERING");
+      it.printf(590, 0, id(font_lettering_column), TextAlign::TOP_CENTER, "EXCEPTION");
+      it.printf(738, 0, id(font_lettering_column), TextAlign::TOP_CENTER, "PACKAGES");
+      it.printf(886, 0, id(font_lettering_column), TextAlign::TOP_CENTER, "HUB/MAIL");
+    };
+
+    // Helper function to display a sensor value with fallback
+    auto display_value = [&](int x, int y, sensor::Sensor* sensor_ptr) {
+      if (sensor_ptr->has_state()) {
+        it.printf(x, y, id(font_lettering_count), TextAlign::CENTER, "%.0f", sensor_ptr->state);
+      } else {
+        it.printf(x, y, id(font_lettering_count), TextAlign::CENTER, "-");
+      }
+    };
+
+    // Display Amazon data
+    auto display_amazon_data = [&]() {
+      display_value(294, 108, id(mail_amazon_packages_delivered));
+      display_value(590, 108, id(mail_amazon_exception));
+      display_value(738, 108, id(mail_amazon_packages));
+      display_value(886, 108, id(mail_amazon_hub_packages));
+    };
+    
+    // Display FedEx data
+    auto display_fedex_data = [&]() {
+      display_value(294, 235, id(mail_fedex_delivered));
+      display_value(442, 235, id(mail_fedex_delivering));
+      display_value(738, 235, id(mail_fedex_packages));
+    };
+    
+    // Display UPS data  
+    auto display_ups_data = [&]() {
+      display_value(294, 362, id(mail_ups_delivered));
+      display_value(442, 362, id(mail_ups_delivering));
+      display_value(590, 362, id(mail_ups_exception));
+      display_value(738, 362, id(mail_ups_packages));
+    };
+    
+    // Display USPS data
+    auto display_usps_data = [&]() {
+      display_value(294, 489, id(mail_usps_delivered));
+      display_value(442, 489, id(mail_usps_delivering));
+      display_value(590, 489, id(mail_usps_exception));
+      display_value(738, 489, id(mail_usps_packages));
+      display_value(886, 489, id(mail_usps_mail));
+    };
+
+    // Execute all display functions
+    display_wifi_signal();
+    display_battery_voltage();
+    draw_grid();
+    display_logos();
+    display_headers();
+    display_amazon_data();
+    display_fedex_data();
+    display_ups_data();
+    display_usps_data();
+
+
+sensor:
+  - platform: wifi_signal
+    name: '${devicename} WiFi Signal'
+    id: '${devicename}_WiFi_Signal'
+    update_interval: 60s
+  - platform: uptime
+    name: '${devicename} Uptime'
+    update_interval: 60s
+ # - platform: debug
+ #   free:
+ #     name: '${devicename} Heap Free'
+ #   block:
+ #     name: '${devicename} Heap Max Block'
+ #   loop_time:
+ #     name: '${devicename} Loop Time'
+  - id: '${devicename}_battery_voltage'
+    name: '${devicename} Battery Voltage'
+    platform: lilygo_t5_47
+    unit_of_measurement: V
+    state_class: measurement
+    device_class: voltage
+    update_interval: 60s
+
+  - platform: homeassistant
+    entity_id: sensor.mail_amazon_exception
+    id: mail_amazon_exception
+
+  - platform: homeassistant
+    entity_id: sensor.mail_amazon_hub_packages
+    id: mail_amazon_hub_packages
+
+  - platform: homeassistant
+    entity_id: sensor.mail_amazon_packages
+    id: mail_amazon_packages
+
+  - platform: homeassistant
+    entity_id: sensor.mail_amazon_packages_delivered
+    id: mail_amazon_packages_delivered
+
+  - platform: homeassistant
+    entity_id: sensor.mail_fedex_delivered
+    id: mail_fedex_delivered
+
+  - platform: homeassistant
+    entity_id: sensor.mail_fedex_delivering
+    id: mail_fedex_delivering
+
+  - platform: homeassistant
+    entity_id: sensor.mail_fedex_packages
+    id: mail_fedex_packages
+
+  - platform: homeassistant
+    entity_id: sensor.mail_packages_delivered
+    id: mail_packages_delivered
+
+  - platform: homeassistant
+    entity_id: sensor.mail_packages_in_transit
+    id: mail_packages_in_transit
+
+
+
+  - platform: homeassistant
+    entity_id: sensor.mail_ups_delivered
+    id: mail_ups_delivered
+
+  - platform: homeassistant
+    entity_id: sensor.mail_ups_delivering
+    id: mail_ups_delivering
+
+  - platform: homeassistant
+    entity_id: sensor.mail_ups_exception
+    id: mail_ups_exception
+
+  - platform: homeassistant
+    entity_id: sensor.mail_ups_packages
+    id: mail_ups_packages
+
+  - platform: homeassistant
+    entity_id: sensor.mail_usps_delivered
+    id: mail_usps_delivered
+
+  - platform: homeassistant
+    entity_id: sensor.mail_usps_delivering
+    id: mail_usps_delivering
+
+  - platform: homeassistant
+    entity_id: sensor.mail_usps_exception
+    id: mail_usps_exception
+
+  - platform: homeassistant
+    entity_id: sensor.mail_usps_mail
+    id: mail_usps_mail
+
+  - platform: homeassistant
+    entity_id: sensor.mail_usps_packages
+    id: mail_usps_packages
+    on_value:
+      then:
+        - logger.log: Received sensor.mail_usps_packages
+        - script.execute: all_data_received
+text_sensor:
+#  - platform: debug
+#    device:
+#      name: '${devicename} Device Info'
+#      id: '${devicename}_device_info'
+
+  - platform: homeassistant
+    entity_id: sensor.mail_updated_formated
+    id: mail_updated_formated
+
+  - platform: homeassistant
+    entity_id: 'input_select.${devicename}_page'
+    id: '${devicename}_page'
+#    on_value:
+#      then:
+#        - component.update: '${devicename}_display'
+script:
+  - id: all_data_received
+    then:
+      - component.update: '${devicename}_display'
+      - delay: 5s
+      - if:
+          condition:
+            binary_sensor.is_on: '${devicename}_prevent_deep_sleep'
+          then:
+            - logger.log: 'Skipping sleep, per prevent_deep_sleep'
+            - deep_sleep.prevent: deep_sleep_control
+          else:
+            - script.execute: enter_sleep
+  - id: enter_sleep
+    then:
+      - if:
+          condition:
+            lambda: |-
+              auto time = id(ntp).now();
+              if (!time.is_valid()) { 
+                return false;
+              }
+              return (time.hour < 6); 
+          then:
+            - logger.log: 'Nighttime, entering long sleep for ${night_sleep_time}'
+            - deep_sleep.enter:
+                id: deep_sleep_control
+                sleep_duration: '${night_sleep_time}'
+          else:
+            - logger.log: 'Daytime, entering short sleep for ${sleep_time}'
+            - deep_sleep.enter:
+                id: deep_sleep_control
+                sleep_duration: '${sleep_time}'
+
+image:
+  - file: "images/logo_amazon3.png"
+    id: logo_amazon
+    type: BINARY
+    invert_alpha: true
+    transparency: chroma_key
+  - file: "images/logo_fedex3.png"
+    id: logo_fedex
+    type: BINARY
+    invert_alpha: true
+    transparency: chroma_key
+  - file: "images/logo_ups3.png"
+    id: logo_ups
+    type: BINARY
+    invert_alpha: true
+    transparency: chroma_key
+  - file: "images/logo_usps3.png"
+    id: logo_usps
+    type: BINARY
+    invert_alpha: true
+    transparency: chroma_key
