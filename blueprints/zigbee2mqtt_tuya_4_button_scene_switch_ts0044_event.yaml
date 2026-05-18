@@ -1,0 +1,123 @@
+blueprint:
+  name: Zigbee2MQTT - Tuya 4-Button Scene Switch TS0044 (Event Entity)
+  description: >
+    Automate your Tuya 4-Button Scene Switch (TS0044) via Zigbee2MQTT using
+    the modern `event` entity exposed by Z2M 2.x.
+
+
+    **Requires** `homeassistant.experimental_event_entities: true` in your
+    Zigbee2MQTT `configuration.yaml`.
+
+
+    Each of the four buttons supports a single press and a double press. The
+    TS0044 firmware emits a single global `hold` event regardless of which
+    button is held, so there is one Hold input (not per-button).
+
+
+    **Setup**: Select your TS0044 action event entity from the dropdown
+    (e.g. `event.bedroom_sparklelux_button_remote_action`).
+  domain: automation
+  input:
+    remote:
+      name: TS0044 Action Event
+      description: Action event entity for the TS0044 (e.g. event.xxx_action)
+      selector:
+        entity:
+          filter:
+            - domain: event
+              integration: mqtt
+    button_one_short_press:
+      name: Single Press - Button 1
+      description: Action to run on button 1 (upper-left) single press
+      default: []
+      selector:
+        action: {}
+    button_one_double_press:
+      name: Double Press - Button 1
+      description: Action to run on button 1 (upper-left) double press
+      default: []
+      selector:
+        action: {}
+    button_two_short_press:
+      name: Single Press - Button 2
+      description: Action to run on button 2 (upper-right) single press
+      default: []
+      selector:
+        action: {}
+    button_two_double_press:
+      name: Double Press - Button 2
+      description: Action to run on button 2 (upper-right) double press
+      default: []
+      selector:
+        action: {}
+    button_three_short_press:
+      name: Single Press - Button 3
+      description: Action to run on button 3 (lower-left) single press
+      default: []
+      selector:
+        action: {}
+    button_three_double_press:
+      name: Double Press - Button 3
+      description: Action to run on button 3 (lower-left) double press
+      default: []
+      selector:
+        action: {}
+    button_four_short_press:
+      name: Single Press - Button 4
+      description: Action to run on button 4 (lower-right) single press
+      default: []
+      selector:
+        action: {}
+    button_four_double_press:
+      name: Double Press - Button 4
+      description: Action to run on button 4 (lower-right) double press
+      default: []
+      selector:
+        action: {}
+    button_hold:
+      name: Hold (any button)
+      description: >
+        Action to run when ANY button is held. The TS0044 firmware does not
+        report which button is held - it emits one global `hold` event.
+      default: []
+      selector:
+        action: {}
+  source_url: https://raw.githubusercontent.com/lux4rd0/homeassistant/main/blueprints/zigbee2mqtt_tuya_4_button_scene_switch_ts0044_event.yaml
+mode: single
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input remote
+    not_from:
+      - unavailable
+variables:
+  action: "{{ trigger.to_state.attributes.event_type }}"
+action:
+  - choose:
+      - conditions:
+          - "{{ action == '1_single' }}"
+        sequence: !input button_one_short_press
+      - conditions:
+          - "{{ action == '1_double' }}"
+        sequence: !input button_one_double_press
+      - conditions:
+          - "{{ action == '2_single' }}"
+        sequence: !input button_two_short_press
+      - conditions:
+          - "{{ action == '2_double' }}"
+        sequence: !input button_two_double_press
+      - conditions:
+          - "{{ action == '3_single' }}"
+        sequence: !input button_three_short_press
+      - conditions:
+          - "{{ action == '3_double' }}"
+        sequence: !input button_three_double_press
+      - conditions:
+          - "{{ action == '4_single' }}"
+        sequence: !input button_four_short_press
+      - conditions:
+          - "{{ action == '4_double' }}"
+        sequence: !input button_four_double_press
+      - conditions:
+          - "{{ action == 'hold' }}"
+        sequence: !input button_hold
