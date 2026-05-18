@@ -1,0 +1,145 @@
+blueprint:
+  name: Zigbee2MQTT - Tuya Moes Smart Knob (Event Entity)
+  description: >
+    Automate the Tuya Moes Smart Knob (ERS-10TZBVK-AA) via Zigbee2MQTT using
+    the modern `event` entity exposed by Z2M 2.x.
+
+
+    **Requires** `homeassistant.experimental_event_entities: true` in your
+    Zigbee2MQTT `configuration.yaml`.
+
+
+    The knob has two operation modes (toggleable via triple-press of the knob):
+    Event mode fires single/double/hold/rotate; Command mode fires
+    toggle/hue_move/brightness_step/color_temperature_step. This blueprint
+    exposes inputs for both modes.
+
+
+    **Setup**: Select your knob action event entity from the dropdown
+    (e.g. `event.bedroom_sparklelux_knob_action`).
+  domain: automation
+  input:
+    knob:
+      name: Smart Knob Action Event
+      description: Action event entity for the Smart Knob (e.g. event.xxx_action)
+      selector:
+        entity:
+          filter:
+            - domain: event
+              integration: mqtt
+    event_button_short_press:
+      name: Event - Single Press
+      description: Action to run on single press (careful not to turn knob instead)
+      default: []
+      selector:
+        action: {}
+    event_button_double_press:
+      name: Event - Double Press
+      description: Action to run on double press (careful not to turn knob instead)
+      default: []
+      selector:
+        action: {}
+    event_button_long_press:
+      name: Event - Long Press (Hold)
+      description: Action to run on long press / hold (at least 4 seconds)
+      default: []
+      selector:
+        action: {}
+    event_button_rotate_right:
+      name: Event - Rotate Right
+      description: Action to run when knob is rotated right in event mode
+      default: []
+      selector:
+        action: {}
+    event_button_rotate_left:
+      name: Event - Rotate Left
+      description: Action to run when knob is rotated left in event mode
+      default: []
+      selector:
+        action: {}
+    command_button_short_press:
+      name: Command - Single Press
+      description: Action on single press in command mode (fires `toggle`)
+      default: []
+      selector:
+        action: {}
+    command_button_long_press:
+      name: Command - Long Press
+      description: Action on long press in command mode (fires `hue_move`)
+      default: []
+      selector:
+        action: {}
+    command_button_rotate_right:
+      name: Command - Rotate Right
+      description: >
+        Action when rotated right in command mode. Maps to `brightness_step`
+        with `direction == 'up'`.
+      default: []
+      selector:
+        action: {}
+    command_button_rotate_left:
+      name: Command - Rotate Left
+      description: >
+        Action when rotated left in command mode. Maps to `brightness_step`
+        with `direction == 'down'`.
+      default: []
+      selector:
+        action: {}
+    command_button_rotate_press_right:
+      name: Command - Rotate Press Right
+      description: Action for `color_temperature_step_up` (rotate while pressed, right)
+      default: []
+      selector:
+        action: {}
+    command_button_rotate_press_left:
+      name: Command - Rotate Press Left
+      description: Action for `color_temperature_step_down` (rotate while pressed, left)
+      default: []
+      selector:
+        action: {}
+  source_url: https://raw.githubusercontent.com/lux4rd0/homeassistant/main/blueprints/zigbee2mqtt_tuya_moes_smart_knob_event.yaml
+mode: restart
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input knob
+    not_from:
+      - unavailable
+variables:
+  event_type: "{{ trigger.to_state.attributes.event_type }}"
+  direction: "{{ trigger.to_state.attributes.direction | default('') }}"
+action:
+  - choose:
+      - conditions:
+          - "{{ event_type == 'single' }}"
+        sequence: !input event_button_short_press
+      - conditions:
+          - "{{ event_type == 'double' }}"
+        sequence: !input event_button_double_press
+      - conditions:
+          - "{{ event_type == 'hold' }}"
+        sequence: !input event_button_long_press
+      - conditions:
+          - "{{ event_type == 'rotate_right' }}"
+        sequence: !input event_button_rotate_right
+      - conditions:
+          - "{{ event_type == 'rotate_left' }}"
+        sequence: !input event_button_rotate_left
+      - conditions:
+          - "{{ event_type == 'toggle' }}"
+        sequence: !input command_button_short_press
+      - conditions:
+          - "{{ event_type == 'hue_move' }}"
+        sequence: !input command_button_long_press
+      - conditions:
+          - "{{ event_type == 'brightness_step' and direction == 'up' }}"
+        sequence: !input command_button_rotate_right
+      - conditions:
+          - "{{ event_type == 'brightness_step' and direction == 'down' }}"
+        sequence: !input command_button_rotate_left
+      - conditions:
+          - "{{ event_type == 'color_temperature_step_up' }}"
+        sequence: !input command_button_rotate_press_right
+      - conditions:
+          - "{{ event_type == 'color_temperature_step_down' }}"
+        sequence: !input command_button_rotate_press_left
