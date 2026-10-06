@@ -91,7 +91,14 @@ trigger:
     not_from:
       - unavailable
 variables:
-  action: "{{ trigger.to_state.attributes.event_type }}"
+  # z2m >= 2.14 splits "2_single" into event_type "single" + attribute button "2";
+  # older z2m sends "2_single" as event_type. Accept both.
+  action: >-
+    {% set a = trigger.to_state.attributes %}
+    {% if a.button is defined and a.button not in [none, ''] and a.event_type != 'hold'
+          and not (a.event_type | string).startswith(a.button | string ~ '_') %}
+    {{ a.button ~ '_' ~ a.event_type }}
+    {% else %}{{ a.event_type }}{% endif %}
 action:
   - choose:
       - conditions:
