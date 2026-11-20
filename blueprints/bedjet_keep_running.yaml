@@ -1,0 +1,109 @@
+blueprint:
+  name: BedJet - Keep running (Turbo-aware)
+  description: >-
+    Keeps a BedJet from timing out by topping its runtime back up every 2 minutes.
+
+
+    **Turbo is handled.** In Turbo the BedJet only accepts up to 10 minutes of
+    runtime, so a plain "set runtime to 20" silently fails and the BedJet shuts
+    off when Turbo ends. This blueprint leaves Turbo alone, and shortly before it
+    runs out it switches the BedJet to normal Heat and keeps it running.
+    The switch uses the Heat HVAC mode (the BedJet's Heat button), which works on
+    both BedJet V2 and BedJet 3. The "None" preset only exists on V2.
+
+
+    Requires the ha-bedjet custom integration (natekspencer/ha-bedjet), which
+    provides the "Runtime remaining" number entity.
+  domain: automation
+  source_url: https://raw.githubusercontent.com/lux4rd0/homeassistant/main/blueprints/bedjet_keep_running.yaml
+  input:
+    bedjet:
+      name: BedJet
+      description: The BedJet climate entity.
+      selector:
+        entity:
+          filter:
+            - domain: climate
+              integration: bedjet
+    runtime:
+      name: Runtime remaining
+      description: The BedJet's "Runtime remaining" number entity (minutes).
+      selector:
+        entity:
+          filter:
+            - domain: number
+              integration: bedjet
+    extend_minutes:
+      name: Top up to (minutes)
+      description: Runtime to set on each check. Keep it well above 2 minutes.
+      default: 20
+      selector:
+        number:
+          min: 5
+          max: 120
+          unit_of_measurement: min
+    turbo_handoff_minutes:
+      name: Leave Turbo when this many minutes remain
+      description: >-
+        Checks run every 2 minutes, so keep this above 2 or the handoff can miss
+        the end of Turbo.
+      default: 4
+      selector:
+        number:
+          min: 3
+          max: 9
+          unit_of_measurement: min
+
+mode: single
+
+variables:
+  bedjet: !input bedjet
+  runtime: !input runtime
+  extend_minutes: !input extend_minutes
+  turbo_handoff_minutes: !input turbo_handoff_minutes
+
+triggers:
+  - trigger: time_pattern
+    minutes: /2
+  - trigger: state
+    entity_id: !input bedjet
+    from: unavailable
+    to:
+      - heat
+      - cool
+      - dry
+
+conditions:
+  - condition: template
+    value_template: "{{ states(bedjet) not in ['off', 'unavailable', 'unknown'] }}"
+
+actions:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ state_attr(bedjet, 'preset_mode') == 'Turbo' }}"
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ states(runtime) | float(99) < turbo_handoff_minutes | float }}"
+            then:
+              - action: climate.set_hvac_mode
+                target:
+                  entity_id: !input bedjet
+                data:
+                  hvac_mode: heat
+              - wait_template: "{{ state_attr(bedjet, 'preset_mode') != 'Turbo' }}"
+                timeout: "00:00:30"
+                continue_on_timeout: true
+              - action: number.set_value
+                continue_on_error: true
+                target:
+                  entity_id: !input runtime
+                data:
+                  value: "{{ extend_minutes }}"
+    default:
+      - action: number.set_value
+        target:
+          entity_id: !input runtime
+        data:
+          value: "{{ extend_minutes }}"
